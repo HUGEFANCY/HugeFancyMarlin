@@ -738,7 +738,7 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 10, 10, 10, 10 } // xy 128 MS  // z 64 MS // E-steps 16 MS
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 120, 120, 120, 120 } // X,Y = D_neutrale_Faser = 50,93mm
 //{ 80, 80, 4000, 500 }
 
 /**
