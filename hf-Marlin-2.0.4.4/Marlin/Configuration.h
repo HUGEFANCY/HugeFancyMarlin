@@ -678,15 +678,15 @@
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'L6474', 'POWERSTEP01', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#define X_DRIVER_TYPE  TMC2208
-#define Y_DRIVER_TYPE  TMC2208
-#define Z_DRIVER_TYPE  TMC2208
+#define X_DRIVER_TYPE  DRV8825
+#define Y_DRIVER_TYPE  DRV8825
+#define Z_DRIVER_TYPE  DRV8825
 //#define X2_DRIVER_TYPE A4988
 //#define Y2_DRIVER_TYPE A4988
-#define Z2_DRIVER_TYPE TMC2208
+#define Z2_DRIVER_TYPE DRV8825
 //#define Z3_DRIVER_TYPE A4988
 //#define Z4_DRIVER_TYPE A4988
-#define E0_DRIVER_TYPE LV8729
+#define E0_DRIVER_TYPE DRV8825
 //#define E1_DRIVER_TYPE A4988
 //#define E2_DRIVER_TYPE A4988
 //#define E3_DRIVER_TYPE A4988
@@ -738,7 +738,7 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 44.44*8, 101.44*8, 402.05*4, 415*4 } // xy 128 MS  // z 64 MS // E-steps 16 MS
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200*16, 200*16, 200*16, 200*16 } // xy 128 MS  // z 64 MS // E-steps 16 MS
 //{ 80, 80, 4000, 500 }
 
 /**
@@ -855,7 +855,7 @@
  *      - normally-open switches to 5V and D32.
  *
  */
-#define Z_MIN_PROBE_PIN P1_28 // Pin 32 is the RAMPS default
+//#define Z_MIN_PROBE_PIN P1_28 // Pin 32 is the RAMPS default
 
 /**
  * Probe Type
@@ -876,7 +876,7 @@
  * A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
  *   (e.g., an inductive probe or a nozzle-based probe-switch.)
  */
-#define FIX_MOUNTED_PROBE
+//#define FIX_MOUNTED_PROBE
 
 /**
  * Use the nozzle as the probe, as with a conductive
@@ -1094,16 +1094,16 @@
 // @section machine
 
 // The size of the print bed
-#define X_BED_SIZE 400 //###
-#define Y_BED_SIZE 400
+#define X_BED_SIZE 1500 //###
+#define Y_BED_SIZE 1900
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
-#define X_MIN_POS -1 //Bewegungsfeld hier einschränken und Koordinatenursprung an dieser Stelle setzen
-#define Y_MIN_POS -10
+#define X_MIN_POS 0 //Bewegungsfeld hier einschränken und Koordinatenursprung an dieser Stelle setzen
+#define Y_MIN_POS 0
 #define Z_MIN_POS 0 
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 440
+#define Z_MAX_POS 1400
 
 /**
  * Software Endstops
@@ -1207,7 +1207,7 @@
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
 //#define AUTO_BED_LEVELING_BILINEAR
-#define AUTO_BED_LEVELING_UBL
+//#define AUTO_BED_LEVELING_UBL
 //#define MESH_BED_LEVELING
 
 /**
