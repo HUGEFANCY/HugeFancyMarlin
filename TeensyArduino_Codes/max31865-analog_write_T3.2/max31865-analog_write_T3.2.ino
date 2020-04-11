@@ -23,6 +23,11 @@ Adafruit_MAX31865 thermo = Adafruit_MAX31865(17, 16, 15, 14);
 
 // Define an Analog output pin which will send the temperature values
 const int analogOutPin = A14; // Analog output pin which will write temperature
+const int analogInPin = A4; // Analog input pin which will read temperature value
+int analog_resolution = 12; // sets resolution of analog writing as exponent of 2 (2^12=4096)
+//this is done further down: analogWriteRes(analog_resolution); // Set the analog output resolution to 12 bit (4096 levels).
+int max_temp = 400;
+
 //const int analogOutPin2 = A22; // Analog output pin that will write the resistance
 const int ledPin = LED_BUILTIN;
 
@@ -33,6 +38,8 @@ const int ledPin = LED_BUILTIN;
 #define RNOMINAL  100.0
 
 void setup() {
+  analogWriteRes(analog_resolution); // Set the analog output resolution to 12 bit (4096 levels).
+  analogReadResolution(analog_resolution);
   Serial.begin(115200);
   Serial.println("Adafruit MAX31865 PT100 Sensor Test!");
   pinMode(ledPin, OUTPUT);
@@ -50,12 +57,22 @@ void loop() {
   ratio /= 32768;
   float temperature = thermo.temperature(RNOMINAL, RREF);
   float resistance = RREF*ratio;
-  analogWrite(analogOutPin, temperature);
+  float maxtemp_ratio = temperature / max_temp;
+
+  float temp_to_write = (pow(2,analog_resolution)*maxtemp_ratio);
+  analogWrite(analogOutPin, temp_to_write);
+  float analogIn = analogRead(analogInPin);
+  float temp_read = analogIn / pow(2,12)* max_temp;
+  
   //analogWrite(analogOutPin2, resistance);
   
   //Serial.print("Ratio = "); Serial.println(ratio,8);
+  Serial.print("temp to write = "); Serial.println(temp_to_write);
+    Serial.print("temp read = "); Serial.println(temp_read);
+  Serial.print("Ratio of Max temperature = "); Serial.println(maxtemp_ratio);
   Serial.print("Resistance = "); Serial.println(RREF*ratio);
   Serial.print("Temperature = "); Serial.println(temperature);
+  Serial.print("Analog In = "); Serial.println(analogIn);
 
   if (temperature > 32){
     digitalWrite(ledPin, HIGH);   // set the LED on
