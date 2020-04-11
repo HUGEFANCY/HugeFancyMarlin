@@ -640,7 +640,8 @@ class Temperature {
         #if ENABLED(AUTO_POWER_CONTROL)
           powerManager.power_on();
         #endif
-        SERIAL_ECHOPGM("Lol this changed the hotend temp ");
+        SERIAL_ECHOPGM("this changed the hotend temp ");
+        SERIAL_ECHOPGM("Function to send new target temp goes here ");
         SERIAL_ECHO(celsius);
         temp_hotend[ee].target = _MIN(celsius, temp_range[ee].maxtemp - 15);
         start_watching_hotend(ee);
