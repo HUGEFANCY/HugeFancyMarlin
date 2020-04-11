@@ -17,13 +17,13 @@
 #include <Adafruit_MAX31865.h>
 
 // Use software SPI: CS, DI, DO, CLK
-Adafruit_MAX31865 thermo = Adafruit_MAX31865(36, 35, 34, 33);
+Adafruit_MAX31865 thermo = Adafruit_MAX31865(17, 16, 15, 14);
 // use hardware SPI, just pass in the CS pin
 //Adafruit_MAX31865 thermo = Adafruit_MAX31865(10);
 
 // Define an Analog output pin which will send the temperature values
-const int analogOutPin = A21; // Analog output pin which will write temperature
-const int analogOutPin2 = A22; // Analog output pin that will write the resistance
+const int analogOutPin = A14; // Analog output pin which will write temperature
+//const int analogOutPin2 = A22; // Analog output pin that will write the resistance
 const int ledPin = LED_BUILTIN;
 
 // The value of the Rref resistor. Use 430.0 for PT100 and 4300.0 for PT1000
@@ -51,7 +51,7 @@ void loop() {
   float temperature = thermo.temperature(RNOMINAL, RREF);
   float resistance = RREF*ratio;
   analogWrite(analogOutPin, temperature);
-  analogWrite(analogOutPin2, resistance);
+  //analogWrite(analogOutPin2, resistance);
   
   //Serial.print("Ratio = "); Serial.println(ratio,8);
   Serial.print("Resistance = "); Serial.println(RREF*ratio);
