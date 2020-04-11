@@ -162,6 +162,7 @@ enum ADCSensorState : char {
 // get all oversampled sensor readings
 #define MIN_ADC_ISR_LOOPS 10
 
+//TODO 
 #define ACTUAL_ADC_SAMPLES _MAX(int(MIN_ADC_ISR_LOOPS), int(SensorsReady))
 
 #if HAS_PID_HEATING
@@ -639,6 +640,8 @@ class Temperature {
         #if ENABLED(AUTO_POWER_CONTROL)
           powerManager.power_on();
         #endif
+        SERIAL_ECHOPGM("Lol this changed the hotend temp ");
+        SERIAL_ECHO(celsius);
         temp_hotend[ee].target = _MIN(celsius, temp_range[ee].maxtemp - 15);
         start_watching_hotend(ee);
       }
