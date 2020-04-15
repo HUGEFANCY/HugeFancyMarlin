@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Example 5 Clock-Direction</name>
+	<name>NanoJ_STEP_DIR_EN</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -16,7 +16,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1570535208036</id>
+			<id>0</id>
 			<name></name>
 			<type>8</type>
 			<matcher>
@@ -25,7 +25,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1570535208043</id>
+			<id>0</id>
 			<name></name>
 			<type>4</type>
 			<matcher>

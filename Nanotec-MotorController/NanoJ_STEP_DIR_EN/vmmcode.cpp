@@ -45,7 +45,8 @@ void user()
 	
 	while(true)
 	{
-		if((In.Inputs & 0x80000) != 0)  // checking input 4 for not low
+		// Input Pins 1#10000 2#20000 3#40000 4#80000 5#100000
+		if((In.Inputs & 0x100000) != 0)  // ### checking input 5 for not low // EN PIN 
 		{	
 			if (bEnabled == false)		// motor is not running
 			{
