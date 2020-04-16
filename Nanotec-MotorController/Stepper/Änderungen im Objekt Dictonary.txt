@@ -1,0 +1,16 @@
+CLOSED LOOP REGLER
+
+Motor drive parameter set - Position loop, proportional gain (closed loop)
+Index 3210 - geändert auf 0x1600
+
+
+
+
+
+MICROSTEPPING
+
+Clock Direction Multiplier
+Index 2057 - 0x4 (0x2 = Microstepping = 256, Hinweis: 0x512 = FullStep)
+
+Clock Direction Divider
+Index 2058 - 0x1
