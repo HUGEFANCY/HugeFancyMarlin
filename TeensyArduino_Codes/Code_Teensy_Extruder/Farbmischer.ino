@@ -16,6 +16,8 @@ Stepper MR(17, 18); // Step, Dir
 StepControl StepController_R; // Controller, Stepping Mode
 
 const int microstepping = 16;
+const int Anzahl_Schaufeln = 8;
+
 
 void Farbmischer_setup()
 {
@@ -31,19 +33,34 @@ void Farbmischer_setup()
   MR.setAcceleration(Farbmischer_Acceleration); // stp/s^2
 }
 
-void Farbmischer_GibFarbe(int Schuebe_L, int Schuebe_R)
-{
-  const int Anzahl_Schaufeln = 8;
-
-  if (Schuebe_L != 0)
+/*
+  byte decodiereFarbmischerUmdrehungen(byte FarbmischerUmdrehungen, char Motor)
   {
-    float Drehwinkel_L = 2 * PI / Anzahl_Schaufeln * Schuebe_L;
+  if (Motor == 'L')
+  {
+    byte Farbschuebe_L = (FarbmischerUmdrehungen & 0b11110000) >> 4; // get the first 4 bits of the byte and shift them right 4 places
+    return Farbschaufeln_L;
+  }
+    if (Motor == 'R')
+  {
+    byte Farbschaufeln_R = FarbmischerUmdrehungen & 0b00001111; // get the last 4 bits of the byte
+    return Farbschaufeln;
+  }
+  }
+*/
+
+
+void Farbmischer_GibFarbe(byte GibSchaufeln_L, byte GibSchaufeln_R)
+{
+  if (GibSchaufeln_L != 0)
+  {
+    float Drehwinkel_L = 2 * PI / Anzahl_Schaufeln * GibSchaufeln_L;
     ML.setTargetRel(Drehwinkel_L * 200 * microstepping); // 1600 = 1 REV with TMC2209
     StepController_L.move(ML);
   }
-  if (Schuebe_R != 0)
+  if (GibSchaufeln_R != 0)
   {
-    float Drehwinkel_R = 2 * PI / Anzahl_Schaufeln * Schuebe_R;
+    float Drehwinkel_R = 2 * PI / Anzahl_Schaufeln * GibSchaufeln_R;
     MR.setTargetRel(Drehwinkel_R * 200 * microstepping); // 1600 = 1 REV with TMC2209
     StepController_R.move(MR);
   }

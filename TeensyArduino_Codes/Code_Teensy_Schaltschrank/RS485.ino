@@ -31,22 +31,19 @@ void RS485_setup()
   pinMode(RS485_enablePin, OUTPUT);
   delay(10);
   digitalWrite(RS485_enablePin, HIGH);  // always high as Master Writes data to Slave
-
-  buffer[0] = 0x7E; // Bufferheader: Verkündung Teensy Schaltschrank
 }
 
-void RS485_sentSignals()
-{
-  int g = 0; // zu sendene 8 Bit Variable 2
-  int b = 0; // zu sendene 8 Bit Variable 3
 
+void RS485_updateVaribles()
+{
   // 10 bit max value is 1023 (analogRead() returns a 10 bit value) // Divide our 10 bit value by 4, to obtain and effective 8 bit value
   // 9 bit max value is 511, // Divide our 9 bit value by 2, to obtain and effective 8 bit value
   // 8 bit max value is 255.
 
+  buffer[0] = 0x7E; // Bufferheader: Verkündung Teensy Schaltschrank Update Variablen
   buffer[1] = targetTempExtruderMarlin / 2; // Divide our 9 bit value by 2, to obtain and effective 8 bit value
-  buffer[2] = ExtruderCoolingStatusMarlin;
-  buffer[3] = pwmValuePartCoolingFanMarlin;
+  buffer[2] = PwmValuePartCoolingFanMarlin;
+  buffer[3] = 0; // noch frei
   // ### ToDo Bitshift, da schneller
 
   buffer[4] = checksum();
@@ -55,6 +52,22 @@ void RS485_sentSignals()
 
   delay(100);
 }
+
+void RS485_FarbmischerGibSchaufeln(byte SchaufelnMotor_L, byte SchaufelnMotor_R)
+{
+  buffer[0] = 0x7D; // Bufferheader: Aktion Farbmischer 
+  buffer[1] = SchaufelnMotor_L;
+  buffer[2] = SchaufelnMotor_R;
+  buffer[3] = 0; // noch frei
+
+  buffer[4] = checksum();
+  
+  Serial1.write(buffer, bufferSize); // We send all bytes stored in the buffer
+
+  delay(100);
+}
+
+
 
 //We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
 uint8_t checksum() {

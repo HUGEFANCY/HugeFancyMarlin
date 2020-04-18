@@ -4,10 +4,9 @@ unsigned long currentMillis = 0;
 
 // Zielwerte aus Marlin
 int targetTempExtruderMarlin = 0; // max 9 Bit = 511°C
-byte targetExtruderCoolingStatusMarlin = 0; // 0 = off, 1 = on // muss 8 Bit, statt boolean sein
-byte targetPwmValuePartCoolingFanMarlin = 0; // max 8 Bit = 255
+byte PwmValuePartCoolingFanMarlin = 0; // 0 = off, 1 = on // muss 8 Bit, statt boolean sein
 
-// Variabeln
+// weitere Variabeln
 int TempExtruderObenrum = 0; // max 9 Bit = 511°C
 int TempExtruderUntenrum = 0; // max 9 Bit = 511°C
 int TempWatercoolingCold = 0; // max 9 Bit = 511°C
@@ -30,6 +29,8 @@ void loop()
 {
   currentMillis = millis(); // Für das periodische Aufrufen von diversen Funktionen ohne ein delay zu verursachen
   
-  RS485_updateVariables();
+  RS485_CheckIfUpdateAvalible();
   TM1637_update();
+
+  //watchdogTeensySchaltschrankNochAktiv(); // wenn man länger als 10 Minuten nichts vom Teensy gehört hat Heater abschalten
 }
