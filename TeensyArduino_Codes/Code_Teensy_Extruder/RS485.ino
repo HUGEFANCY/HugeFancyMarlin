@@ -1,6 +1,6 @@
-
-// RS485 long distance communication betweent Teensy Schaltschrank (Master) and Teensy Extruder (Slave)
-// Anleitung: https://circuitdigest.com/microcontroller-projects/rs485-serial-communication-between-arduino-uno-and-arduino-nano
+// RS485 long distance communication betweent Teensy Schaltschrank (Master) and Teensy Extruder (Slave) über UART with selfmade Communication Protocol
+// Anleitung RS485 UART: https://circuitdigest.com/microcontroller-projects/rs485-serial-communication-between-arduino-uno-and-arduino-nano
+// Anleitung designing a communication protocol: https://henryforceblog.wordpress.com/2015/03/12/designing-a-communication-protocol-using-arduinos-serial-library/
 
 // Slave Device
 
@@ -22,11 +22,7 @@ const uint8_t header_Farbmischer = 0x7D; // Bufferheader: Aktion Farbmischer
 
 const uint8_t bufferSize = 5;
 uint8_t buffer[bufferSize];
-// Byte 0 Header (update Varibles = 0x7E)
-// Byte 1 targetTempExtruderMarlin
-// Byte 2 ExtruderCoolingStatusMarlin
-// Byte 3 pwmValuePartCoolingFanMarlin
-// Byte 4 Checksum
+
 uint8_t readCounter;
 uint8_t isHeader;
 uint8_t firstTimeHeader; // Flag that helps us restart counter when we first find header byte
@@ -87,21 +83,31 @@ void RS485_CheckIfUpdateAvalible()
         if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
         {
           // Folgende Daten wurden erhalten:
-          
+
           // header Update globale Variablen
           if (buffer[0] == header_updateVariables)
           {
+            // Byte 0 Header (0x7E)
+            // Byte 1 targetTempExtruderMarlin Byte 01
+            // Byte 2 targetTempExtruderMarlin Byte 02
+            // Byte 3 pwmValuePartCoolingFanMarlin
+            // Byte 4 Checksum
 
-            Serial.println("Debug next");
             // Update globale Variablen
-            targetTempExtruderMarlin = map(buffer[1], 0, 255, 0, 511); // gesendete 8 Bit Wert wiedeer auf die ursprünglichen 9 Bit zurückführen
-            PwmValuePartCoolingFanMarlin = buffer[2];
+            targetTempExtruderMarlin = buffer[1] + buffer[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
+            PwmValuePartCoolingFanMarlin = buffer[3];
             RS485_header_updateVariables_updatePreviousMillis = 0; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben
           }
 
           // header Farbmischer
           if (buffer[0] == header_Farbmischer)
           {
+            // Byte 0 Header (0x7D)
+            // Byte 1 Schaufeln Links 
+            // Byte 2 Schaufeln Rechts
+            // Byte 3 frei
+            // Byte 4 Checksum
+
             byte Schaufeln_L = buffer[1];
             byte Schaufeln_R = buffer[2];
             Farbmischer_GibFarbe(Schaufeln_L, Schaufeln_R); // Motoren Farbmischer starten

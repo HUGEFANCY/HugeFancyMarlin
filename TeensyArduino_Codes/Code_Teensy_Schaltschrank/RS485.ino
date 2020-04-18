@@ -17,15 +17,10 @@ const byte RS485_enablePin = 8;
 
 const uint8_t bufferSize = 5; // Buffer communication protocoll
 uint8_t buffer[bufferSize];
-// Byte 0 Header (0x7E)
-// Byte 1 targetTempExtruderMarlin
-// Byte 2 ExtruderCoolingStatusMarlin
-// Byte 3 pwmValuePartCoolingFanMarlin
-// Byte 4 Checksum
 
 void RS485_setup()
 {
-  while(!Serial1);
+  while (!Serial1);
   Serial1.begin(9600); // Serial1 für RS485
 
   pinMode(RS485_enablePin, OUTPUT);
@@ -33,29 +28,37 @@ void RS485_setup()
   digitalWrite(RS485_enablePin, HIGH);  // always high as Master Writes data to Slave
 }
 
-void RS485_Test_Sent(int tosent)
-{
-  Serial1.println(tosent);   
-  Serial.println(tosent);
-  delay(100);
-}
-
-
-
 void RS485_updateVaribles()
 {
+  // Byte 0 Header (0x7E)
+  // Byte 1 targetTempExtruderMarlin Byte 01
+  // Byte 2 targetTempExtruderMarlin Byte 02
+  // Byte 3 pwmValuePartCoolingFanMarlin
+  // Byte 4 Checksum
+
   // 10 bit max value is 1023 (analogRead() returns a 10 bit value) // Divide our 10 bit value by 4, to obtain and effective 8 bit value
   // 9 bit max value is 511, // Divide our 9 bit value by 2, to obtain and effective 8 bit value
   // 8 bit max value is 255.
 
   buffer[0] = 0x7E; // Bufferheader: Verkündung Teensy Schaltschrank Update Variablen
-  buffer[1] = targetTempExtruderMarlin / 2; // Divide our 9 bit value by 2, to obtain and effective 8 bit value
-  buffer[2] = PwmValuePartCoolingFanMarlin;
-  buffer[3] = 0; // noch frei
+
+  if (targetTempExtruderMarlin <= 255)
+  {
+    buffer[1] = targetTempExtruderMarlin; // Wert von 0-255°C
+    buffer[2] = 0;
+  }
+  else if ((targetTempExtruderMarlin > 255) and (targetTempExtruderMarlin <= 510))
+  {
+    buffer[1] = 255;
+    buffer[2] = targetTempExtruderMarlin - 255; // Wert von 256-510°C
+  }
+
+  buffer[3] = PwmValuePartCoolingFanMarlin;
+
   // ### ToDo Bitshift, da schneller
 
   buffer[4] = checksum();
-  
+
   Serial1.write(buffer, bufferSize); // We send all bytes stored in the buffer
 
   Serial.println(buffer[1]);
@@ -65,13 +68,19 @@ void RS485_updateVaribles()
 
 void RS485_FarbmischerGibSchaufeln(byte SchaufelnMotor_L, byte SchaufelnMotor_R)
 {
-  buffer[0] = 0x7D; // Bufferheader: Aktion Farbmischer 
+  // Byte 0 Header (0x7D)
+  // Byte 1 Schaufeln Links
+  // Byte 2 Schaufeln Rechts
+  // Byte 3 frei
+  // Byte 4 Checksum
+
+  buffer[0] = 0x7D; // Bufferheader: Aktion Farbmischer
   buffer[1] = SchaufelnMotor_L;
   buffer[2] = SchaufelnMotor_R;
   buffer[3] = 0; // noch frei
 
   buffer[4] = checksum();
-  
+
   Serial1.write(buffer, bufferSize); // We send all bytes stored in the buffer
 
   delay(100);
