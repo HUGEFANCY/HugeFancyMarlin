@@ -33,6 +33,14 @@ void RS485_setup()
   digitalWrite(RS485_enablePin, HIGH);  // always high as Master Writes data to Slave
 }
 
+void RS485_Test_Sent(int tosent)
+{
+  Serial1.println(tosent);   
+  Serial.println(tosent);
+  delay(100);
+}
+
+
 
 void RS485_updateVaribles()
 {
@@ -49,6 +57,8 @@ void RS485_updateVaribles()
   buffer[4] = checksum();
   
   Serial1.write(buffer, bufferSize); // We send all bytes stored in the buffer
+
+  Serial.println(buffer[1]);
 
   delay(100);
 }

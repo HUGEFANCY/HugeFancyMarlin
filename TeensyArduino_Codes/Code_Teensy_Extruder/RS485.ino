@@ -45,16 +45,24 @@ void RS485_setup()
   digitalWrite(RS485_enablePin, LOW);  // always LOW to receive value from Master
 }
 
+void RS485_Test()
+{
+  while (Serial1.available())
+  {
+    int empfangen = Serial1.parseInt();
+    TM1637_test(empfangen);
+    Serial.println(empfangen);
+  }
+}
+
 void RS485_CheckIfUpdateAvalible()
 {
   if (Serial1.available() > 0) // Check if there is any data available to read
   {
-    uint8_t c = Serial.read(); // read only one byte at a time
+    uint8_t c = Serial1.read(); // read only one byte at a time
 
     if ((c == header_updateVariables) or (c == header_Farbmischer)) // Check if header is found
     {
-      uint8_t currentHeader = c; // speichere gefundenen Header
-
       // We must consider that we may sometimes receive unformatted data, and given the case we must ignore it and restart our reading code.
       // If it's the first time we find the header, we restart readCounter indicating that data is coming.
       // It's possible the header appears again as a data byte. That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
@@ -64,47 +72,49 @@ void RS485_CheckIfUpdateAvalible()
         readCounter = 0;
         firstTimeHeader = 1;
       }
+    }
+    buffer[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
+    readCounter++;
 
-      buffer[readCounter] = c; // store received byte, increase readCounter
-      readCounter++;
+    if (readCounter >= bufferSize) // prior overflow, we have to restart readCounter
+    {
+      readCounter = 0;
 
-      if (readCounter >= bufferSize) // prior overflow, we have to restart readCounter
+      if (isHeader) // if header was found
       {
-        readCounter = 0;
 
-        if (isHeader) // if header was found
+        uint8_t checksumValue = buffer[4]; // get checksum value from buffer's last value, according to defined protocol
+        if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
         {
-
-          uint8_t checksumValue = buffer[4]; // get checksum value from buffer's last value, according to defined protocol
-          if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
+          // Folgende Daten wurden erhalten:
+          
+          // header Update globale Variablen
+          if (buffer[0] == header_updateVariables)
           {
-            // Folgende Daten wurden erhalten:
 
-            // header Update globale Variablen
-            if (currentHeader == header_updateVariables)
-            {
-              // Update globale Variablen
-              targetTempExtruderMarlin = map(buffer[1], 0, 255, 0, 511); // gesendete 8 Bit Wert wiedeer auf die ursprünglichen 9 Bit zurückführen
-              PwmValuePartCoolingFanMarlin = buffer[2];
-              RS485_header_updateVariables_updatePreviousMillis = 0; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben
-            }
-
-            // header Farbmischer
-            if (currentHeader == header_Farbmischer)
-            {
-              byte Schaufeln_L = buffer[1];
-              byte Schaufeln_R = buffer[2];
-              Farbmischer_GibFarbe(Schaufeln_L, Schaufeln_R); // Motoren Farbmischer starten
-            }
+            Serial.println("Debug next");
+            // Update globale Variablen
+            targetTempExtruderMarlin = map(buffer[1], 0, 255, 0, 511); // gesendete 8 Bit Wert wiedeer auf die ursprünglichen 9 Bit zurückführen
+            PwmValuePartCoolingFanMarlin = buffer[2];
+            RS485_header_updateVariables_updatePreviousMillis = 0; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben
           }
-          // restart header flag
-          isHeader = 0;
-          firstTimeHeader = 0;
+
+          // header Farbmischer
+          if (buffer[0] == header_Farbmischer)
+          {
+            byte Schaufeln_L = buffer[1];
+            byte Schaufeln_R = buffer[2];
+            Farbmischer_GibFarbe(Schaufeln_L, Schaufeln_R); // Motoren Farbmischer starten
+          }
         }
+        // restart header flag
+        isHeader = 0;
+        firstTimeHeader = 0;
       }
     }
   }
 }
+
 
 
 // This a common checksum validation method. We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.

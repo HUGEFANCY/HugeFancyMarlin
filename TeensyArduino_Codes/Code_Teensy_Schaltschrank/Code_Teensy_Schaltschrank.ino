@@ -19,6 +19,8 @@ void loop()
   targetTempExtruderMarlin++;
   delay(1000);
 
+  //RS485_Test_Sent(targetTempExtruderMarlin);
+
   RS485_updateVaribles(); 
   // ### ToDo aufrufen im Intervall von 1 Sekunde oder immer wenn I2C neues verkündet
   // ### ToDo bzw. wenn lange nichts mehr von Marlin kommt ABBRUCH!!!!
