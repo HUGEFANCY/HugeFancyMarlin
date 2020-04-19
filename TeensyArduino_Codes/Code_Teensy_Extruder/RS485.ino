@@ -16,13 +16,11 @@
 const byte RS485_enablePin = 8;
 
 const uint8_t header_updateVariables = 0x7E; // Bufferheader: Verkündung Teensy Schaltschrank
-unsigned long RS485_header_updateVariables_updatePreviousMillis = 0;
 
 const uint8_t header_Farbmischer = 0x7D; // Bufferheader: Aktion Farbmischer
 
 const uint8_t bufferSize = 5;
 uint8_t buffer[bufferSize];
-
 uint8_t readCounter;
 uint8_t isHeader;
 uint8_t firstTimeHeader; // Flag that helps us restart counter when we first find header byte
@@ -39,16 +37,6 @@ void RS485_setup()
   pinMode(RS485_enablePin, OUTPUT);
   delay(10);
   digitalWrite(RS485_enablePin, LOW);  // always LOW to receive value from Master
-}
-
-void RS485_Test()
-{
-  while (Serial1.available())
-  {
-    int empfangen = Serial1.parseInt();
-    TM1637_test(empfangen);
-    Serial.println(empfangen);
-  }
 }
 
 void RS485_CheckIfUpdateAvalible()
@@ -96,14 +84,16 @@ void RS485_CheckIfUpdateAvalible()
             // Update globale Variablen
             targetTempExtruderMarlin = buffer[1] + buffer[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
             PwmValuePartCoolingFanMarlin = buffer[3];
-            RS485_header_updateVariables_updatePreviousMillis = 0; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben
+            RS485_updateVariables_LastUpdatePreviousMillis = currentMillis; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben
+
+            RS485_SentAnswerUpdateVariables(); // antworte als Master und sende Daten
           }
 
           // header Farbmischer
           if (buffer[0] == header_Farbmischer)
           {
             // Byte 0 Header (0x7D)
-            // Byte 1 Schaufeln Links 
+            // Byte 1 Schaufeln Links
             // Byte 2 Schaufeln Rechts
             // Byte 3 frei
             // Byte 4 Checksum
@@ -121,7 +111,50 @@ void RS485_CheckIfUpdateAvalible()
   }
 }
 
+void RS485_SentAnswerUpdateVariables()
+{
+  digitalWrite(RS485_enablePin, HIGH); // RS485 module enter mode master
+  
+  // Byte 0 Header (0x7C)
+  // Byte 1 RealTempExtruderForMarlin_01 Byte 01
+  // Byte 2 RealTempExtruderForMarlin_02 Byte 02
+  // Byte 3 leer
+  // Byte 4 Checksum
 
+  buffer[0] = 0x7C; // Bufferheader: Verkündung Teensy Schaltschrank Update Variablen
+  
+  if (RealTempExtruderForMarlin <= 255)
+  {
+    buffer[1] = RealTempExtruderForMarlin; // Wert von 0-255°C
+    buffer[2] = 0;
+  }
+  else if ((RealTempExtruderForMarlin > 255) and (RealTempExtruderForMarlin <= 510))
+  {
+    buffer[1] = 255;
+    buffer[2] = RealTempExtruderForMarlin - 255; // Wert von 256-510°C
+  }
+
+  buffer[3] = 0;
+
+  buffer[4] = checksum();
+
+  Serial1.write(buffer, bufferSize); // We send all bytes stored in the buffer
+
+  digitalWrite(RS485_enablePin, LOW);  // RS485 module enter mode slave
+}
+
+//We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
+uint8_t checksum() {
+  uint8_t result = 0;
+  uint16_t sum = 0;
+
+  for (uint8_t i = 0; i < (bufferSize - 1); i++) {
+    sum += buffer[i];
+  }
+  result = sum & 0xFF;
+
+  return result;
+}
 
 // This a common checksum validation method. We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
 uint8_t verifyChecksum(uint8_t originalResult)

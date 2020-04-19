@@ -34,8 +34,7 @@ TM1637 TM1637_pwmValuePartCoolingFan(TM1637_pwmValuePartCoolingFan_CLK, TM1637_p
 */
 
 // Update Intervall
-const int TM1637updateInterval = 333;
-unsigned long TM1637updatePreviousMillis = 0; 
+unsigned long TM1637_LastUpdatePreviousMillis = 0; 
 
 
 void TM1637_setup()
@@ -51,9 +50,11 @@ void TM1637_test(int test)
 
 void TM1637_update()
 {
-  if (currentMillis - TM1637updatePreviousMillis >= TM1637updateInterval) 
+  const int TM1637_updateInterval = 333;
+  
+  if (currentMillis - TM1637_LastUpdatePreviousMillis >= TM1637_updateInterval) 
   {
-    TM1637updatePreviousMillis = currentMillis; // save the last timeof the event
+    TM1637_LastUpdatePreviousMillis = currentMillis; // save the last time of the event
 
     TM1637_TempExtruderObenrum.dispNumber(targetTempExtruderMarlin); 
     // ### ToDo: hier später die momentane TempExtruderObenrum

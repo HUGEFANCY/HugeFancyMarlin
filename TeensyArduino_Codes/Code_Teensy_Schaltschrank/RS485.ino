@@ -1,6 +1,7 @@
 // RS485 long distance communication betweent Teensy Schaltschrank (Master) and Teensy Extruder (Slave) über UART with selfmade Communication Protocol
 // Anleitung RS485 UART: https://circuitdigest.com/microcontroller-projects/rs485-serial-communication-between-arduino-uno-and-arduino-nano
 // Anleitung designing a communication protocol: https://henryforceblog.wordpress.com/2015/03/12/designing-a-communication-protocol-using-arduinos-serial-library/
+// Modbus (not used) https://industruino.com/blog/our-news-1/post/modbus-rtu-master-and-slave-14
 
 // Master Devive
 
@@ -17,6 +18,13 @@ const byte RS485_enablePin = 8;
 
 const uint8_t bufferSize = 5; // Buffer communication protocoll
 uint8_t buffer[bufferSize];
+uint8_t readCounter;
+uint8_t isHeader;
+uint8_t firstTimeHeader; // Flag that helps us restart counter when we first find header byte
+
+
+const uint8_t header_AnswerUpdateVariables = 0x7C; // Bufferheader: Aktion Farbmischer
+
 
 void RS485_setup()
 {
@@ -28,7 +36,7 @@ void RS485_setup()
   digitalWrite(RS485_enablePin, HIGH);  // always high as Master Writes data to Slave
 }
 
-void RS485_updateVaribles()
+void RS485_SentUpdateVaribles()
 {
   // Byte 0 Header (0x7E)
   // Byte 1 targetTempExtruderMarlin Byte 01
@@ -61,12 +69,65 @@ void RS485_updateVaribles()
 
   Serial1.write(buffer, bufferSize); // We send all bytes stored in the buffer
 
-  Serial.println(buffer[1]);
-
-  delay(100);
+  RS485_WaitForAnswer();
 }
 
-void RS485_FarbmischerGibSchaufeln(byte SchaufelnMotor_L, byte SchaufelnMotor_R)
+
+
+void RS485_WaitForAnswer()
+{
+  digitalWrite(RS485_enablePin, LOW);  // turn RS485 module LOW as Slave device
+  delay(100);
+  
+  if (Serial1.available() > 0) // Check if there is any data available to read
+  {
+    uint8_t c = Serial1.read(); // read only one byte at a time
+
+    if (c == header_AnswerUpdateVariables) // Check if header is found
+    {
+      if (!firstTimeHeader)
+      {
+        isHeader = 1;
+        readCounter = 0;
+        firstTimeHeader = 1;
+      }
+    }
+    buffer[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
+    readCounter++;
+
+    if (readCounter >= bufferSize) // prior overflow, we have to restart readCounter
+    {
+      readCounter = 0;
+
+      if (isHeader) // if header was found
+      {
+        uint8_t checksumValue = buffer[4]; // get checksum value from buffer's last value, according to defined protocol
+        if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
+        {
+          // Folgende Antwort erhalten:
+
+          // Byte 0 Header (0x7C)
+          // Byte 1 RealTempExtruderForMarlin_01 Byte 01
+          // Byte 2 RealTempExtruderForMarlin_02 Byte 02
+          // Byte 3 leer
+          // Byte 4 Checksum
+
+          // Update globale Variablen
+          RealTempExtruderForMarlin = buffer[1] + buffer[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
+          // buffer[3] noch frei
+          RS485_AnswerUpdateVariables_LastUpdatePreviousMillis = currentMillis; // für Timeout falls wir lange nichts mehr vom Teensy Extruder gehört haben
+        }
+        // restart header flag
+        isHeader = 0;
+        firstTimeHeader = 0;
+      }
+    }
+  }
+  digitalWrite(RS485_enablePin, HIGH);  // always high as Master Writes data to Slave (normal mode Master)
+}
+
+
+void RS485_SentFarbmischerGibSchaufeln(byte SchaufelnMotor_L, byte SchaufelnMotor_R)
 {
   // Byte 0 Header (0x7D)
   // Byte 1 Schaufeln Links
@@ -86,8 +147,6 @@ void RS485_FarbmischerGibSchaufeln(byte SchaufelnMotor_L, byte SchaufelnMotor_R)
   delay(100);
 }
 
-
-
 //We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
 uint8_t checksum() {
   uint8_t result = 0;
@@ -99,4 +158,25 @@ uint8_t checksum() {
   result = sum & 0xFF;
 
   return result;
+}
+
+// This a common checksum validation method. We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
+uint8_t verifyChecksum(uint8_t originalResult)
+{
+  uint8_t result = 0;
+  uint16_t sum = 0;
+
+  for (uint8_t i = 0; i < (bufferSize - 1); i++)
+  {
+    sum += buffer[i];
+  }
+  result = sum & 0xFF;
+
+  if (originalResult == result)
+  {
+    return 1;
+  } else
+  {
+    return 0;
+  }
 }

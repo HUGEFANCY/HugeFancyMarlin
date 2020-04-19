@@ -1,8 +1,11 @@
 #include <Arduino.h>
 
+unsigned long currentMillis = 0;
+
 // Zielwerte aus Marlin
 int targetTempExtruderMarlin = 0; // max 9 Bit - 1 = 510°C
-byte PwmValuePartCoolingFanMarlin = 0; // 0 = off, 1 = on // muss 8 Bit, statt boolean sein
+int RealTempExtruderForMarlin = 0; // max 9 Bit - 1 = 510°C
+byte PwmValuePartCoolingFanMarlin = 0;
 
 void setup() 
 {
@@ -19,7 +22,7 @@ void loop()
   targetTempExtruderMarlin++;
   delay(1000);
 
-  RS485_updateVaribles(); 
-  // ### ToDo aufrufen im Intervall von 1 Sekunde oder immer wenn I2C neues verkündet
-  // ### ToDo bzw. wenn lange nichts mehr von Marlin kommt ABBRUCH!!!!
+  RS485_SentUpdateVaribles(); 
+  
+  watchdog_gameover();
 }
