@@ -26,7 +26,7 @@
 #include <Wire.h>
 
 // Print debug messages with M111 S2 (Uses 236 bytes of PROGMEM)
-//#define DEBUG_TWIBUS
+#define DEBUG_TWIBUS
 
 typedef void (*twiReceiveFunc_t)(int bytes);
 typedef void (*twiRequestFunc_t)();
