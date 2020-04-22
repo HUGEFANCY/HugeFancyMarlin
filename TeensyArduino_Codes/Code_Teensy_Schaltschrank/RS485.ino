@@ -26,17 +26,22 @@ uint8_t isHeader;
 uint8_t firstTimeHeader; // Flag that helps us restart counter when we first find header byte
 
 
+
+
 const uint8_t header_AnswerUpdateVariables = 0x7C; // Bufferheader: Aktion Farbmischer
+
+const uint8_t header_PostVonExtruder = 0x7A; // Bufferheader
 
 
 void RS485_setup()
 {
-  while (!Serial1);
-  Serial1.begin(9600); // Serial1 für RS485
+  while (!Serial2);
+  Serial2.begin(9600); // Serial1 für RS485
+  Serial2.transmitterEnable(RS485_enablePin);
 
-  pinMode(RS485_enablePin, OUTPUT);
+  //pinMode(RS485_enablePin, OUTPUT);
   delay(10);
-  digitalWrite(RS485_enablePin, HIGH);  // always high as Master Writes data to Slave
+  //digitalWrite(RS485_enablePin, HIGH);  // always high as Master Writes data to Slave
 }
 
 void RS485_SentUpdateVaribles()
@@ -70,31 +75,25 @@ void RS485_SentUpdateVaribles()
 
   buffer[4] = checksum();
 
-  Serial1.write(buffer, bufferSize); // We send all bytes stored in the buffer
+  Serial2.write(buffer, bufferSize); // We send all bytes stored in the buffer
 
   Serial.println("sent");
 
-  delay(10);
-
-
-  RS485_WaitForAnswer();
+  //RS485_WaitForAnswer();
 }
 
-
-
-void RS485_WaitForAnswer()
+void RS485_CheckIfUpdateAvalible()
 {
-  digitalWrite(RS485_enablePin, LOW);  // turn RS485 module LOW as Slave device
-  delay(100);
-
-  if (Serial1.available() > 0) // Check if there is any data available to read
+  if (Serial2.available() > 0) // Check if there is any data available to read
   {
-    
-    uint8_t c = Serial1.read(); // read only one byte at a time
+    uint8_t c = Serial2.read(); // read only one byte at a time
     Serial.println(c);
-    if (c == header_AnswerUpdateVariables) // Check if header is found
+
+    if (c == header_PostVonExtruder) // Check if header is found
     {
-      
+      // We must consider that we may sometimes receive unformatted data, and given the case we must ignore it and restart our reading code.
+      // If it's the first time we find the header, we restart readCounter indicating that data is coming.
+      // It's possible the header appears again as a data byte. That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
       if (!firstTimeHeader)
       {
         isHeader = 1;
@@ -111,23 +110,28 @@ void RS485_WaitForAnswer()
 
       if (isHeader) // if header was found
       {
-        Serial.println("empfangen!");
+
         uint8_t checksumValue = buffer[4]; // get checksum value from buffer's last value, according to defined protocol
         if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
         {
-          // Folgende Antwort erhalten:
+          // Folgende Daten wurden erhalten:
 
-          // Byte 0 Header (0x7C)
-          // Byte 1 RealTempExtruderForMarlin_01 Byte 01
-          // Byte 2 RealTempExtruderForMarlin_02 Byte 02
-          // Byte 3 leer
-          // Byte 4 Checksum
+          // header Update globale Variablen
 
-          // Update globale Variablen
-          RealTempExtruderForMarlin = buffer[1] + buffer[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
-          Serial.println(RealTempExtruderForMarlin);
-          // buffer[3] noch frei
-          RS485_AnswerUpdateVariables_LastUpdatePreviousMillis = currentMillis; // für Timeout falls wir lange nichts mehr vom Teensy Extruder gehört haben
+          // header Farbmischer
+          if (buffer[0] == header_PostVonExtruder)
+          {
+            // Byte 0 Header (0x7D)
+            // Byte 1 Schaufeln Links
+            // Byte 2 Schaufeln Rechts
+            // Byte 3 frei
+            // Byte 4 Checksum
+
+            //byte Schaufeln_L = buffer[1];
+            //byte Schaufeln_R = buffer[2];
+
+            Serial.println("Antwort");
+          }
         }
         // restart header flag
         isHeader = 0;
@@ -135,8 +139,6 @@ void RS485_WaitForAnswer()
       }
     }
   }
-  digitalWrite(RS485_enablePin, HIGH);  // always high as Master Writes data to Slave (normal mode Master)
-  delay(100);
 }
 
 
@@ -155,13 +157,13 @@ void RS485_SentFarbmischerGibSchaufeln(byte SchaufelnMotor_L, byte SchaufelnMoto
 
   buffer[4] = checksum();
 
-  Serial1.write(buffer, bufferSize); // We send all bytes stored in the buffer
+  Serial2.write(buffer, bufferSize); // We send all bytes stored in the buffer
 
   delay(100);
 }
 
 //We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
-uint8_t checksum() 
+uint8_t checksum()
 {
   uint8_t result = 0;
   uint16_t sum = 0;

@@ -22,6 +22,11 @@ const uint8_t header_Farbmischer = 0x7D; // Bufferheader: Aktion Farbmischer
 
 const uint8_t bufferSize = 5;
 uint8_t buffer[bufferSize];
+
+const uint8_t bufferSize2 = 5;
+uint8_t buffer2[bufferSize2];
+
+
 uint8_t readCounter;
 uint8_t isHeader;
 uint8_t firstTimeHeader; // Flag that helps us restart counter when we first find header byte
@@ -30,14 +35,15 @@ void RS485_setup()
 {
   while (!Serial1);
   Serial1.begin(9600); // Serial1 für RS485
+  Serial1.transmitterEnable(RS485_enablePin);
 
   readCounter = 0;
   isHeader = 0;
   firstTimeHeader = 0;
 
-  pinMode(RS485_enablePin, OUTPUT);
+  //pinMode(RS485_enablePin, OUTPUT);
   delay(10);
-  digitalWrite(RS485_enablePin, LOW);  // always LOW to receive value from Master
+  //digitalWrite(RS485_enablePin, LOW);  // always LOW to receive value from Master
 }
 
 void RS485_CheckIfUpdateAvalible()
@@ -89,10 +95,9 @@ void RS485_CheckIfUpdateAvalible()
             PwmValuePartCoolingFanMarlin = buffer[3];
             RS485_updateVariables_LastUpdatePreviousMillis = currentMillis; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben
 
-            if (targetTempExtruderMarlin_lasttime != targetTempExtruderMarlin)
-            {
-              RS485_SentAnswerUpdateVariables(); // antworte als Master und sende Daten
-            }
+
+            RS485_SentAnswerUpdateVariables(); // antworte als Master und sende Daten
+
           }
 
           // header Farbmischer
@@ -120,9 +125,7 @@ void RS485_CheckIfUpdateAvalible()
 void RS485_SentAnswerUpdateVariables()
 {
   Serial.println("Sende");
-  digitalWrite(RS485_enablePin, HIGH); // RS485 module enter mode master
-  delay(50);
-  
+
   // Byte 0 Header (0x7C)
   // Byte 1 RealTempExtruderForMarlin_01 Byte 01
   // Byte 2 RealTempExtruderForMarlin_02 Byte 02
@@ -130,17 +133,20 @@ void RS485_SentAnswerUpdateVariables()
   // Byte 4 Checksum
 
   buffer[0] = header_AnswerUpdateVariables; // Bufferheader: Verkündung Teensy Schaltschrank Update Variablen
-  
-  if (RealTempExtruderForMarlin <= 255)
-  {
+
+  /*
+    if (RealTempExtruderForMarlin <= 255)
+    {
     buffer[1] = RealTempExtruderForMarlin; // Wert von 0-255°C
     buffer[2] = 0;
-  }
-  else if ((RealTempExtruderForMarlin > 255) and (RealTempExtruderForMarlin <= 510))
-  {
+    }
+    else if ((RealTempExtruderForMarlin > 255) and (RealTempExtruderForMarlin <= 510))
+    {
     buffer[1] = 255;
     buffer[2] = RealTempExtruderForMarlin - 255; // Wert von 256-510°C
-  }
+    }
+
+  */
 
   buffer[3] = 0;
 
@@ -148,9 +154,9 @@ void RS485_SentAnswerUpdateVariables()
 
   Serial1.write(buffer, bufferSize); // We send all bytes stored in the buffer
   Serial.println(buffer[1]);
-  delay(10); // Zeit zum Senden geben
+  //delay(10); // Zeit zum Senden geben
 
-  digitalWrite(RS485_enablePin, LOW);  // RS485 module enter mode slave
+  //digitalWrite(RS485_enablePin, LOW);  // RS485 module enter mode slave
 }
 
 //We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
