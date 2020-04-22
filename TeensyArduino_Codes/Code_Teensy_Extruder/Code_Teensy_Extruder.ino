@@ -41,7 +41,7 @@ void loop()
 {
   currentMillis = millis(); // Für das periodische Aufrufen von diversen Funktionen ohne ein delay zu verursachen
 
-  RS485_CheckIfUpdateAvalible();
+  RS485_Extruder_CheckIfUpdateAvalible();
   //RS485_Test();
   TM1637_update();
   

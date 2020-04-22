@@ -25,27 +25,22 @@ void loop()
   // Sende jede Sekunde eine neue Ziffer // Testcode
 
 
-
+  // Aufruf ohne Blockieren alle RS485_Sendezeit ms
   const int RS485_Sendezeit = 1000;
   if (currentMillis - RS485_gesendet_LastUpdatePreviousMillis >= RS485_Sendezeit)
   {
     Serial.println("RS485_Sendezeit");
     RS485_gesendet_LastUpdatePreviousMillis = currentMillis;
-
-
     targetTempExtruderMarlin++;
     if (targetTempExtruderMarlin >= 510)
     {
       targetTempExtruderMarlin = 0;
     }
-
-
-    RS485_SentUpdateVaribles();
+    RS485_Schaltschrank_Sent_Statusupdate();
   }
-
-
-
-  RS485_CheckIfUpdateAvalible();
+  
+  
+  RS485_Schaltschrank_CheckIfUpdateAvalible();
 
   //watchdog_gameover();
 }
