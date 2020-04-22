@@ -26,7 +26,7 @@ const int M_nanotec_EN = 18; // Enable Pin
 Stepper M_nanotec(19, 20); // Step, Dir
 StepControl StepController_nanotec; // Controller, Stepping Mode
 
-const int microstepping_nanotec = 2; // TMC 2209 16 = Standard ohne Jumper
+const int microstepping_nanotec = 16; // TMC 2209 16 = Standard ohne Jumper
 const int Nanotec_MaxSpeed = 8000;
 const int Nanotec_Acceleration = 1000;
 

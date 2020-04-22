@@ -1,16 +1,19 @@
-CLOSED LOOP REGLER
 
+
+CLOSED LOOP REGLUNG
+
+# "Wackeln" der Reglung nachdem Postion erreicht wurde
 Motor drive parameter set - Position loop, proportional gain (closed loop)
-Index 3210 - geändert auf 0x1600
+Index 3210:01 - geändert auf 0x1600
 
-
+# Abgehackte Bewegung durch die Regelung des Closed Loop Modus
+Das Bit 7 im Objekt 3202h (Motor Drive Submode Select) auf "1" setzen. (Bits von rechts bei 0 beginnend zählen)
 
 
 
 MICROSTEPPING
 
 Clock Direction Multiplier
-Index 2057 - 0x4 (0x2 = Microstepping = 256, Hinweis: 0x512 = FullStep)
-
+setze Index 2057 auf 32 (32 = Microstepping = 16, Hinweis: 512 = FullStep) // Dezimalwert!!
 Clock Direction Divider
-Index 2058 - 0x1
+setze Index 2058 auf 0x1
