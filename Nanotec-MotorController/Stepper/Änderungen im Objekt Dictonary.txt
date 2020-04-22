@@ -1,3 +1,4 @@
+Schrittmotoren
 
 
 CLOSED LOOP REGLUNG
@@ -10,10 +11,9 @@ Index 3210:01 - geändert auf 0x1600
 Das Bit 7 im Objekt 3202h (Motor Drive Submode Select) auf "1" setzen. (Bits von rechts bei 0 beginnend zählen)
 
 
-
 MICROSTEPPING
 
-Clock Direction Multiplier
-setze Index 2057 auf 32 (32 = Microstepping = 16, Hinweis: 512 = FullStep) // Dezimalwert!!
+# Clock Direction Multiplier
+setze Index 2057 auf 32 (32 = 16er Microstepping, Hinweis: 512 = FullStep) // Dezimalwert!!
 Clock Direction Divider
 setze Index 2058 auf 0x1

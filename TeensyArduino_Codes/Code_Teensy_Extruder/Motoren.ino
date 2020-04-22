@@ -17,18 +17,22 @@ StepControl StepController_L; // Controller, Stepping Mode
   StepControl StepController_R; // Controller, Stepping Mode
 */
 
+const int motorsteps = 16; // 200 Schrittmotor, 16 Servo
+
+
 const int M_LR_microstepping = 16; // TMC 2209 16 = Standard ohne Jumper
 const int M_LR_MaxSpeed = 8000;
 const int M_LR_Acceleration = 1000;
 
 // Motor Nanotec (läuft an Rechts = F1)
-const int M_nanotec_EN = 18; // Enable Pin
-Stepper M_nanotec(19, 20); // Step, Dir
+const int M_nanotec_EN = 30; // Enable Pin
+Stepper M_nanotec(31, 32); // Step, Dir
 StepControl StepController_nanotec; // Controller, Stepping Mode
 
-const int microstepping_nanotec = 16; // TMC 2209 16 = Standard ohne Jumper
-const int Nanotec_MaxSpeed = 8000;
-const int Nanotec_Acceleration = 1000;
+const int microstepping_nanotec = 64; // Stepper Nanotec 16-fach
+const int gear_ratio = 40; // >0 entspricht Untersetzung
+const int Nanotec_MaxSpeed = 800; // Stepper Nanotec z.B. 800
+const int Nanotec_Acceleration = 500; // Stepper Nanotec z.B. 500
 
 const int Anzahl_Schaufeln = 8;
 
@@ -72,7 +76,7 @@ void Schrittmotor_L(int Umdrehungen, int Speed, int Acceleration)
   M_L.setMaxSpeed(Speed); // stp/s
   M_L.setAcceleration(Acceleration); // stp/s^2
 
-  M_L.setTargetRel(Umdrehungen * 200 * M_LR_microstepping); // 1600 = 1 REV with TMC2209
+  M_L.setTargetRel(Umdrehungen * gear_ratio * motorsteps * M_LR_microstepping); // 1600 = 1 REV with TMC2209
   StepController_L.move(M_L);
 
   M_L.setMaxSpeed(M_LR_MaxSpeed);         // stp/s
@@ -100,8 +104,8 @@ void Schrittmotor_L(int Umdrehungen, int Speed, int Acceleration)
   Schrittmotor_R_aktiv(true);
   M_R.setMaxSpeed(Speed); // stp/s
   M_R.setAcceleration(Acceleration); // stp/s^2
-
-  M_R.setTargetRel(Umdrehungen * 200 * M_LR_microstepping); // 1600 = 1 REV with TMC2209
+ 
+  M_R.setTargetRel(Umdrehungen * motorsteps * gear_ratio * M_LR_microstepping); // 1600 = 1 REV with TMC2209
   StepController_R.move(M_R);
 
   M_R.setMaxSpeed(M_LR_MaxSpeed); // stp/s
@@ -123,7 +127,7 @@ void Schrittmotor_nanotec_aktiv(bool value)
   else if (value == false)
   {
     digitalWrite(M_nanotec_EN, LOW); // INVENTIERT WEGEN NANOTEC!!!!!
-    delay(10);
+    delay(100);
   }
 }
 
@@ -133,7 +137,7 @@ void Schrittmotor_nanotec(int Umdrehungen, int Speed, int Acceleration)
   M_nanotec.setMaxSpeed(Speed); // stp/s
   M_nanotec.setAcceleration(Acceleration); // stp/s^2
 
-  M_nanotec.setTargetRel(Umdrehungen * 200 * microstepping_nanotec);
+  M_nanotec.setTargetRel(Umdrehungen * gear_ratio * motorsteps * microstepping_nanotec);
   StepController_nanotec.move(M_nanotec);
 
   Schrittmotor_nanotec_aktiv(false);

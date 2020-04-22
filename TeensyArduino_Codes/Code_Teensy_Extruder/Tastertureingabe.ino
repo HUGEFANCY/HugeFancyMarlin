@@ -15,7 +15,7 @@ boolean SerialTastatur_CheckKeys()
     {
       Serial.println("Motor Rechts");
       //Schrittmotor_R(1, 8000, 1000); // Umdrehungen, speed steps/s, acceleration mm/s^2
-      Schrittmotor_nanotec(1, 800, 500);
+      Schrittmotor_nanotec(1, 80*64, 50*64);
       return true;
     }
 
