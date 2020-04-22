@@ -1,0 +1,89 @@
+PIN: 0.00        E1_DIR_PIN                             protected
+.                Z2_DIR_PIN                             protected
+PIN: 0.01        E1_STEP_PIN                            protected
+.                Z2_STEP_PIN                            protected
+PIN: 0.02 (A 2)  <unused/unknown>   Analog in =   951   Input  = 0
+PIN: 0.03 (A 3)  <unused/unknown>   Analog in =   904   Input  = 0
+PIN: 0.04        <unused/unknown>                       Input  = 1
+PIN: 0.05        <unused/unknown>                       Input  = 1
+PIN: 0.06        <unused/unknown>                       Output = 1
+PIN: 0.07        <unused/unknown>                       Input  = 0
+PIN: 0.08        <unused/unknown>                       Input  = 1
+PIN: 0.09        <unused/unknown>                       Input  = 1
+PIN: 0.10        E1_ENABLE_PIN                          protected
+.                Z2_ENABLE_PIN                          protected
+PIN: 0.11        E0_DIR_PIN                             protected
+PIN: 0.15        DOGLCD_SCK                             Output = 0
+.                SCK_PIN                                Output = 0
+PIN: 0.16        LCD_SDSS                               Analog in =     0
+.                SDSS                                   Output = 1
+.                SS_PIN                                 Output = 1
+PIN: 0.17        MISO_PIN                               Analog in =     0
+PIN: 0.18        DOGLCD_MOSI                            Output = 0
+.                MOSI_PIN                               Output = 0
+PIN: 0.19        Y_STEP_PIN                             protected
+PIN: 0.20        Y_DIR_PIN                              protected
+PIN: 0.21        Z_ENABLE_PIN                           protected
+PIN: 0.22        Z_STEP_PIN                             protected
+PIN: 0.23 (A23)  <unused/unknown>   Analog in =  1023   Input  = 0
+PIN: 0.24 (A24)  <unused/unknown>   Analog in =  1023   Input  = 0
+PIN: 0.25 (A25)  <unused/unknown>   Analog in =  1023   Input  = 0
+PIN: 0.26 (A26)  <unused/unknown>   Analog in =   943   Input  = 0
+PIN: 0.27        <unused/unknown>                       Input  = 0
+PIN: 0.28        BTN_ENC                                Analog in =     0
+PIN: 0.29        <unused/unknown>                       Input  = 0
+PIN: 0.30        <unused/unknown>                       Input  = 0
+PIN: 1.00        <unused/unknown>                       Input  = 1
+PIN: 1.01        E1_CS_PIN                              Input  = 1
+PIN: 1.04        <unused/unknown>                       Input  = 1
+PIN: 1.08        E0_CS_PIN                              Input  = 1
+PIN: 1.09        <unused/unknown>                       Input  = 1
+PIN: 1.10        Z_CS_PIN                               Input  = 1
+PIN: 1.14        <unused/unknown>                       Input  = 1
+PIN: 1.15        Y_CS_PIN                               Input  = 1
+PIN: 1.16        <unused/unknown>                       Input  = 1
+PIN: 1.17        X_CS_PIN                               Input  = 1
+PIN: 1.18        DOGLCD_CS                              Output = 1
+.                LCD_PINS_ENABLE                        Analog in =     0
+PIN: 1.19        DOGLCD_A0                              Output = 1
+.                LCD_PINS_RS                            Analog in =     0
+PIN: 1.20        LCD_PINS_D4                            Output = 1
+PIN: 1.21        <unused/unknown>                       Output = 0
+PIN: 1.22        <unused/unknown>                       Input  = 0
+PIN: 1.23        <unused/unknown>                       Input  = 0
+PIN: 1.24        Z_MAX_PIN                              protected
+.                Z2_MIN_PIN                             protected
+PIN: 1.25        Z_MIN_PIN                              protected
+.                Z_DIAG_PIN                             protected
+.                Z_STOP_PIN                             protected
+PIN: 1.26        E1_DIAG_PIN                            Input  = 1
+PIN: 1.27        Y_MIN_PIN                              protected
+.                Y_DIAG_PIN                             protected
+.                Y_STOP_PIN                             protected
+PIN: 1.28        FIL_RUNOUT_PIN                         protected
+.                X_MAX_PIN                              protected
+.                E0_DIAG_PIN                            protected
+PIN: 1.29        X_MIN_PIN                              protected
+.                X_DIAG_PIN                             protected
+.                X_STOP_PIN                             protected
+PIN: 1.30 (A62)  BEEPER_PIN                             Output = 0
+PIN: 1.31 (A63)  SD_DETECT_PIN                          Input  = 0
+PIN: 2.00        SERVO0_PIN                             Input  = 1
+PIN: 2.01        X_ENABLE_PIN                           protected
+PIN: 2.02        X_STEP_PIN                             protected
+PIN: 2.03        FAN_PIN                                protected
+PIN: 2.04        E0_AUTO_FAN_PIN                        protected
+.                FAN1_PIN                               protected
+PIN: 2.05        HEATER_BED_PIN                         protected
+PIN: 2.06        X_DIR_PIN                              protected
+PIN: 2.07        HEATER_0_PIN                           protected
+PIN: 2.08        Y_ENABLE_PIN                           protected
+PIN: 2.09        <unused/unknown>                       Input  = 0
+PIN: 2.10        <unused/unknown>                       Input  = 1
+PIN: 2.11        Z_DIR_PIN                              protected
+PIN: 2.12        E0_ENABLE_PIN                          protected
+PIN: 2.13        E0_STEP_PIN                            protected
+PIN: 3.25        BTN_EN2                                Analog in =     0
+PIN: 3.26        BTN_EN1                                Input  = 1
+PIN: 4.28        <unused/unknown>                       Input  = 1
+PIN: 4.29        <unused/unknown>                       Input  = 1
