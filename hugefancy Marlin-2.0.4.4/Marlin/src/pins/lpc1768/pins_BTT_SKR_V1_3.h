@@ -144,7 +144,7 @@
   #endif
 #endif
 
-#if HAS_TMC220x
+#if HAS_TMC220x // Robin: DOnt enable this because the pins are used for something else! 
   /**
    * TMC2208/TMC2209 stepper drivers
    *
@@ -172,14 +172,14 @@
   #define Y_SERIAL_TX_PIN  P1_16
   #define Y_SERIAL_RX_PIN  P1_15
 
-  #define Z_SERIAL_TX_PIN  P1_14
+  #define Z_SERIAL_TX_PIN  P1_14 
   #define Z_SERIAL_RX_PIN  P1_10
 
   #define E0_SERIAL_TX_PIN P1_09
   #define E0_SERIAL_RX_PIN P1_08
 
-  #define E1_SERIAL_TX_PIN P1_04
-  #define E1_SERIAL_RX_PIN P1_01
+  //#define E1_SERIAL_TX_PIN P1_04 // Robin: DOnt enable this because the pins are used for something else! 
+  //#define E1_SERIAL_RX_PIN P1_01 // Robin: DOnt enable this because the pins are used for something else! 
 
   // Reduce baud rate to improve software serial reliability
   #define TMC_BAUD_RATE 19200
@@ -367,6 +367,19 @@
  *   P0_27  (57) (Open collector)
  *   P0_28  (58) (Open collector)
  */
+
+//
+// Misc. Functions
+//
+
+/**
+ * I2C pin assignment
+ * P0.0 SDA1 was previously used for E1DIR
+ * P0.1 SCL1 was previously used for E1STP
+ */
+
+#define I2C_SCL_PIN        P0_01
+#define I2C_SDA_PIN        P0_00
 
 // Include common SKR pins
 #include "pins_BTT_SKR_common.h"
