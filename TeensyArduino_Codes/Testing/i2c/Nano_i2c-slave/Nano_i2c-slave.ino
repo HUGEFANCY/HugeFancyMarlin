@@ -25,6 +25,7 @@ void receiveEvent(int countToRead) {
 }
 
 void requestEvent() {
+  Serial.println("Request event");
   digitalWrite(LED_BUILTIN, HIGH);
   byte response[ANSWERSIZE];
   for (byte i=0;i<ANSWERSIZE;i++) {

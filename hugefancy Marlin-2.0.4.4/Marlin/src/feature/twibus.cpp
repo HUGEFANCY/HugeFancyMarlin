@@ -87,7 +87,7 @@ void TWIBus::send() {
   #if ENABLED(DEBUG_TWIBUS)
     debug(PSTR("Transmission Ended"), addr);
   #endif
-  
+
   reset();
 }
 
@@ -101,6 +101,9 @@ void TWIBus::echoprefix(uint8_t bytes, const char prefix[], uint8_t adr) {
 // static
 void TWIBus::echodata(uint8_t bytes, const char prefix[], uint8_t adr) {
   echoprefix(bytes, prefix, adr);
+  #if ENABLED(DEBUG_TWIBUS)
+    debug(PSTR("reading echodata"), bytes);
+  #endif
   while (bytes-- && Wire.available()) SERIAL_CHAR(Wire.read());
   SERIAL_EOL();
 }
@@ -119,7 +122,7 @@ bool TWIBus::request(const uint8_t bytes) {
   #endif
 
   // requestFrom() is a blocking function
-  if (Wire.requestFrom(addr, bytes) == 0) {
+  if (Wire.requestFrom(I2C_ADDRESS(addr), bytes) == 0) {
     #if ENABLED(DEBUG_TWIBUS)
       debug("request fail", addr);
     #endif
