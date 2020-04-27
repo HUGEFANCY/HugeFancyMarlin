@@ -1037,7 +1037,7 @@ void Temperature::manage_heater() {
   #endif
 
   if (!raw_temps_ready) return;
-
+  //ROBIN-- this one updates the temperature in the loop 
   updateTemperaturesFromRawValues(); // also resets the watchdog
 
   #if ENABLED(HEATER_0_USES_MAX6675)
@@ -1587,7 +1587,17 @@ void Temperature::updateTemperaturesFromRawValues() {
     temp_hotend[1].raw = READ_MAX6675(1);
   #endif
   #if HOTENDS
-    HOTEND_LOOP() temp_hotend[e].celsius = analog_to_celsius_hotend(temp_hotend[e].raw, e);
+    //ROBIN-- hotend loop only loops through all available hotends 
+    //ROBIN-- use this position to request data from i2c slave 
+    //HOTEND_LOOP() temp_hotend[e].celsius = analog_to_celsius_hotend(temp_hotend[e].raw, e);
+    /**
+     */ //ROBIN testing a function to request from i2c 
+    String i2c_temp_reaponse = "";
+    i2c.address((uint8_t)REMOTE_I2C_ADDRESS); 
+    HOTEND_LOOP() temp_hotend[e].celsius = 
+      
+      
+     
   #endif
   #if HAS_HEATED_BED
     temp_bed.celsius = analog_to_celsius_bed(temp_bed.raw);
@@ -1614,7 +1624,6 @@ void Temperature::updateTemperaturesFromRawValues() {
 #if MAX6675_SEPARATE_SPI
   SPIclass<MAX6675_DO_PIN, MOSI_PIN, MAX6675_SCK_PIN> max6675_spi;
 #endif
-
 // Init fans according to whether they're native PWM or Software PWM
 #ifdef ALFAWISE_UX0
   #define _INIT_SOFT_FAN(P) OUT_WRITE_OD(P, FAN_INVERTING ? LOW : HIGH)

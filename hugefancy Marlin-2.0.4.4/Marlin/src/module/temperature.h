@@ -595,6 +595,7 @@ class Temperature {
     //inline so that there is no performance decrease.
     //deg=degreeCelsius
 
+    //ROBIN -- this returns the current hotend temperature
     FORCE_INLINE static float degHotend(const uint8_t E_NAME) {
       return (0
         #if HOTENDS
@@ -613,6 +614,7 @@ class Temperature {
       }
     #endif
 
+    //ROBIN-- this returns current hotend target temp 
     FORCE_INLINE static int16_t degTargetHotend(const uint8_t E_NAME) {
       return (0
         #if HOTENDS
