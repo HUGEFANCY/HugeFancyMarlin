@@ -33,7 +33,7 @@
  * - LCD controller
  * - Extra features
  *
- * Advanced settings can be found in Configuration_adv.h
+ * Advanced settings can be found in Configuration_adv.h __
  *
  */
 #define CONFIGURATION_H_VERSION 020004
