@@ -1594,6 +1594,7 @@ void Temperature::updateTemperaturesFromRawValues() {
      */ //ROBIN testing a function to request from i2c 
     String i2c_temp_reaponse = "";
     i2c.address((uint8_t)REMOTE_I2C_ADDRESS); 
+    i2c.relay(4); //request 4 bytes from i2c slave
     HOTEND_LOOP() temp_hotend[e].celsius = 
       
       
