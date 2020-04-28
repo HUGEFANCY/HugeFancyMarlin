@@ -1068,7 +1068,7 @@ void Temperature::manage_heater() {
         // Check for thermal runaway
         thermal_runaway_protection(tr_state_machine[e], temp_hotend[e].celsius, temp_hotend[e].target, (heater_ind_t)e, THERMAL_PROTECTION_PERIOD, THERMAL_PROTECTION_HYSTERESIS);
       #endif
-
+      //ROBIN-- is this the actual setting of the pwm ??? 
       temp_hotend[e].soft_pwm_amount = (temp_hotend[e].celsius > temp_range[e].mintemp || is_preheating(e)) && temp_hotend[e].celsius < temp_range[e].maxtemp ? (int)get_pid_output_hotend(e) >> 1 : 0;
 
       #if WATCH_HOTENDS
@@ -1687,6 +1687,7 @@ void Temperature::init() {
     #ifdef ALFAWISE_UX0
       OUT_WRITE_OD(HEATER_0_PIN, HEATER_0_INVERTING);
     #else
+      //ROBIN--This simply sets the initial state of the heater pin (false by default)
       OUT_WRITE(HEATER_0_PIN, HEATER_0_INVERTING);
     #endif
   #endif
