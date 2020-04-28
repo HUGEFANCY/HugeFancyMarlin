@@ -322,6 +322,10 @@ volatile bool Temperature::raw_temps_ready = false;
   millis_t Temperature::next_auto_fan_check_ms = 0;
 #endif
 
+#if ENABLED(I2C_TEMPCONTROL)
+  millis_t Temperature::next_i2c_temp_send_ms = 0;
+#endif
+
 #if ENABLED(FAN_SOFT_PWM)
   uint8_t Temperature::soft_pwm_amount_fan[FAN_COUNT],
           Temperature::soft_pwm_count_fan[FAN_COUNT];
@@ -1022,7 +1026,6 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
  *  - Update the heated bed PID output value
  */
 void Temperature::manage_heater() {
-
   #if EARLY_WATCHDOG
     // If thermal manager is still not running, make sure to at least reset the watchdog!
     if (!inited) return watchdog_refresh();
@@ -1037,8 +1040,49 @@ void Temperature::manage_heater() {
   #endif
 
   if (!raw_temps_ready) return;
+
+  millis_t ms = millis();
+
   //ROBIN-- this one updates the temperature in the loop 
-  updateTemperaturesFromRawValues(); // also resets the watchdog
+  //updateTemperaturesFromRawValues(); // also resets the watchdog
+  
+  #if ENABLED(I2C_TEMPCONTROL)
+    /* Pseudocode
+    *if (current_time <= old_time + N) 
+    *   request current temperature 
+    *       request i2c 4 bytes
+    *       temp = read Wire 
+    *       temp_hotend[e].celsius = temp
+    *   old_time = now
+    */
+    if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms)){
+      SERIAL_ECHOPGM("i2c temp method ");
+      next_i2c_temp_send_ms = ms + I2C_SEND_INTERVALL;
+      //if (ms >= next_i2c_temp_send_ms)
+      //request current temp via I2C
+      i2c.address(I2C_REMOTE_ADDRESS);
+      uint8_t req_bytes = 4;
+      for (uint8_t tries=5; tries--;) {
+        if (i2c.request(req_bytes)){             // Request req_bytes number of bytes
+          char answer[req_bytes];                        // a buffer to store the reply
+          i2c.capture(&answer[req_bytes], req_bytes);    // Get the reply  
+          
+          SERIAL_ECHOLN("answer:");
+          for( unsigned int a = 02; a < sizeof(answer)/sizeof(answer[0]); a = a + 1 ){
+            SERIAL_ECHOLN(answer[a]);
+          }
+          SERIAL_ECHOLN(" ");
+          break;
+          
+        }
+      }
+    } 
+    updateTemperaturesFromRawValues(); // also resets the watchdog
+  
+
+   #else
+    updateTemperaturesFromRawValues(); // also resets the watchdog
+  #endif
 
   #if ENABLED(HEATER_0_USES_MAX6675)
     if (temp_hotend[0].celsius > _MIN(HEATER_0_MAXTEMP, HEATER_0_MAX6675_TMAX - 1.0)) max_temp_error(H_E0);
@@ -1050,7 +1094,7 @@ void Temperature::manage_heater() {
     if (temp_hotend[1].celsius < _MAX(HEATER_1_MINTEMP, HEATER_1_MAX6675_TMIN + .01)) min_temp_error(H_E1);
   #endif
 
-  millis_t ms = millis();
+  
 
   #if HOTENDS
 
@@ -1589,14 +1633,14 @@ void Temperature::updateTemperaturesFromRawValues() {
   #if HOTENDS
     //ROBIN-- hotend loop only loops through all available hotends 
     //ROBIN-- use this position to request data from i2c slave 
-    //HOTEND_LOOP() temp_hotend[e].celsius = analog_to_celsius_hotend(temp_hotend[e].raw, e);
+    HOTEND_LOOP() temp_hotend[e].celsius = analog_to_celsius_hotend(temp_hotend[e].raw, e);
     /**
-     */ //ROBIN testing a function to request from i2c 
+    //ROBIN testing a function to request from i2c 
     String i2c_temp_reaponse = "";
-    i2c.address((uint8_t)REMOTE_I2C_ADDRESS); 
+    i2c.address((uint8_t)I2C_REMOTE_ADDRESS); 
     i2c.relay(4); //request 4 bytes from i2c slave
     HOTEND_LOOP() temp_hotend[e].celsius = 
-      
+     */  
       
      
   #endif

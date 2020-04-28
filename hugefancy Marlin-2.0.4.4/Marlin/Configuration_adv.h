@@ -2580,7 +2580,9 @@
 #define EXPERIMENTAL_I2CBUS
 #if ENABLED(EXPERIMENTAL_I2CBUS)
   #define I2C_SLAVE_ADDRESS  0  // Set a value from 8 to 127 to act as a slave
-  #define REMOTE_I2C_ADDRESS 9 // this is the address of the i2c slave (a teensy in our case)
+  #define I2C_REMOTE_ADDRESS 9 //ROBIN-- this is the address of the i2c slave (a teensy in our case)
+  #define I2C_TEMPCONTROL
+  #define I2C_SEND_INTERVALL 5000
 #endif
 
 // @section extras
