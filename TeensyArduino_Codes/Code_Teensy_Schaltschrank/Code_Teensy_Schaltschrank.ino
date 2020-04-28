@@ -14,6 +14,7 @@ void setup()
   Serial.begin(9600); // serieller Monitor
 
   RS485_setup();
+  nrf24l01_setup();
 }
 
 void loop()
@@ -29,7 +30,7 @@ void loop()
   const int RS485_Sendezeit = 1000;
   if (currentMillis - RS485_gesendet_LastUpdatePreviousMillis >= RS485_Sendezeit)
   {
-    Serial.println("RS485_Sendezeit");
+    //Serial.println("RS485_Sendezeit");
     RS485_gesendet_LastUpdatePreviousMillis = currentMillis;
     targetTempExtruderMarlin++;
     if (targetTempExtruderMarlin >= 510)
@@ -37,6 +38,7 @@ void loop()
       targetTempExtruderMarlin = 0;
     }
     RS485_Schaltschrank_Sent_Statusupdate();
+    nrf24l01_loop();
   }
   
   
