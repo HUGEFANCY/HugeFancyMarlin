@@ -1056,22 +1056,24 @@ void Temperature::manage_heater() {
     *   old_time = now
     */
     if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms)){
-      SERIAL_ECHOPGM("i2c temp method ");
+      SERIAL_ECHOLN("i2c temp method ");
       next_i2c_temp_send_ms = ms + I2C_SEND_INTERVALL;
-      //if (ms >= next_i2c_temp_send_ms)
-      //request current temp via I2C
       i2c.address(I2C_REMOTE_ADDRESS);
-      uint8_t req_bytes = 4;
+      int req_bytes = 3;
       for (uint8_t tries=5; tries--;) {
-        if (i2c.request(req_bytes)){             // Request req_bytes number of bytes
-          char answer[req_bytes];                        // a buffer to store the reply
-          i2c.capture(&answer[req_bytes], req_bytes);    // Get the reply  
+        if (i2c.request(req_bytes)){              // Request req_bytes number of bytes
+          char answer[req_bytes]={};              // a buffer to store the reply
+          answer[sizeof(answer)] = 0;             //null termination of array
+          i2c.capture(&answer[0], req_bytes);    // Get the reply  
           
           SERIAL_ECHOLN("answer:");
-          for( unsigned int a = 02; a < sizeof(answer)/sizeof(answer[0]); a = a + 1 ){
-            SERIAL_ECHOLN(answer[a]);
-          }
-          SERIAL_ECHOLN(" ");
+          SERIAL_ECHOLN(answer);
+          SERIAL_ECHOLNPAIR("size of answer:",sizeof(answer));
+          //SERIAL_ECHOLN(answer[]);
+           for( unsigned int a = 0; a < (sizeof(answer)/sizeof(answer[0])+1); a = a + 1 ){
+             SERIAL_ECHOLN(answer[a]);   //Print reply line for line 
+           }
+          SERIAL_ECHOLN("----------");
           break;
           
         }

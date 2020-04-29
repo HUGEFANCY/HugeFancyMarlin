@@ -3,6 +3,9 @@
 #define ANSWERSIZE 3
 
 String answer = "PAM";
+String answer2 = "PAM1";
+String answer3 = "123";
+int iter = 0;
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -26,15 +29,52 @@ void receiveEvent(int countToRead) {
 
 void requestEvent() {
   Serial.println("Request event");
-  digitalWrite(LED_BUILTIN, HIGH);
-  byte response[ANSWERSIZE];
-  for (byte i=0;i<ANSWERSIZE;i++) {
-    response[i] = (byte)answer.charAt(i);
+  if(iter==0){
+    Serial.println("iter = 0");
+    digitalWrite(LED_BUILTIN, HIGH);
+    byte response[ANSWERSIZE];
+    for (byte i=0;i<ANSWERSIZE;i++) {
+      response[i] = (byte)answer.charAt(i);
+    }
+    Wire.write(response,sizeof(response));
+    Serial.println("----");
+    //delay(1000);                       // wait for a second
+    digitalWrite(LED_BUILTIN, LOW);
+    
   }
-  Wire.write(response,sizeof(response));
-  Serial.println("Request event");
-  delay(1000);                       // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);
+  else if(iter==1){
+    Serial.println("iter = 1");
+    digitalWrite(LED_BUILTIN, HIGH);
+    byte response[ANSWERSIZE];
+    for (byte i=0;i<ANSWERSIZE;i++) {
+      response[i] = (byte)answer2.charAt(i);
+    }
+    Wire.write(response,sizeof(response));
+    Serial.println("----");
+    //delay(1000);                       // wait for a second
+    digitalWrite(LED_BUILTIN, LOW);
+    
+  }
+  else if(iter==2){
+    Serial.println("iter = 2");
+    digitalWrite(LED_BUILTIN, HIGH);
+    byte response[ANSWERSIZE];
+    for (byte i=0;i<ANSWERSIZE;i++) {
+      response[i] = (byte)answer3.charAt(i);
+    }
+    Wire.write(response,sizeof(response));
+    Serial.println("----");
+    //delay(1000);                       // wait for a second
+    digitalWrite(LED_BUILTIN, LOW);
+    
+  }
+  else{ iter =0;}
+  if (iter == 2 ){
+    iter = 0;
+  }
+  else{
+    iter++;
+  }
 }
 
 void loop() {

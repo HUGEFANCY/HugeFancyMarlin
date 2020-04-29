@@ -173,6 +173,15 @@ class TWIBus {
     uint8_t capture(char *dst, const uint8_t bytes);
 
     /**
+     * @brief Capture data from the bus into the buffer.
+     * @details Capture data after a request has succeeded.
+     *
+     * @param bytes the number of bytes to request
+     * @return the string captured to the buffer
+     */
+    char capture_char(int iter, int bytes);
+
+    /**
      * @brief Flush the i2c bus.
      * @details Get all bytes on the bus and throw them away.
      */

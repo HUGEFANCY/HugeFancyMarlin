@@ -144,14 +144,28 @@ void TWIBus::relay(const uint8_t bytes) {
 uint8_t TWIBus::capture(char *dst, const uint8_t bytes) {
   reset();
   uint8_t count = 0;
-  while (count < bytes && Wire.available())
-    dst[count++] = Wire.read();
-
+  while (count < bytes && Wire.available()){
+    dst[count] = Wire.read();
+    count++;
+  }
   #if ENABLED(DEBUG_TWIBUS)
     debug(PSTR("capture"), count);
   #endif
 
   return count;
+}
+
+//ROBIN-- the following doesnt work!!! 
+char TWIBus::capture_char(int iter, int bytes) {
+  char a;
+  if (iter < bytes && Wire.available()){
+    a = Wire.read();
+  }
+
+  #if ENABLED(DEBUG_TWIBUS)
+    debug(PSTR("captured char: "), a);
+  #endif
+  return a;
 }
 
 // static
