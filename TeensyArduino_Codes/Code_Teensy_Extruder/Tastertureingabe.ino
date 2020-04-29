@@ -38,12 +38,24 @@ boolean SerialTastatur_CheckKeys()
       return true;
     }
 
-    if (ch == '4') // Tastaturanschlag "-"
+    if (ch == 'r') // Tastaturanschlag "-"
     {
       Serial.println("1");
-      relay_clickCluck();
+      Relays_clickCluck();
+    }
+
+    if (ch == 'w') // Tastaturanschlag "-"
+    {
+      RelayWatercooling_SetStatus(true);
 
     }
+
+    if (ch == 's') // Tastaturanschlag "-"
+    {
+      RelayWatercooling_SetStatus(false);
+
+    }
+
   }
 
 
