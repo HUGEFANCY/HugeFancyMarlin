@@ -15,6 +15,7 @@ void setup()
 
   RS485_setup();
   nrf24l01_setup();
+  RGB_setup();
 }
 
 void loop()

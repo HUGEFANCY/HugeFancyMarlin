@@ -32,6 +32,7 @@ void setup()
   RS485_setup();
   TM1637_setup();
   Motoren_setup();
+  RGB_setup();
 
   
   Serial.println("Setup fertig");

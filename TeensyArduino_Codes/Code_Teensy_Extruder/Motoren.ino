@@ -6,8 +6,8 @@
 // PINOUT
 
 // Motor Links = F2
-const int M_L_EN = 15; // Enable Pin //15
-Stepper M_L(16, 17); // Step, Dir // 16,17
+const int M_L_EN = 29; // Enable Pin //15
+Stepper M_L(27, 28); // Step, Dir // 16,17
 StepControl StepController_L; // Controller, Stepping Mode
 
 /*
