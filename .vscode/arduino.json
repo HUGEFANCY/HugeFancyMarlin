@@ -1,6 +1,6 @@
 {
     "board": "arduino:avr:nano",
     "configuration": "cpu=atmega328old",
-    "port": "/dev/tty.usbserial-1420",
-    "sketch": "TeensyArduino_Codes/Testing/i2c/Nano_i2c-master/Nano_i2c-master.ino"
+    "port": "/dev/tty.usbserial-1410",
+    "sketch": "TeensyArduino_Codes/Testing/i2c/Nano_i2c-slave/Nano_i2c-slave.ino"
 }

@@ -2,9 +2,9 @@
 
 #define ANSWERSIZE 3
 
-String answer = "PAM";
-String answer2 = "PAM1";
-String answer3 = "123";
+String answer = "106";
+String answer2 = "130";
+String answer3 = "112";
 int iter = 0;
 
 void setup() {
