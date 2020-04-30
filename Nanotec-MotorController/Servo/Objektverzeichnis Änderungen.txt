@@ -1,0 +1,11 @@
+Servomotor
+
+Motor drive parameter set (closed loop) 
+- Position loop, proportional gain 3210:01 auf 20000 (dezimal)
+- Position loop, integral gain 3210:02 auf 15 (dezimal)
+- Velocity loop, integral gain 3210:02 auf 20000 (dezimal)
+
+Clock Direction Multiplier
+setze Index 2057 auf 8 (8 = 64er Microstepping, Hinweis: 512 = FullStep) // Dezimalwert!!
+Clock Direction Divider
+setze Index 2058 auf 0x1

@@ -16,7 +16,7 @@
 
 #include <Adafruit_MAX31865.h>
 
-// Use software SPI: CS, DI, DO, CLK
+// Use software SPI: 17-CS, 16-DI, 15-DO, 14-CLK
 Adafruit_MAX31865 thermo = Adafruit_MAX31865(17, 16, 15, 14);
 // use hardware SPI, just pass in the CS pin
 //Adafruit_MAX31865 thermo = Adafruit_MAX31865(10);

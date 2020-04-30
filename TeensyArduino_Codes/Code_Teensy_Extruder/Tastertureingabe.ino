@@ -14,8 +14,8 @@ boolean SerialTastatur_CheckKeys()
     if (ch == '2') // Tastaturanschlag "2"
     {
       Serial.println("Motor Rechts");
-      //Schrittmotor_R(1, 8000, 1000); // Umdrehungen, speed steps/s, acceleration mm/s^2
-      Schrittmotor_nanotec(1, 50, 100);
+      Schrittmotor_R(1, 8000, 1000); // Umdrehungen, speed steps/s, acceleration mm/s^2
+      // Schrittmotor_nanotec(1, 80 * 64, 50 * 64);
       return true;
     }
 
@@ -24,8 +24,8 @@ boolean SerialTastatur_CheckKeys()
     {
       Serial.println("+");
       Schrittmotor_L_aktiv(true);
-      //Schrittmotor_R_aktiv(true);
-      Schrittmotor_nanotec_aktiv(true);
+      Schrittmotor_R_aktiv(true);
+      // Schrittmotor_nanotec_aktiv(true);
       return true;
     }
 
@@ -33,15 +33,30 @@ boolean SerialTastatur_CheckKeys()
     {
       Serial.println("-");
       Schrittmotor_L_aktiv(false);
-      //Schrittmotor_R_aktiv(false);
-      Schrittmotor_nanotec_aktiv(false);
+      Schrittmotor_R_aktiv(false);
+      // Schrittmotor_nanotec_aktiv(false);
       return true;
     }
+
+    if (ch == 'r') // Tastaturanschlag "-"
+    {
+      Serial.println("1");
+      Relays_clickCluck();
+    }
+
+    if (ch == 'w') // Tastaturanschlag "-"
+    {
+      RelayWatercooling_SetStatus(true);
+
+    }
+
+    if (ch == 's') // Tastaturanschlag "-"
+    {
+      RelayWatercooling_SetStatus(false);
+
+    }
+
   }
-
-
-
-
 
 
   return false;

@@ -1,18 +1,20 @@
 #include <Arduino.h>
 
+#include <Metro.h> // Include the Metro library // https://www.pjrc.com/teensy/td_libs_Metro.html
+
 unsigned long currentMillis = 0;
 bool once = true;
 
 // Zielwerte aus Marlin
 int targetTempExtruderMarlin = 0; // max 9 Bit = 511°C
-int RealTempExtruderForMarlin = 33; // max 9 Bit = 511°C
+int CombinedTempertureExtruderForMarlin = 33; // max 9 Bit = 511°C
 byte PwmValuePartCoolingFanMarlin = 0;
 
 
 
 // Extruder
-int TempExtruderObenrum = 0; // max 9 Bit = 511°C
-int TempExtruderUntenrum = 0; // max 9 Bit = 511°C
+int RealTemperatureZone_1 = 0; // max 9 Bit = 511°C
+int RealTemperatureZone_2 = 0; // max 9 Bit = 511°C
 bool LuefterObenrum = false;
 bool LuefterObenUntenrum = false;
 
@@ -32,6 +34,9 @@ void setup()
   RS485_setup();
   TM1637_setup();
   Motoren_setup();
+  PT100_MAX31865_setup();
+  Relays_setup();
+  //RGB_setup();
 
   
   Serial.println("Setup fertig");
@@ -42,10 +47,10 @@ void loop()
   currentMillis = millis(); // Für das periodische Aufrufen von diversen Funktionen ohne ein delay zu verursachen
 
   RS485_Extruder_CheckIfUpdateAvalible();
-  //RS485_Test();
+  PT100_MAX31865_loop();
   TM1637_update();
   
-  //watchdog_gameover();
+  watchdog_gameover();
 
   // Hier Platz für Einwegcode
   if (once == true)
