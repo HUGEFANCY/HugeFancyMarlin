@@ -17,22 +17,22 @@ void setup() {
 }
 
 void receiveEvent(int countToRead) {
-  digitalWrite(LED_BUILTIN, HIGH);
+  uint16_t sum = 0;
   while (0 < Wire.available()) {
     byte x = Wire.read();
-    Serial.println(x);
+    sum += x & 0xFF;
   }
-  Serial.println("Receive event");
-  digitalWrite(LED_BUILTIN, LOW);
+  Serial.print("Receive event! value:");
+  Serial.println(sum);
 }
 
 void requestEvent() {
-  Serial.println("Request event");
+  Serial.print("Request event! sending: ");
+  Serial.println(answer);
   digitalWrite(LED_BUILTIN, HIGH);
   byte response[ANSWERSIZE];
   int target_temp = answer;
-  if (target_temp <= 255)
-    {
+  if (target_temp <= 255){
         response[0] = target_temp; // Wert von 0-255°C
         response[1] = 0;
     }
@@ -47,6 +47,9 @@ void requestEvent() {
     }
   Wire.write(response,sizeof(response));
   digitalWrite(LED_BUILTIN, LOW);
+
+  int randincrease = random(-5,5);
+  answer += randincrease;
 
 }
 
