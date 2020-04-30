@@ -49,6 +49,11 @@ void idle(
   extern TWIBus i2c;
 #endif
 
+#if ENABLED(I2C_TEMPCONTROL)
+  #include "i2c_temperature_control.h"
+  extern I2C_TempControl i2c_temp_ctrl;
+#endif
+
 #if ENABLED(G38_PROBE_TARGET)
   extern uint8_t G38_move;          // Flag to tell the ISR that G38 is in progress, and the type
   extern bool G38_did_trigger;      // Flag from the ISR to indicate the endstop changed

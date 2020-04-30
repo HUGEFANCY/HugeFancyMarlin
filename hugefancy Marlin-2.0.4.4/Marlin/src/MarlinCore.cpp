@@ -107,6 +107,13 @@
   TWIBus i2c;
 #endif
 
+#if ENABLED(I2C_TEMPCONTROL)
+  #include "i2c_temperature_control.h"
+  I2C_TempControl i2c_temp_ctrl;
+#endif
+
+
+
 #if ENABLED(I2C_POSITION_ENCODERS)
   #include "feature/I2CPositionEncoder.h"
 #endif

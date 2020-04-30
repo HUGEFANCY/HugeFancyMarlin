@@ -100,14 +100,33 @@ class TWIBus {
     void addbyte(const char c);
 
     /**
+     * @brief Add some bytes to the buffer (from char)
+     * @details Add bytes to the end of the buffer.
+     *          Concatenates at the buffer size.
+     *
+     * @param src source data address (char)
+     * @param bytes the number of bytes to add
+     */
+    void addbytes(char src[], uint8_t bytes);
+
+    /** ROBIN
+     * @brief Add one byte to the buffer
+     * @details Add a byte to the end of the buffer.
+     *          Silently fails if the buffer is full.
+     *
+     * @param c a data byte
+     */
+    void addbyte_as_byte(const byte c);
+
+    /** ROBIN
      * @brief Add some bytes to the buffer
      * @details Add bytes to the end of the buffer.
      *          Concatenates at the buffer size.
      *
-     * @param src source data address
+     * @param src source data address (byte)
      * @param bytes the number of bytes to add
      */
-    void addbytes(char src[], uint8_t bytes);
+    void addbytes_as_bytes(byte src[], uint8_t bytes);
 
     /**
      * @brief Add a null-terminated string to the buffer
@@ -171,15 +190,6 @@ class TWIBus {
      * @return the number of bytes captured to the buffer
      */
     uint8_t capture(char *dst, const uint8_t bytes);
-
-    /**
-     * @brief Capture data from the bus into the buffer.
-     * @details Capture data after a request has succeeded.
-     *
-     * @param bytes the number of bytes to request
-     * @return the string captured to the buffer
-     */
-    char capture_char(int iter, int bytes);
 
     /**
      * @brief Flush the i2c bus.

@@ -68,6 +68,21 @@ void TWIBus::addbytes(char src[], uint8_t bytes) {
   #endif
   while (bytes--) addbyte(*src++);
 }
+//ROBIN
+void TWIBus::addbyte_as_byte(const byte c) {
+  if (buffer_s >= COUNT(buffer)) return;
+  buffer[buffer_s++] = c;
+  #if ENABLED(DEBUG_TWIBUS)
+    debug(PSTR("addbyte"), c);
+  #endif
+}
+//ROBIN
+void TWIBus::addbytes_as_bytes(byte src[], uint8_t bytes) {
+  #if ENABLED(DEBUG_TWIBUS)
+    debug(PSTR("addbytes as bytes"), bytes);
+  #endif
+  while (bytes--) addbyte(*src++);
+}
 
 void TWIBus::addstring(char str[]) {
   #if ENABLED(DEBUG_TWIBUS)
@@ -153,19 +168,6 @@ uint8_t TWIBus::capture(char *dst, const uint8_t bytes) {
   #endif
 
   return count;
-}
-
-//ROBIN-- the following doesnt work!!! 
-char TWIBus::capture_char(int iter, int bytes) {
-  char a;
-  if (iter < bytes && Wire.available()){
-    a = Wire.read();
-  }
-
-  #if ENABLED(DEBUG_TWIBUS)
-    debug(PSTR("captured char: "), a);
-  #endif
-  return a;
 }
 
 // static

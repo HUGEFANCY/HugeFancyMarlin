@@ -1045,50 +1045,12 @@ void Temperature::manage_heater() {
   millis_t ms = millis();
 
   //ROBIN-- this one updates the temperature in the loop 
-  //updateTemperaturesFromRawValues(); // also resets the watchdog
-  
   #if ENABLED(I2C_TEMPCONTROL)
-    /* Pseudocode
-    *if (current_time <= old_time + N) 
-    *   request current temperature 
-    *       request i2c 4 bytes
-    *       temp = read Wire 
-    *       temp_hotend[e].celsius = temp
-    *   old_time = now
-    */
     if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms)){    //check if its time to request next temperature
-      SERIAL_ECHOLN("i2c temp method ");      //print 
-      //next_i2c_temp_send_ms = ms + I2C_SEND_INTERVALL;    //set the next time to request 
-      i2c.address(I2C_REMOTE_ADDRESS);
-      int req_bytes = 3;    //number of bytes to request
-      int temp = 0; 
-      for (uint8_t tries=5; tries--;) {
-        if (i2c.request(req_bytes)){              // Request req_bytes number of bytes
-          char answer[req_bytes]={};              // a buffer to store the reply
-          answer[sizeof(answer)] = 0;             //null termination of array
-          i2c.capture(&answer[0], req_bytes);    // Get the reply  
-          
-          SERIAL_ECHOLN("answer:");
-          SERIAL_ECHOLN(answer);
-          SERIAL_ECHOLNPAIR("size of answer:",sizeof(answer));
-          //SERIAL_ECHOLN(answer[]);
-           for( unsigned int a = 0; a < (sizeof(answer)/sizeof(answer[0])+1); a = a + 1 ){
-             //SERIAL_ECHOLN(answer[a]);   //Print reply line by line 
-           }
-          SERIAL_ECHOLN("----------");
-          temp = atoi(answer);  // convert the received tempereture from array of chars to int
-          SERIAL_ECHOLNPAIR("int temp:",temp);// print integer value of the received string just to check 
-          temp_hotend[0].celsius = temp;      //update hotend temperature
-
-          // Reset the watchdog on good temperature measurement
-          watchdog_refresh();
-          break;
-        }
-      }
+      temp_hotend[0].celsius = i2c_temp_ctrl.request_hotend_temp(0);      //update hotend temperature
+      // Reset the watchdog on good temperature measurement
+      watchdog_refresh();
     } 
-    //updateTemperaturesFromRawValues(); // also resets the watchdog
-  
-
    #else
     updateTemperaturesFromRawValues(); // also resets the watchdog
   #endif
@@ -1122,30 +1084,14 @@ void Temperature::manage_heater() {
         thermal_runaway_protection(tr_state_machine[e], temp_hotend[e].celsius, temp_hotend[e].target, (heater_ind_t)e, THERMAL_PROTECTION_PERIOD, THERMAL_PROTECTION_HYSTERESIS);
       #endif
 
-      #if ENABLED(I2C_TEMPCONTROL)
+      //ROBIN-- Send temperatures for hotend[0]
+      #if ENABLED(I2C_TEMPCONTROL)  //check if i2c tempcontrol is activated 
         if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms)){    // check if its time to request next temperature
-          SERIAL_ECHOLN("i2c temp method ");      // print 
-          //next_i2c_temp_send_ms = ms + I2C_SEND_INTERVALL;    //set the next time to request 
-          i2c.address(I2C_REMOTE_ADDRESS);
-          int target_temp = 100; 
-          char temp_char = (char)target_temp;
-          char target_temp_char = temp_char;
-          SERIAL_ECHOLNPAIR("target_temp_char ", target_temp_char);      // print 
-
-          i2c.addbytes(&target_temp_char,4);
-          i2c.send();
+          i2c_temp_ctrl.send_target_temp(0,temp_hotend[0].target);
         } 
-        //updateTemperaturesFromRawValues(); // also resets the watchdog
       #else
         temp_hotend[e].soft_pwm_amount = (temp_hotend[e].celsius > temp_range[e].mintemp || is_preheating(e)) && temp_hotend[e].celsius < temp_range[e].maxtemp ? (int)get_pid_output_hotend(e) >> 1 : 0;
       #endif
-      /*  //ROBIN-- is this the actual setting of the pwm ??? 
-       *temp_hotend[e].soft_pwm_amount = (temp_hotend[e].celsius > temp_range[e].mintemp || is_preheating(e)) && temp_hotend[e].celsius < temp_range[e].maxtemp ? (int)get_pid_output_hotend(e) >> 1 : 0;
-       */
-
-      if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms)){    // check if its time to update the send interval 
-        next_i2c_temp_send_ms = ms + I2C_SEND_INTERVALL;    // set the next time to request 
-      }  
 
       #if WATCH_HOTENDS
         // Make sure temperature is increasing
@@ -1166,7 +1112,13 @@ void Temperature::manage_heater() {
     } // HOTEND_LOOP
 
   #endif // HOTENDS
-
+  
+  //ROBIN-- this checks if its time to reset the i2c send intervall timer
+  //ROBINTODO: could be better done with a flag so that it is not done multiple times 
+  if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms)){    // check if its time to update the send interval 
+    next_i2c_temp_send_ms = ms + I2C_SEND_INTERVALL;    // set the next time to request 
+  }  
+  
   #if HAS_AUTO_FAN
     if (ELAPSED(ms, next_auto_fan_check_ms)) { // only need to check fan state very infrequently
       checkExtruderAutoFans();
