@@ -36,10 +36,10 @@
 // Steppers
 //
 #ifndef E1_STEP_PIN
-  #define E1_STEP_PIN      P0_01
+  #define E1_STEP_PIN      P1_04
 #endif
 #ifndef E1_DIR_PIN
-  #define E1_DIR_PIN       P0_00
+  #define E1_DIR_PIN       P1_01
 #endif
 #ifndef E1_ENABLE_PIN
   #define E1_ENABLE_PIN    P0_10

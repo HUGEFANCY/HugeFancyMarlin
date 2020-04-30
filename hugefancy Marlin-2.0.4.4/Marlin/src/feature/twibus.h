@@ -26,7 +26,7 @@
 #include <Wire.h>
 
 // Print debug messages with M111 S2 (Uses 236 bytes of PROGMEM)
-//#define DEBUG_TWIBUS
+#define DEBUG_TWIBUS
 
 typedef void (*twiReceiveFunc_t)(int bytes);
 typedef void (*twiRequestFunc_t)();
@@ -100,14 +100,33 @@ class TWIBus {
     void addbyte(const char c);
 
     /**
+     * @brief Add some bytes to the buffer (from char)
+     * @details Add bytes to the end of the buffer.
+     *          Concatenates at the buffer size.
+     *
+     * @param src source data address (char)
+     * @param bytes the number of bytes to add
+     */
+    void addbytes(char src[], uint8_t bytes);
+
+    /** ROBIN
+     * @brief Add one byte to the buffer
+     * @details Add a byte to the end of the buffer.
+     *          Silently fails if the buffer is full.
+     *
+     * @param c a data byte
+     */
+    void addbyte_as_byte(const byte c);
+
+    /** ROBIN
      * @brief Add some bytes to the buffer
      * @details Add bytes to the end of the buffer.
      *          Concatenates at the buffer size.
      *
-     * @param src source data address
+     * @param src source data address (byte)
      * @param bytes the number of bytes to add
      */
-    void addbytes(char src[], uint8_t bytes);
+    void addbytes_as_bytes(byte src[], uint8_t bytes);
 
     /**
      * @brief Add a null-terminated string to the buffer

@@ -65,7 +65,7 @@ void GcodeSuite::M260() {
  */
 void GcodeSuite::M261() {
   if (parser.seen('A')) i2c.address(parser.value_byte());
-
+  //SERIAL_ECHO("sent i2c... ");
   uint8_t bytes = parser.byteval('B', 1);
 
   if (i2c.addr && bytes && bytes <= TWIBUS_BUFFER_SIZE)

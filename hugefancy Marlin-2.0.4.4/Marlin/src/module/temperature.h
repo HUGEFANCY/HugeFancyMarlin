@@ -162,6 +162,7 @@ enum ADCSensorState : char {
 // get all oversampled sensor readings
 #define MIN_ADC_ISR_LOOPS 10
 
+//TODO 
 #define ACTUAL_ADC_SAMPLES _MAX(int(MIN_ADC_ISR_LOOPS), int(SensorsReady))
 
 #if HAS_PID_HEATING
@@ -443,6 +444,11 @@ class Temperature {
       static millis_t next_auto_fan_check_ms;
     #endif
 
+    //ROBIN-- this is a variable to set when sending temperatures via i2c 
+    #if ENABLED(I2C_TEMPCONTROL)
+      static millis_t next_i2c_temp_send_ms;
+    #endif
+
     #if ENABLED(PROBING_HEATERS_OFF)
       static bool paused;
     #endif
@@ -594,6 +600,7 @@ class Temperature {
     //inline so that there is no performance decrease.
     //deg=degreeCelsius
 
+    //ROBIN -- this returns the current hotend temperature
     FORCE_INLINE static float degHotend(const uint8_t E_NAME) {
       return (0
         #if HOTENDS
@@ -612,6 +619,7 @@ class Temperature {
       }
     #endif
 
+    //ROBIN-- this returns current hotend target temp 
     FORCE_INLINE static int16_t degTargetHotend(const uint8_t E_NAME) {
       return (0
         #if HOTENDS
@@ -639,6 +647,7 @@ class Temperature {
         #if ENABLED(AUTO_POWER_CONTROL)
           powerManager.power_on();
         #endif
+        SERIAL_ECHO(celsius);
         temp_hotend[ee].target = _MIN(celsius, temp_range[ee].maxtemp - 15);
         start_watching_hotend(ee);
       }

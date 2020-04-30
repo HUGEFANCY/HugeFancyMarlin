@@ -3,7 +3,7 @@
 // Anleitung designing a communication protocol: https://henryforceblog.wordpress.com/2015/03/12/designing-a-communication-protocol-using-arduinos-serial-library/
 // Modbus (not used) https://industruino.com/blog/our-news-1/post/modbus-rtu-master-and-slave-14
 
-// Master Devive
+// Master Device
 
 // PINOUT
 // R0 -> Teensy Rx2
@@ -93,7 +93,7 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
   }
 }
 
-void RS485_Schaltschrank_Sent_Statusupdate()
+void RS485_Schaltschrank_Send_Statusupdate()
 {
   Serial.println("Sende Statusupdate Schaltschrank");
   
@@ -122,7 +122,7 @@ void RS485_Schaltschrank_Sent_Statusupdate()
 
 
 
-void RS485_Schaltschrank_Sent_FarbmischerAktion(byte SchaufelnMotor_L, byte SchaufelnMotor_R)
+void RS485_Schaltschrank_Send_FarbmischerAktion(byte SchaufelnMotor_L, byte SchaufelnMotor_R)
 {
   // Byte 0 Header (0x7D)
   // Byte 1 Schaufeln Links

@@ -68,6 +68,21 @@ void TWIBus::addbytes(char src[], uint8_t bytes) {
   #endif
   while (bytes--) addbyte(*src++);
 }
+//ROBIN
+void TWIBus::addbyte_as_byte(const byte c) {
+  if (buffer_s >= COUNT(buffer)) return;
+  buffer[buffer_s++] = c;
+  #if ENABLED(DEBUG_TWIBUS)
+    debug(PSTR("addbyte"), c);
+  #endif
+}
+//ROBIN
+void TWIBus::addbytes_as_bytes(byte src[], uint8_t bytes) {
+  #if ENABLED(DEBUG_TWIBUS)
+    debug(PSTR("addbytes as bytes"), bytes);
+  #endif
+  while (bytes--) addbyte(*src++);
+}
 
 void TWIBus::addstring(char str[]) {
   #if ENABLED(DEBUG_TWIBUS)
@@ -84,6 +99,9 @@ void TWIBus::send() {
   Wire.beginTransmission(I2C_ADDRESS(addr));
   Wire.write(buffer, buffer_s);
   Wire.endTransmission();
+  #if ENABLED(DEBUG_TWIBUS)
+    debug(PSTR("Transmission Ended"), addr);
+  #endif
 
   reset();
 }
@@ -98,6 +116,9 @@ void TWIBus::echoprefix(uint8_t bytes, const char prefix[], uint8_t adr) {
 // static
 void TWIBus::echodata(uint8_t bytes, const char prefix[], uint8_t adr) {
   echoprefix(bytes, prefix, adr);
+  #if ENABLED(DEBUG_TWIBUS)
+    debug(PSTR("reading echodata"), bytes);
+  #endif
   while (bytes-- && Wire.available()) SERIAL_CHAR(Wire.read());
   SERIAL_EOL();
 }
@@ -116,7 +137,7 @@ bool TWIBus::request(const uint8_t bytes) {
   #endif
 
   // requestFrom() is a blocking function
-  if (Wire.requestFrom(addr, bytes) == 0) {
+  if (Wire.requestFrom(I2C_ADDRESS(addr), bytes) == 0) {
     #if ENABLED(DEBUG_TWIBUS)
       debug("request fail", addr);
     #endif
@@ -138,9 +159,10 @@ void TWIBus::relay(const uint8_t bytes) {
 uint8_t TWIBus::capture(char *dst, const uint8_t bytes) {
   reset();
   uint8_t count = 0;
-  while (count < bytes && Wire.available())
-    dst[count++] = Wire.read();
-
+  while (count < bytes && Wire.available()){
+    dst[count] = Wire.read();
+    count++;
+  }
   #if ENABLED(DEBUG_TWIBUS)
     debug(PSTR("capture"), count);
   #endif
