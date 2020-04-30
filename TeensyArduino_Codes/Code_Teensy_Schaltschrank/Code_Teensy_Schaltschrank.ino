@@ -38,7 +38,7 @@ void loop()
     {
       targetTempExtruderMarlin = 0;
     }
-    RS485_Schaltschrank_Sent_Statusupdate();
+    RS485_Schaltschrank_Send_Statusupdate();
     nrf24l01_loop();
   }
   
