@@ -7,7 +7,7 @@ const byte RelayCoolerZone_1_EN = 38;
 const byte RelayCoolerZone_2_EN = 39;
 
 const byte RelayWatercooling_EN = 19;
-const byte RelayLicht_EN = 20;
+const byte RelayLicht_EN = 22;
 
 void Relays_setup()
 {
