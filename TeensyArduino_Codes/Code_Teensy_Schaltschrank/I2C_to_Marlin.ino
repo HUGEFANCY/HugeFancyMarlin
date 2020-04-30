@@ -10,7 +10,7 @@
 
 #define ANSWERSIZE 2  //only this amount of bytes is exchanged between Marlin and this Teensy 
 
-int target_temp_buffer=0;
+int target_temp_buffer = 0;
 
 void I2C_Marlin_setup() {
     //pinMode(LED_BUILTIN, OUTPUT);
@@ -28,8 +28,7 @@ void I2C_Marlin_setup() {
  * no params no return 
  */
 void receiveEvent() {    
-    //digitalWrite(LED_BUILTIN, LOW);
-    //uint16_t sum = 0;
+
     while (0 < Wire.available()) {
         byte x = Wire.read();
         target_temp_buffer += x & 0xFF;
