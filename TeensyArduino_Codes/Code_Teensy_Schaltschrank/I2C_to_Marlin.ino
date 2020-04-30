@@ -27,16 +27,17 @@ void I2C_Marlin_setup() {
  * @details --
  * no params no return 
  */
-void receiveEvent() {
-    //digitalWrite(LED_BUILTIN, HIGH);
-    while (0 < Wire.available()) {
-    byte x = Wire.read();
-    target_temp_buffer += x;
-    Serial.println(x);
-    }
-    Serial.println("Receive event finished");
-    targetTempExtruderMarlin = target_temp_buffer;
+void receiveEvent() {    
     //digitalWrite(LED_BUILTIN, LOW);
+    //uint16_t sum = 0;
+    while (0 < Wire.available()) {
+        byte x = Wire.read();
+        target_temp_buffer += x & 0xFF;
+    }
+    Serial.print("Receive event! value:");
+    Serial.println(target_temp_buffer);
+    targetTempExtruderMarlin = target_temp_buffer;
+}
 }
 
 /**
@@ -46,10 +47,13 @@ void receiveEvent() {
  * no params no return 
  */
 void requestEvent() {
-    Serial.println("Request event");
-    //digitalWrite(LED_BUILTIN, HIGH);
+
     byte response[ANSWERSIZE];
     int target_temp = RealTempExtruderForMarlin;
+    
+    Serial.print("Request event! sending: ");
+    Serial.println(target_temp);
+    
     if (target_temp <= 255) {
             response[0] = target_temp; // Wert von 0-255°C
             response[1] = 0;
@@ -63,8 +67,6 @@ void requestEvent() {
             response[1]=255;
     }
     Wire.write(response,sizeof(response)); //send value to Marlin vial i2c
-    //digitalWrite(LED_BUILTIN, LOW);
-
 }
 
 void loop() {
