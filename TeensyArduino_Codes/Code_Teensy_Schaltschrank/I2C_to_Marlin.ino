@@ -68,8 +68,3 @@ void requestEvent() {
     }
     Wire.write(response,sizeof(response)); //send value to Marlin vial i2c
 }
-
-void loop() {
-
-  delay(50);
-}

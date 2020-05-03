@@ -7,7 +7,7 @@
 
 // PINOUT
 // R0 -> Teensy Rx2
-// RE = DE -> Teensy PIN 8
+// RE = DE -> Teensy PIN 13
 // DI -> Teensy Tx2
 // VCC -> 5V
 // A -> Kabelterminal 17
