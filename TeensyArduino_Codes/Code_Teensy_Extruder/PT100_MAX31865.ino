@@ -7,7 +7,7 @@
 // MAX31865 oben
 const byte CS_pin_zone_1 = 17;
 // MAX31865 unten
-const byte CS_pin_zone_2 = 18;
+const byte CS_pin_zone_2 = 20;
 // MAX31865 oben und unten
 const byte SDI_pin = 16;
 const byte SDO_pin = 15;
