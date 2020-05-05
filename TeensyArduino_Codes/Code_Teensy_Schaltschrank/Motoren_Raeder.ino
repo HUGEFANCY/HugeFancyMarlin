@@ -1,5 +1,7 @@
 // Motoren Räder
 
+/*
+
 #include <TeensyStep.h>
 // Git: https://github.com/luni64/TeensyStep DOCUMENTATION
 
@@ -29,3 +31,5 @@ const int M_BR_ENDSTOP = 38; // Enable Pin
 Stepper M_BR(36, 37); // Step, Dir
 
 StepControl StepController_B; // Controller, Stepping Mode
+
+*/

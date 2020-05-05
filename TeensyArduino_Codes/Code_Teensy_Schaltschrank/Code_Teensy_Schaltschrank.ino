@@ -12,10 +12,12 @@ byte PwmValuePartCoolingFanMarlin = 0;
 void setup()
 {
   Serial.begin(9600); // serieller Monitor
+  delay(100);
 
   RS485_setup();
   nrf24l01_setup();
   RGB_setup();
+  Serial.println("Setup End");
 }
 
 void loop()
