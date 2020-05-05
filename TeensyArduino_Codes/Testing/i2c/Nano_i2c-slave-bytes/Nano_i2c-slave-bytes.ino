@@ -17,13 +17,13 @@ void setup() {
 }
 
 void receiveEvent(int countToRead) {
-    uint16_t sum = 0;
-    while (0 < Wire.available()) {
-        byte x = Wire.read();
-        sum += x & 0xFF;
-    }
-    Serial.print("Receive event! value:");
-    Serial.println(sum);
+  uint16_t sum = 0;
+  while (0 < Wire.available()) {
+    byte x = Wire.read();
+    sum += x & 0xFF;
+  }
+  Serial.print("Receive event! value:");
+  Serial.println(sum);
 }
 
 void requestEvent() {
