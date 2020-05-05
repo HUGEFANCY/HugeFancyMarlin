@@ -372,7 +372,8 @@
 // Misc. Functions
 //
 
-/**
+/**    
+ * //ROBIN
  * I2C pin assignment
  * P0.0 SDA1 was previously used for E1DIR
  * P0.1 SCL1 was previously used for E1STP
