@@ -16,6 +16,7 @@ void setup()
   RS485_setup();
   nrf24l01_setup();
   RGB_setup();
+  I2C_Marlin_setup();
 }
 
 void loop()

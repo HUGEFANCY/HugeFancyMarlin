@@ -16,7 +16,7 @@ void I2C_Marlin_setup() {
     //pinMode(LED_BUILTIN, OUTPUT);
     Wire.begin(9);                    //begin i2c as slave with address 9 
     Wire.onRequest(requestEvent);     // Function to execute on data request from master (Marlin)
-    Wire.onReceive(receiveEvent);     // Funciton to execute on data receive from master 
+    Wire.onReceive(receiveEvent);     // Function to execute on data receive from master 
     //Serial.begin(9600);               // start serial 
     Serial.println("I2C Slave ready!");
 }
@@ -37,7 +37,7 @@ void receiveEvent() {
     Serial.println(target_temp_buffer);
     targetTempExtruderMarlin = target_temp_buffer;
 }
-}
+
 
 /**
  * @brief answers requests form the Marlin Board. 
@@ -68,7 +68,8 @@ void requestEvent() {
     Wire.write(response,sizeof(response)); //send value to Marlin vial i2c
 }
 
-void loop() {
-
-  delay(50);
-}
+/*void loop() {
+*
+*  delay(50);
+*}
+*/
