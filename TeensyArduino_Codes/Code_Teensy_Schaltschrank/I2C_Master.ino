@@ -1,6 +1,5 @@
-// I2C Master
+// I2C MASTER
 
-#include <Wire.h>
-
+// Pinout
 const int SCL_Pin = 19; // Pin I2C
 const int SDA_Pin = 18; // Pin I2C
