@@ -1,8 +1,10 @@
 #include <Arduino.h>
+#include <math.h>
 
 #include <Metro.h> // Include the Metro library // https://www.pjrc.com/teensy/td_libs_Metro.html
 
 unsigned long currentMillis = 0;
+int analog_resolution = 10; // sets resolution of analog writing as exponent of 2 (2^12=4096)
 bool once = true;
 
 // Zielwerte aus Marlin
@@ -15,12 +17,12 @@ byte PwmValuePartCoolingFanMarlin = 0;
 // Extruder
 int RealTemperatureZone_1 = 0; // max 9 Bit = 511°C
 int RealTemperatureZone_2 = 0; // max 9 Bit = 511°C
-bool LuefterObenrum = false;
-bool LuefterObenUntenrum = false;
+bool LuefterZone_1 = false;
+bool LuefterZone_2 = false;
 
 // Wasserkühlung
-int TempWatercoolingCold = 0; // max 9 Bit = 511°C
-int TempWatercoolingWarm = 0; // max 9 Bit = 511°C
+int TempWatercooling_In = 0; // max 9 Bit = 511°C
+int TempWatercooling_Out = 0; // max 9 Bit = 511°C
 
 byte ExtruderCoolingStatusMarlin = 0; // 0 = off, 1 = on // muss 8 Bit, statt boolean sein
 byte pwmValuePartCoolingFan = 0; // max 8 Bit = 255
@@ -31,14 +33,16 @@ void setup()
   Serial.begin(9600); // serieller Monitor
   delay(100);
 
+  analogReadResolution(analog_resolution);
+
   RS485_setup();
   TM1637_setup();
   Motoren_setup();
   PT100_MAX31865_setup();
   Relays_setup();
-  //RGB_setup();
+  RGB_setup();
 
-  
+
   Serial.println("Setup fertig");
 }
 
@@ -49,16 +53,17 @@ void loop()
   RS485_Extruder_CheckIfUpdateAvalible();
   PT100_MAX31865_loop();
   TM1637_update();
-  
+  TempWasser_loop();
+
   watchdog_gameover();
 
   // Hier Platz für Einwegcode
   if (once == true)
   {
-    once = false; 
+    once = false;
   }
 
-  
+
   SerialTastatur_CheckKeys();
-  
+
 }

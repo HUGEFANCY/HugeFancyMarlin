@@ -7,7 +7,7 @@
 // MAX31865 oben
 const byte CS_pin_zone_1 = 17;
 // MAX31865 unten
-const byte CS_pin_zone_2 = 18;
+const byte CS_pin_zone_2 = 20;
 // MAX31865 oben und unten
 const byte SDI_pin = 16;
 const byte SDO_pin = 15;
@@ -25,8 +25,28 @@ Metro temperaturIntervall = Metro(500);
 
 void PT100_MAX31865_setup()
 {
+  thermo_zone_1.Adafruit_MAX31865::autoConvert(true);
+  thermo_zone_2.Adafruit_MAX31865::autoConvert(true);
   thermo_zone_1.begin(MAX31865_3WIRE);  // set to 2WIRE or 4WIRE as necessary
+  //thermo_zone_1.Adafruit_MAX31865::enableBias(true);
+  thermo_zone_1.Adafruit_MAX31865::autoConvert(true);
   thermo_zone_2.begin(MAX31865_3WIRE);  // set to 2WIRE or 4WIRE as necessary
+  //thermo_zone_2.Adafruit_MAX31865::enableBias(true);
+  thermo_zone_2.Adafruit_MAX31865::autoConvert(true);
+
+
+  /* Configure:
+
+    V_BIAS enabled
+    Auto-conversion
+    1-shot disabled
+    3-wire enabled
+    Fault detection:  automatic delay
+    Fault status:  auto-clear
+    50 Hz filter
+    Low threshold:  0x0000
+    High threshold:  0x7fff
+  */
 }
 
 

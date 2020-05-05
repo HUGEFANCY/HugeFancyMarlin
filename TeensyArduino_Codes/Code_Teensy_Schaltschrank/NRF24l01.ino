@@ -14,7 +14,7 @@
 #include "RF24.h"
 
 // SPI Channel 0 (modefiziert): MOSI:11, MISO:12, SCK:14
-RF24 radio(7, 8); // CE, CSN Teensy 3.5 Motoren-Board
+RF24 radio(7, 8); // CE, CSN -> Teensy Board 7, 8
 
 RF24Network network(radio);
 const uint16_t this_node = 02;   // Address of this node in Octal format ( 04,031, etc) // Motoreinheiten

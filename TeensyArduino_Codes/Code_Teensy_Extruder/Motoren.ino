@@ -6,26 +6,27 @@
 // PINOUT
 
 // Motor Rechts = F1
-const int M_R_EN = 33; // const int MR_EN = 18; // Enable Pin
-Stepper M_R(34, 35); // Stepper MR(19, 20); // Step, Dir
+const int M_R_EN = 33; // Enable Pin
+Stepper M_R(34, 35); // Step, Dir
 StepControl StepController_R; // Controller, Stepping Mode
-
-/*
-  // NANOTEC (läuft an Rechts = F1)
-  const int M_nanotec_EN = 30; // Enable Pin
-  Stepper M_nanotec(31, 32); // Step, Dir
-  StepControl StepController_nanotec; // Controller, Stepping Mode
-
-  const int microstepping_nanotec = 64; // Stepper Nanotec 16-fach
-  const int Nanotec_MaxSpeed = 800; // Stepper Nanotec z.B. 800
-  const int Nanotec_Acceleration = 500; // Stepper Nanotec z.B. 500
-*/
-
 
 // Motor Links = F2
 const int M_L_EN = 29; // Enable Pin //15
 Stepper M_L(27, 28); // Step, Dir // 16,17
 StepControl StepController_L; // Controller, Stepping Mode
+
+// Motor Zusatz
+const int M_Zusatz_EN = 26; // Enable Pin
+const int M_Zusatz_Endstop = 25; // Endstop Pin
+Stepper M_Zusatz(30, 31); // Step, Dir
+
+/*
+  // NANOTEC
+  const int microstepping_nanotec = 64; // Stepper Nanotec 16-fach
+  const int Nanotec_MaxSpeed = 800; // Stepper Nanotec z.B. 800
+  const int Nanotec_Acceleration = 500; // Stepper Nanotec z.B. 500
+  // Enable Funktion bei Nanotec invertiert.
+*/
 
 
 const int motorsteps = 16; // 200 Schrittmotor, 16 Servo
@@ -114,35 +115,6 @@ void Schrittmotor_R(int Umdrehungen, int Speed, int Acceleration)
   M_R.setAcceleration(M_LR_Acceleration); // stp/s^2
   Schrittmotor_R_aktiv(false);
 }
-
-
-/* NANOTEC
-  void Schrittmotor_nanotec_aktiv(bool value)
-  {
-  if (value == true)
-  {
-    digitalWrite(M_nanotec_EN, HIGH); // INVENTIERT WEGEN NANOTEC!!!!!
-    delay(500);
-  }
-  else if (value == false)
-  {
-    digitalWrite(M_nanotec_EN, LOW); // INVENTIERT WEGEN NANOTEC!!!!!
-    delay(100);
-  }
-  }
-
-  void Schrittmotor_nanotec(int Umdrehungen, int Speed, int Acceleration)
-  {
-  Schrittmotor_nanotec_aktiv(true);
-  M_nanotec.setMaxSpeed(Speed); // stp/s
-  M_nanotec.setAcceleration(Acceleration); // stp/s^2
-
-  M_nanotec.setTargetRel(Umdrehungen * gear_ratio * motorsteps * microstepping_nanotec);
-  StepController_nanotec.move(M_nanotec);
-
-  Schrittmotor_nanotec_aktiv(false);
-  }
-*/
 
 
 void Farbmischer_GibFarbe(int GibSchaufeln_L, int GibSchaufeln_R)
