@@ -9,7 +9,7 @@ bool once = true;
 
 // Zielwerte aus Marlin
 int targetTempExtruderMarlin = 0; // max 9 Bit = 511°C
-int CombinedTempertureExtruderForMarlin = 33; // max 9 Bit = 511°C
+int CombinedTempertureExtruderForMarlin = 44; // max 9 Bit = 511°C
 byte PwmValuePartCoolingFanMarlin = 0;
 
 
@@ -55,7 +55,7 @@ void loop()
   TM1637_update();
   TempWasser_loop();
 
-  watchdog_gameover();
+  //watchdog_gameover();
 
   // Hier Platz für Einwegcode
   if (once == true)
