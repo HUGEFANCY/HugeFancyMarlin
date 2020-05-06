@@ -66,6 +66,6 @@ void TM1637_update()
     TM1637_TempWatercoolingWarm.showNumberDec(TempWatercooling_In, false);
     TM1637_TempWatercoolingCold.showNumberDec(TempWatercooling_Out, false); // ### ToDo: hier später die momentane TempExtruderObenrum
     TM1637_pwmValuePartCoolingFan.showNumberDec(pwmValuePartCoolingFan, false);
-    TM1637_prozentTankladung.showNumberDec(targetTempExtruderMarlin, false);
+    TM1637_prozentTankladung.showNumberDec(TargetTempExtruderMarlin, false);
   }
 }

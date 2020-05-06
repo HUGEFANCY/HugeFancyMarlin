@@ -36,7 +36,7 @@ void receiveEvent() {
     }
     Serial.print("Receive event! value:");
     Serial.println(target_temp_buffer);
-    targetTempExtruderMarlin = target_temp_buffer;
+    TargetTempExtruderMarlin = target_temp_buffer;
 }
 
 
