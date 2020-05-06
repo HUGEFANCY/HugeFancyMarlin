@@ -21,7 +21,7 @@ void setup()
 
 void loop()
 {
-  unsigned long currentMillis = millis();
+  currentMillis = millis();
 
   //SerialTastatur_CheckKeys();
 

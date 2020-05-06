@@ -87,7 +87,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
             RS485_updateVariables_LastUpdatePreviousMillis = currentMillis; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben
 
             // Antwort und sende das eigene Statusupdate
-            RS485_Extruder_Sent_Statusupdate();
+            RS485_Extruder_Send_Statusupdate();
           }
           if (buffer[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
           {
@@ -110,10 +110,10 @@ void RS485_Extruder_CheckIfUpdateAvalible()
   }
 }
 
-void RS485_Extruder_Sent_Statusupdate()
+void RS485_Extruder_Send_Statusupdate()
 {
   Serial.println("Sende Statusupdate Extruder");
-
+  
   // Byte 0 Header 
   // Byte 1 RealTempExtruderForMarlin_01 Byte 01
   // Byte 2 RealTempExtruderForMarlin_02 Byte 02
