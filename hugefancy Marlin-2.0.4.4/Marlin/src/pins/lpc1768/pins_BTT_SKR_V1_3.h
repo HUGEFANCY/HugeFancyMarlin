@@ -67,6 +67,7 @@
     #define Z_MIN_PIN        P1_24   // Z+
   #endif
 #else
+  //ROBIN TODO: Where to add second z- endstop ??
   #define Z_MIN_PIN          P1_25   // Z-
   #define Z_MAX_PIN          P1_24   // Z+
 #endif
@@ -84,7 +85,7 @@
 // Z Probe (when not Z_MIN_PIN)
 //
 #ifndef Z_MIN_PROBE_PIN
-  #define Z_MIN_PROBE_PIN  P1_24
+  #define Z_MIN_PROBE_PIN  P1_24  //ROBIN-- This is Z+(Zmax) signal pin
 #endif
 
 //
@@ -122,11 +123,12 @@
 #define E0_DIR_PIN         P0_11
 #define E0_ENABLE_PIN      P2_12
 #ifndef E0_CS_PIN
-  #define E0_CS_PIN        P1_08
+  #define E0_CS_PIN        P0_23
 #endif
 
 #ifndef E1_CS_PIN
-  #define E1_CS_PIN        P1_01
+  //#define E1_CS_PIN        P1_01
+  #define E1_CS_PIN        P0_25
 #endif
 
 //
@@ -144,7 +146,7 @@
   #endif
 #endif
 
-#if HAS_TMC220x // Robin: DOnt enable this because the pins are used for something else! 
+#if HAS_TMC220x // Robin: Dont enable this because the pins are used for something else! 
   /**
    * TMC2208/TMC2209 stepper drivers
    *
@@ -178,8 +180,8 @@
   #define E0_SERIAL_TX_PIN P1_09
   #define E0_SERIAL_RX_PIN P1_08
 
-  //#define E1_SERIAL_TX_PIN P1_04 // Robin: DOnt enable this because the pins are used for something else! 
-  //#define E1_SERIAL_RX_PIN P1_01 // Robin: DOnt enable this because the pins are used for something else! 
+  //#define E1_SERIAL_TX_PIN P1_04 // Robin: Dont enable this because the pins are used for something else! 
+  //#define E1_SERIAL_RX_PIN P1_01 // Robin: Dont enable this because the pins are used for something else! 
 
   // Reduce baud rate to improve software serial reliability
   #define TMC_BAUD_RATE 19200

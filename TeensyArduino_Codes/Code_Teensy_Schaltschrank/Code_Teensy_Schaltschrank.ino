@@ -18,11 +18,12 @@ void setup()
   nrf24l01_setup();
   RGB_setup();
   Serial.println("Setup End");
+  I2C_Marlin_setup();
 }
 
 void loop()
 {
-  unsigned long currentMillis = millis();
+  currentMillis = millis();
 
   //SerialTastatur_CheckKeys();
 
