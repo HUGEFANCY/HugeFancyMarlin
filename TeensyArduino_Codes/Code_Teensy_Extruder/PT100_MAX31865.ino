@@ -13,6 +13,7 @@ const byte SDI_pin = 16;
 const byte SDO_pin = 15;
 const byte CLK_pin = 14;
 
+
 // Use software
 Adafruit_MAX31865 thermo_zone_1 = Adafruit_MAX31865(CS_pin_zone_1, SDI_pin, SDO_pin, CLK_pin);
 Adafruit_MAX31865 thermo_zone_2 = Adafruit_MAX31865(CS_pin_zone_2, SDI_pin, SDO_pin, CLK_pin);
@@ -25,15 +26,24 @@ Metro temperaturIntervall = Metro(500);
 
 void PT100_MAX31865_setup()
 {
-  thermo_zone_1.Adafruit_MAX31865::autoConvert(true);
-  thermo_zone_2.Adafruit_MAX31865::autoConvert(true);
-  thermo_zone_1.begin(MAX31865_3WIRE);  // set to 2WIRE or 4WIRE as necessary
-  //thermo_zone_1.Adafruit_MAX31865::enableBias(true);
-  thermo_zone_1.Adafruit_MAX31865::autoConvert(true);
-  thermo_zone_2.begin(MAX31865_3WIRE);  // set to 2WIRE or 4WIRE as necessary
-  //thermo_zone_2.Adafruit_MAX31865::enableBias(true);
-  thermo_zone_2.Adafruit_MAX31865::autoConvert(true);
 
+
+
+  thermo_zone_1.autoConvert(false);
+  thermo_zone_2.autoConvert(false);
+
+  thermo_zone_1.enable50Hz(true);
+  thermo_zone_2.enable50Hz(true);
+
+  thermo_zone_1.begin(MAX31865_3WIRE);  // set to 2WIRE or 4WIRE as necessary
+  thermo_zone_2.begin(MAX31865_3WIRE);  // set to 2WIRE or 4WIRE as necessary
+
+
+  thermo_zone_1.autoConvert(false);
+  thermo_zone_2.autoConvert(false);
+
+  thermo_zone_1.enable50Hz(true);
+  thermo_zone_2.enable50Hz(true);
 
   /* Configure:
 
