@@ -8,7 +8,7 @@ int analog_resolution = 10; // sets resolution of analog writing as exponent of 
 bool once = true;
 
 // Zielwerte aus Marlin
-int targetTempExtruderMarlin = 0; // max 9 Bit = 511°C
+int TargetTempExtruderMarlin = 0; // max 9 Bit = 511°C
 int CombinedTempertureExtruderForMarlin = 44; // max 9 Bit = 511°C
 byte PwmValuePartCoolingFanMarlin = 0;
 

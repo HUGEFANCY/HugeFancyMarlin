@@ -1,6 +1,6 @@
 // RS485 long distance communication betweent Teensy Schaltschrank (Master) and Teensy Extruder (Slave) über UART with selfmade Communication Protocol
-// Anleitung RS485 UART: https://circuitdigest.com/microcontroller-projects/rs485-serial-communication-between-arduino-uno-and-arduino-nano
-// Anleitung designing a communication protocol: https://henryforceblog.wordpress.com/2015/03/12/designing-a-communication-protocol-using-arduinos-serial-library/
+// Tutorial RS485 UART: https://circuitdigest.com/microcontroller-projects/rs485-serial-communication-between-arduino-uno-and-arduino-nano
+// Tutorial designing a communication protocol: https://henryforceblog.wordpress.com/2015/03/12/designing-a-communication-protocol-using-arduinos-serial-library/
 // Modbus (not used) https://industruino.com/blog/our-news-1/post/modbus-rtu-master-and-slave-14
 
 // Master Device
@@ -51,7 +51,8 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
     {
       // We must consider that we may sometimes receive unformatted data, and given the case we must ignore it and restart our reading code.
       // If it's the first time we find the header, we restart readCounter indicating that data is coming.
-      // It's possible the header appears again as a data byte. That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
+      // It's possible the header appears again as a data byte. 
+        //That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
       if (!firstTimeHeader)
       {
         isHeader = 1;
@@ -77,7 +78,7 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
             // Byte 0 Header
             // Byte 1 RealTempExtruderForMarlin_01 Byte 01
             // Byte 2 RealTempExtruderForMarlin_02 Byte 02
-            // Byte 3 frei
+            // Byte 3 Empty
             // Byte 4 Checksum
 
             RealTempExtruderForMarlin = buffer[1] + buffer[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
@@ -98,26 +99,26 @@ void RS485_Schaltschrank_Send_Statusupdate()
   Serial.println("Sende Statusupdate Schaltschrank");
   
   // Byte 0 Header
-  // Byte 1 targetTempExtruderMarlin Byte 01
-  // Byte 2 targetTempExtruderMarlin Byte 02
+  // Byte 1 TargetTempExtruderMarlin Byte 01
+  // Byte 2 TargetTempExtruderMarlin Byte 02
   // Byte 3 pwmValuePartCoolingFanMarlin
   // Byte 4 Checksum
 
   buffer[0] = header_AbsenderSchaltschrank_Statusupdate;
-  if (targetTempExtruderMarlin <= 255)
+  if (TargetTempExtruderMarlin <= 255)
   {
-    buffer[1] = targetTempExtruderMarlin; // Wert von 0-255°C
+    buffer[1] = TargetTempExtruderMarlin; // Value between 0-255°C
     buffer[2] = 0;
   }
-  else if ((targetTempExtruderMarlin > 255) and (targetTempExtruderMarlin <= 510))
+  else if ((TargetTempExtruderMarlin > 255) and (TargetTempExtruderMarlin <= 510))
   {
     buffer[1] = 255;
-    buffer[2] = targetTempExtruderMarlin - 255; // Wert von 256-510°C
+    buffer[2] = TargetTempExtruderMarlin - 255; // Value between 256-510°C
   }
   buffer[3] = PwmValuePartCoolingFanMarlin;
   buffer[4] = checksum();
 
-  Serial2.write(buffer, bufferSize); // We send all bytes stored in the buffer
+  Serial2.write(buffer, bufferSize); // send all bytes stored in the buffer
 }
 
 
@@ -153,7 +154,10 @@ uint8_t checksum()
   return result;
 }
 
-// This a common checksum validation method. We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
+// This a common checksum validation method. 
+// We perform a sum of all bytes, except the one that corresponds to the original checksum value. 
+// After summing we need to AND the result to a byte value.
+
 uint8_t verifyChecksum(uint8_t originalResult)
 {
   uint8_t result = 0;

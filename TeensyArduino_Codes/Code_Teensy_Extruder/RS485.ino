@@ -74,20 +74,20 @@ void RS485_Extruder_CheckIfUpdateAvalible()
           if (buffer[0] == header_AbsenderSchaltschrank_Statusupdate)
           {
             // Byte 0 Header 
-            // Byte 1 targetTempExtruderMarlin Byte 01
-            // Byte 2 targetTempExtruderMarlin Byte 02
+            // Byte 1 TargetTempExtruderMarlin Byte 01
+            // Byte 2 TargetTempExtruderMarlin Byte 02
             // Byte 3 pwmValuePartCoolingFanMarlin
             // Byte 4 Checksum
 
-            targetTempExtruderMarlin = buffer[1] + buffer[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
-            Serial.println(targetTempExtruderMarlin);
+            TargetTempExtruderMarlin = buffer[1] + buffer[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
+            Serial.println(TargetTempExtruderMarlin);
             PwmValuePartCoolingFanMarlin = buffer[3];
 
             // Timeout Verbindung Schaltschrank – Extruder weggebrochen
             RS485_updateVariables_LastUpdatePreviousMillis = currentMillis; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben
 
             // Antwort und sende das eigene Statusupdate
-            RS485_Extruder_Sent_Statusupdate();
+            RS485_Extruder_Send_Statusupdate();
           }
           if (buffer[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
           {
@@ -110,10 +110,10 @@ void RS485_Extruder_CheckIfUpdateAvalible()
   }
 }
 
-void RS485_Extruder_Sent_Statusupdate()
+void RS485_Extruder_Send_Statusupdate()
 {
   Serial.println("Sende Statusupdate Extruder");
-
+  
   // Byte 0 Header 
   // Byte 1 RealTempExtruderForMarlin_01 Byte 01
   // Byte 2 RealTempExtruderForMarlin_02 Byte 02
