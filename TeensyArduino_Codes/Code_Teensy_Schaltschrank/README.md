@@ -14,13 +14,13 @@ There is also a watchdog that can kill the Marlin Board if necessary.
     - Receives Hotend Target Temperature for forwarding to the Hotend
 
 ## Motoren_Raeder.ino
-- Future Code to make the entire Printer Mobile
+- Future Feature to make the entire Printer Mobile
 
 ## RS485.ino 
 - Communication between the two teensies, sends header, content and checksum every 1 second
 
 ## Relays.ino
-- 
+- Starting and stopping the relay for the air compressor.   
 
 ## RGB_Led.ino
 - RGB LED as visual status signal 

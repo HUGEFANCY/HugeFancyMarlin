@@ -8,6 +8,7 @@
  */
 
 //import Arduino I2C (TWIBUS) Library
+
 #include <i2c_t3.h>
 #define WIRE2_PINS   I2C_PINS_3_4  //defines SCL2 and SDA2 pins of teensy 3.5
 #define ANSWERSIZE 2  //only this amount of bytes is exchanged between Marlin and this Teensy 
