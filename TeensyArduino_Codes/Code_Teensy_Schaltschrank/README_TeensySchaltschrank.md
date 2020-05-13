@@ -6,9 +6,10 @@ There is also a watchdog that can kill the Marlin Board if necessary.
 
 ## Code_Teensy_Schaltschrank.ino
 - Base code and loop that is running
+- imports all the other .ino files for execution. 
 
 ## I2C_to_Marlin.ino
-- communicates with Marlin:
+- communicates with Marlin on the SKR Board:
     - sends current Hotend Temperature when requested
     - Receives Hotend Target Temperature for forwarding to the Hotend
 
@@ -17,3 +18,10 @@ There is also a watchdog that can kill the Marlin Board if necessary.
 
 ## RS485.ino 
 - Communication between the two teensies, sends header, content and checksum every 1 second
+
+## Relays.ino
+- 
+
+## RGB_Led.ino
+- RGB LED as visual status signal 
+
