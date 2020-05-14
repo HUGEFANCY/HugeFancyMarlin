@@ -13,48 +13,77 @@
 #include <RF24Network.h>
 #include "RF24.h"
 
-RF24 radio(7, 8); // CE, CSN -> Teensy Board 7, 8 // SPI Channel 0 (ABER modefiziert): MOSI:11, MISO:12, SCK:14
+// SPI Channel 0 (modefiziert): MOSI:11, MISO:12, SCK:14
+RF24 radio(7, 8); // CE, CSN -> Teensy Board 7, 8
+
 RF24Network network(radio);
+const uint16_t this_node = 02;   // Address of this node in Octal format ( 04,031, etc) // Motoreinheiten
 
-const int FunkChannel = 90;
-const uint16_t FunkMasterSchaltschrank = 00; // Address of the other node in Octal format // Schaltschrank, Master
-const uint16_t FunkSlaveJoystick = 01; // Joystick, Slave
+const uint16_t master00 = 00;    // Address of the other node in Octal format // Motoreinheiten
+const uint16_t node02 = 02; // Gedankenlesegerät
+const uint16_t node03 = 03; // Maschinenkopf
 
-// Datenkonstrukt Eingehend
+const unsigned long interval_nrf_send_led = 950;  //ms  // How often to send data to the other unit
+unsigned long last_sent_led;            // When did we last send?
 
-struct DataPackageIncoming // Max size of this struct is 32 bytes - NRF24L01 buffer limit
+const unsigned long interval_nrf_send_hub = 950;  //ms  // How often to send data to the other unit
+unsigned long last_sent_hub;            // When did we last send?
+
+
+// Datenkonstrukt eingehend Gedankenlesegerät
+struct dataStruct2
 {
-  byte j1PotX;
-  byte j1PotY;
-  byte j1Button;
-  byte j2PotX;
-  byte j2PotY;
-  byte j2Button;
-  byte pot1;
-  byte pot2;
-  byte tSwitch1;
-  byte tSwitch2;
-  byte button1;
-  byte button2;
-  byte button3;
-  byte button4;
-};
-DataPackageIncoming dataIncoming; // Create a variable with the above structure
+  byte function;
+  byte value1;
+  byte value2;
+  byte value3;
+  byte value4;
+} myIncomingPacketGedankenlesegeraet;
 
-struct DataPackageOutgoing // Max size of this struct is 32 bytes - NRF24L01 buffer limit
+
+
+struct dataStruct { // Datenkonstrukt Ausgehend
+  byte function; // 1 = Gedankenpacket
+  byte value1; // Signalstärke
+  byte value2; // Meditation
+  byte value3; // Batterie
+  byte value4; // LED Programm
+} myOutgoingPacketMotoreinheiten;
+
+/*
+  struct dataStruct2 { // Datenkonstrukt eingehend Gedankenpacket
+  byte function;
+  byte value1;
+  byte value2;
+  byte value3;
+  } myOutgoingPacketLed;
+*/
+
+// Datenkonstrukt ausgehend Maschinenkopf Hub und LED
+struct dataStruct3
 {
-  byte TargetTempZone1 = 0;
-  byte TargetTempZone2 = 0;
-};
-DataPackageOutgoing dataOutgoing; // Create a variable with the above structure
+  byte function;
+  byte value1;
+  byte value2;
+} myOutgoingPacketMaschinenkopf;
 
 
-void setup_Funk()
+// Datenkonstrukt eingehend Maschinenkopf Konrtolle
+struct dataStruct4
 {
-  SPI.setSCK(14); // changes SCK Pin Teensy
+  byte function; // 10 = erfolgreich.
+  byte value1;  // 1 = erfolgreich, 0 = nicht erfolgreich.
+} myIncomingPacketMaschinenkopf;
+
+
+
+void nrf24l01_setup()
+{
+  SPI.setSCK(14);
   SPI.begin();
+
   radio.begin();
-  network.begin(FunkChannel, FunkMasterSchaltschrank); //(channel, node address)
+  network.begin(90, this_node); //(channel, node address)
   radio.setPALevel(RF24_PA_MAX);
   radio.setDataRate(RF24_2MBPS);
   radio.setAutoAck(1); // Ensure autoACK is enabled
@@ -64,29 +93,29 @@ void setup_Funk()
 }
 
 
-void loop_FunkCheck()
+void nrf24l01_loop()
 {
-  //===== Receiving =====//
-  network.update();
 
-  while (network.available()) // Is there any incoming data?
-  {
-    RF24NetworkHeader header(FunkSlaveJoystick);
-    network.read(header, &dataIncoming, sizeof(dataIncoming)); // Read the incoming data
+  //network.update();
+  myOutgoingPacketMotoreinheiten.function = 1;
+  myOutgoingPacketMotoreinheiten.value1 = 0;
+  myOutgoingPacketMotoreinheiten.value2 = 88;
+  myOutgoingPacketMotoreinheiten.value3 = 55; // Batteriestatus -> Batterie leer;
+  RF24NetworkHeader header(master00);   // (Address where the data is going)
+  bool ok = network.write(header, &myOutgoingPacketMotoreinheiten, sizeof(myOutgoingPacketMotoreinheiten)); // Send the data
+  /*
 
-    if (header.from_node == FunkSlaveJoystick)
+    //===== Receiving =====//
+    while (network.available())
+    { // Is there any incoming data?
+    RF24NetworkHeader header;
+    network.read(header, &myIncomingPacketGedankenlesegeraet, sizeof(myIncomingPacketGedankenlesegeraet)); // Read the incoming data
+
+    // GEDANKENLESEGERÄT
+    if (header.from_node == 2)
     {
-      Serial.println("--- Incomming Data --- ");
-      Serial.print("pot1 = "); Serial.println(dataIncoming.pot1);
-      Serial.print("pot2 = "); Serial.println(dataIncoming.pot2);
-      Serial.println();
     }
-  }
-}
 
-void FunkData()
-{
-  // Send data:
-  RF24NetworkHeader header(FunkSlaveJoystick);   // Address where the data is going
-  bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
+    }
+  */
 }
