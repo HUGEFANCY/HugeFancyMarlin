@@ -1,6 +1,6 @@
 
-Firmware and code for the HugeFancyPrinter Project
-
+Firmware and code for the [HugeFancyPrinter Project
+](instagram.com/hugefancy)
 
 ## Anycubic Chiron Marlin-2.0.4.4
 - small 3D printer config for reference 

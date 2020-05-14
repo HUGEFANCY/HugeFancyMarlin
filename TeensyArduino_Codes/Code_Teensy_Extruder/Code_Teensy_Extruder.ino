@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <math.h>
-
 #include <Metro.h> // Include the Metro library // https://www.pjrc.com/teensy/td_libs_Metro.html
 
 unsigned long currentMillis = 0;
