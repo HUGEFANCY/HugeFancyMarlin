@@ -9,9 +9,7 @@
 #define b3 2   // Button 3
 #define b4 3   // Button 4
 
-
-// Max size of this struct is 32 bytes - NRF24L01 buffer limit
-struct Data_Package
+struct DataPackageOutcoming // Max size of this struct is 32 bytes - NRF24L01 buffer limit
 {
   byte j1PotX;
   byte j1PotY;
@@ -28,9 +26,9 @@ struct Data_Package
   byte button3;
   byte button4;
 };
-Data_Package data; //Create a variable with the above structure
+DataPackageOutcoming dataOutgoing; // Create a variable with the above structure
 
-void setupInputs()
+void setup_Inputs()
 {
 
   // Activate the Arduino internal pull-up resistors
@@ -44,38 +42,38 @@ void setupInputs()
   pinMode(b4, INPUT_PULLUP);
 
   // Set initial default values
-  data.j1PotX = 127; // Values from 0 to 255. When Joystick is in resting position, the value is in the middle, or 127. We actually map the pot value from 0 to 1023 to 0 to 255 because that's one BYTE value
-  data.j1PotY = 127;
-  data.j2PotX = 127;
-  data.j2PotY = 127;
-  data.j1Button = 1;
-  data.j2Button = 1;
-  data.pot1 = 1;
-  data.pot2 = 1;
-  data.tSwitch1 = 1;
-  data.tSwitch2 = 1;
-  data.button1 = 1;
-  data.button2 = 1;
-  data.button3 = 1;
-  data.button4 = 1;
+  dataOutgoing.j1PotX = 127; // Values from 0 to 255. When Joystick is in resting position, the value is in the middle, or 127. We actually map the pot value from 0 to 1023 to 0 to 255 because that's one BYTE value
+  dataOutgoing.j1PotY = 127;
+  dataOutgoing.j2PotX = 127;
+  dataOutgoing.j2PotY = 127;
+  dataOutgoing.j1Button = 1;
+  dataOutgoing.j2Button = 1;
+  dataOutgoing.pot1 = 1;
+  dataOutgoing.pot2 = 1;
+  dataOutgoing.tSwitch1 = 1;
+  dataOutgoing.tSwitch2 = 1;
+  dataOutgoing.button1 = 1;
+  dataOutgoing.button2 = 1;
+  dataOutgoing.button3 = 1;
+  dataOutgoing.button4 = 1;
 }
 
-void loopInputs()
+void loop_Inputs()
 {
   // Read all analog inputs and map them to one Byte value
-  data.j1PotX = map(analogRead(A1), 0, 1023, 0, 255); // Convert the analog read value from 0 to 1023 into a BYTE value from 0 to 255
-  data.j1PotY = map(analogRead(A0), 0, 1023, 0, 255);
-  data.j2PotX = map(analogRead(A2), 0, 1023, 0, 255);
-  data.j2PotY = map(analogRead(A3), 0, 1023, 0, 255);
-  data.pot1 = map(analogRead(A7), 0, 1023, 0, 255);
-  data.pot2 = map(analogRead(A6), 0, 1023, 0, 255);
+  dataOutgoing.j1PotX = map(analogRead(A1), 0, 1023, 0, 255); // Convert the analog read value from 0 to 1023 into a BYTE value from 0 to 255
+  dataOutgoing.j1PotY = map(analogRead(A0), 0, 1023, 0, 255);
+  dataOutgoing.j2PotX = map(analogRead(A2), 0, 1023, 0, 255);
+  dataOutgoing.j2PotY = map(analogRead(A3), 0, 1023, 0, 255);
+  dataOutgoing.pot1 = map(analogRead(A7), 0, 1023, 0, 255);
+  dataOutgoing.pot2 = map(analogRead(A6), 0, 1023, 0, 255);
   // Read all digital inputs
-  data.j1Button = digitalRead(jB1);
-  data.j2Button = digitalRead(jB2);
-  data.tSwitch1 = digitalRead(t1);
-  data.tSwitch2 = digitalRead(t2);
-  data.button1 = digitalRead(b1);
-  data.button2 = digitalRead(b2);
-  data.button3 = digitalRead(b3);
-  data.button4 = digitalRead(b4);
+  dataOutgoing.j1Button = digitalRead(jB1);
+  dataOutgoing.j2Button = digitalRead(jB2);
+  dataOutgoing.tSwitch1 = digitalRead(t1);
+  dataOutgoing.tSwitch2 = digitalRead(t2);
+  dataOutgoing.button1 = digitalRead(b1);
+  dataOutgoing.button2 = digitalRead(b2);
+  dataOutgoing.button3 = digitalRead(b3);
+  dataOutgoing.button4 = digitalRead(b4);
 }

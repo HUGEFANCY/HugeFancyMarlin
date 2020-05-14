@@ -7,82 +7,35 @@
   nRF24/RF24Network, https://github.com/nRF24/RF24Network
 */
 
-
 #include <SPI.h>
 
 #include <RF24Network.h>
 #include "RF24.h"
 
-// SPI Channel 0 (modefiziert): MOSI:11, MISO:12, SCK:14
-RF24 radio(5, 6); // CE, CSN -> Teensy Board 7, 8
-
+RF24 radio(5, 6); // CE, CSN -> Arduino Pro Mini Board 5, 6
 RF24Network network(radio);
-const uint16_t this_node = 02;   // Address of this node in Octal format ( 04,031, etc) // Motoreinheiten
 
-const uint16_t master00 = 00;    // Address of the other node in Octal format // Motoreinheiten
-const uint16_t node02 = 02; // Gedankenlesegerät
-const uint16_t node03 = 03; // Maschinenkopf
+const int FunkChannel = 90;
+const uint16_t FunkMasterSchaltschrank = 00; // Address of the other node in Octal format // Schaltschrank, Master
+const uint16_t FunkSlaveJoystick = 01; // Joystick, Slave
 
-const unsigned long interval_nrf_send_led = 950;  //ms  // How often to send data to the other unit
-unsigned long last_sent_led;            // When did we last send?
-
-const unsigned long interval_nrf_send_hub = 950;  //ms  // How often to send data to the other unit
-unsigned long last_sent_hub;            // When did we last send?
+Metro Metro_FunkCheck = Metro(50);
 
 
-// Datenkonstrukt eingehend Gedankenlesegerät
-struct dataStruct2
+struct DataPackageIncomming // Max size of this struct is 32 bytes - NRF24L01 buffer limit
 {
-  byte function;
-  byte value1;
-  byte value2;
-  byte value3;
-  byte value4;
-} myIncomingPacketGedankenlesegeraet;
+  byte TargetTempZone1 = 0;
+  byte TargetTempZone2 = 0;
+};
+DataPackageIncomming dataIncoming; // Create a variable with the above structure
 
 
 
-struct dataStruct { // Datenkonstrukt Ausgehend
-  byte function; // 1 = Gedankenpacket
-  byte value1; // Signalstärke
-  byte value2; // Meditation
-  byte value3; // Batterie
-  byte value4; // LED Programm
-} myOutgoingPacketMotoreinheiten;
-
-/*
-  struct dataStruct2 { // Datenkonstrukt eingehend Gedankenpacket
-  byte function;
-  byte value1;
-  byte value2;
-  byte value3;
-  } myOutgoingPacketLed;
-*/
-
-// Datenkonstrukt ausgehend Maschinenkopf Hub und LED
-struct dataStruct3
-{
-  byte function;
-  byte value1;
-  byte value2;
-} myOutgoingPacketMaschinenkopf;
-
-
-// Datenkonstrukt eingehend Maschinenkopf Konrtolle
-struct dataStruct4
-{
-  byte function; // 10 = erfolgreich.
-  byte value1;  // 1 = erfolgreich, 0 = nicht erfolgreich.
-} myIncomingPacketMaschinenkopf;
-
-
-
-void nrf24l01_setup()
+void setup_Funk()
 {
   SPI.begin();
-
   radio.begin();
-  network.begin(90, this_node); //(channel, node address)
+  network.begin(FunkChannel, FunkSlaveJoystick); //(channel, node address)
   radio.setPALevel(RF24_PA_MAX);
   radio.setDataRate(RF24_2MBPS);
   radio.setAutoAck(1); // Ensure autoACK is enabled
@@ -91,30 +44,30 @@ void nrf24l01_setup()
   //count How many retries before giving up, max 15
 }
 
-
-void nrf24l01_loop()
+void FunkData()
 {
+  // Send data:
+  RF24NetworkHeader header(FunkMasterSchaltschrank);   // Address where the data is going
+  bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
+}
 
-  //network.update();
-  myOutgoingPacketMotoreinheiten.function = 1;
-  myOutgoingPacketMotoreinheiten.value1 = 0;
-  myOutgoingPacketMotoreinheiten.value2 = 88;
-  myOutgoingPacketMotoreinheiten.value3 = 55; // Batteriestatus -> Batterie leer;
-  RF24NetworkHeader header(master00);   // (Address where the data is going)
-  bool ok = network.write(header, &myOutgoingPacketMotoreinheiten, sizeof(myOutgoingPacketMotoreinheiten)); // Send the data
-  /*
 
-    //===== Receiving =====//
-    while (network.available())
-    { // Is there any incoming data?
-    RF24NetworkHeader header;
-    network.read(header, &myIncomingPacketGedankenlesegeraet, sizeof(myIncomingPacketGedankenlesegeraet)); // Read the incoming data
+void loop_FunkCheck()
+{
+  //===== Receiving =====//
+  network.update();
 
-    // GEDANKENLESEGERÄT
-    if (header.from_node == 2)
+  while (network.available()) // Is there any incoming data?
+  {
+    RF24NetworkHeader header(FunkMasterSchaltschrank);
+    network.read(header, &dataIncoming, sizeof(dataIncoming)); // Read the incoming data
+
+    if (header.from_node == FunkMasterSchaltschrank)
     {
+      Serial.println("--- Incomming Data --- ");
+      Serial.print("TargetTempZone1 = "); Serial.println(dataIncoming.TargetTempZone1);
+      Serial.print("TargetTempZone2 = "); Serial.println(dataIncoming.TargetTempZone2);
+      Serial.println();
     }
-
-    }
-  */
+  }
 }
