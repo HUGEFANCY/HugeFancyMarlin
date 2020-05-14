@@ -15,7 +15,7 @@ void setup()
   delay(100);
 
   RS485_setup();
-  nrf24l01_setup();
+  setup_Funk();
   RGB_setup();
   I2C_Marlin_setup();
 
@@ -42,10 +42,10 @@ void loop()
       TargetTempExtruderMarlin = 0;
     }
     RS485_Schaltschrank_Send_Statusupdate();
-    nrf24l01_loop();
   }
   
   RS485_Schaltschrank_CheckIfUpdateAvalible();
+  loop_FunkCheck();
 
   //watchdog_gameover();
 }
