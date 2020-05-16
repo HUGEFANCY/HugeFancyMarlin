@@ -9,6 +9,9 @@ These are the codes running on the Teensy that is located next to the Extruder-u
 ## I2C_Master.ino
 - ? 
 
+## PID_TemperatureControl
+- controls the hotend temperature via PID 
+
 ## Motoren.ino
 - ?
 
