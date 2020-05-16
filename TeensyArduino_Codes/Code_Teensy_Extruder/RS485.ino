@@ -1,6 +1,6 @@
-// RS485 long distance communication betweent Teensy Schaltschrank (Master) and Teensy Extruder (Slave) über UART with selfmade Communication Protocol
-// Anleitung RS485 UART: https://circuitdigest.com/microcontroller-projects/rs485-serial-communication-between-arduino-uno-and-arduino-nano
-// Anleitung designing a communication protocol: https://henryforceblog.wordpress.com/2015/03/12/designing-a-communication-protocol-using-arduinos-serial-library/
+// RS485 long distance communication betweent Teensy_Schaltschrank (Master) and Teensy_Extruder (Slave) via UART with selfmade Communication Protocol
+// Tutorial RS485 UART: https://circuitdigest.com/microcontroller-projects/rs485-serial-communication-between-arduino-uno-and-arduino-nano
+// Tutorial designing a communication protocol: https://henryforceblog.wordpress.com/2015/03/12/designing-a-communication-protocol-using-arduinos-serial-library/
 
 // Slave Device
 
@@ -15,10 +15,10 @@
 
 const byte RS485_enablePin = 13;
 
-// Senden
+// Send
 const uint8_t bufferSize = 5;
 uint8_t buffer[bufferSize];
-// Empfangen
+// Receive
 uint8_t readCounter = 0;
 uint8_t isHeader = 0;
 uint8_t firstTimeHeader = 0; // Flag that helps us restart counter when we first find header byte

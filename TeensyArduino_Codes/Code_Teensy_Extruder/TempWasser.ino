@@ -3,8 +3,8 @@
 // Pinout Lüfter Radiator: https://alienware-forum.de/index.php/Attachment/1319-6b70473c-Diagram-1-png/?s=91c43ccfd0541d71ad162c7ef674f13691a83f23
 
 // Pinout
-int PinWasserIn = A21;
-int PinWasserOut = A22;
+int PinWasserIn = A21;    //Pin that is connected to the thermistor on the water inlet
+int PinWasserOut = A22;   //Pin that is connected to the thermistor on the water outlet
 
 Metro TempWasserIntervall = Metro(1000);
 

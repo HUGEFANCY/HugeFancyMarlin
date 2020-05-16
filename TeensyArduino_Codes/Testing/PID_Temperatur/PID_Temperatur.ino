@@ -5,7 +5,6 @@
 const int ledPin = LED_BUILTIN;
 
 
-
 void setup()
 {
   Serial.begin(9600);
