@@ -2,7 +2,8 @@
 
 DataPackageOutcoming LastimeData; // Create a variable with the above structure
 
-Metro Metro_SerialDataOutput = Metro(50);
+Metro Metro_SerialDataOutput = Metro(100);
+
 
 void setup_SerialDataOutput()
 {
@@ -30,14 +31,22 @@ void loop_SerialDataOutput()
   if (Metro_SerialDataOutput.check() == true)
   {
     // Potentiometer
-    if (LastimeData.pot1 != dataOutgoing.pot1)
+    if ((LastimeData.pot1 != dataOutgoing.pot1) and (dataOutgoing.button1 == 0))
     {
-      Serial.print("Poti L = "); Serial.println(dataOutgoing.pot1);
+      Serial.print("Poti 1 = "); Serial.println(dataOutgoing.pot1);
+      Oled(dataOutgoing.pot1, 3);
       LastimeData.pot1 = dataOutgoing.pot1;
+
+      if (dataOutgoing.button2 == 0)
+      {
+        TargetTemperatureZone_1 = dataOutgoing.pot1;
+      }
     }
+
     if (LastimeData.pot2 != dataOutgoing.pot2)
     {
-      Serial.print("Poti R = "); Serial.println(dataOutgoing.pot2);
+      Serial.print("Poti 2 = "); Serial.println(dataOutgoing.pot2);
+      Oled(dataOutgoing.pot2, 5);
       LastimeData.pot2 = dataOutgoing.pot2;
     }
 
@@ -54,17 +63,19 @@ void loop_SerialDataOutput()
     }
 
 
-    // Buttonx
+    // Buttons
     if (LastimeData.button1 != dataOutgoing.button1)
     {
       Serial.print("Button 1 = "); Serial.println(dataOutgoing.button1);
       LastimeData.button1 = dataOutgoing.button1;
     }
-    if (LastimeData.button2 != dataOutgoing.button2)
-    {
+    /*
+      if (LastimeData.button2 != dataOutgoing.button2)
+      {
       Serial.print("Button 2 = "); Serial.println(dataOutgoing.button2);
       LastimeData.button2 = dataOutgoing.button2;
-    }
+      }
+    */
     if (LastimeData.button3 != dataOutgoing.button3)
     {
       Serial.print("Button 3 = "); Serial.println(dataOutgoing.button3);

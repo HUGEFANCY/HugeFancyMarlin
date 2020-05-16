@@ -4,16 +4,21 @@
 
 unsigned long currentMillis = 0;
 int analog_resolution = 10; // sets resolution of analog writing as exponent of 2 (2^12=4096)
-bool once = true;
 
-// Target Values from Marlin and Real Values from Hotend
-int TargetTempExtruderMarlin = 0; // max 9 Bit = 511°C
-int CombinedTempertureExtruderForMarlin = 44; // max 9 Bit = 511°C
-byte PwmValuePartCoolingFanMarlin = 0;
 
 // Extruder
+int TargetTempExtruderMarlin = 0; // max 9 Bit = 511° // Target Values from Marlin and Real Values from Hotend
+// ->
+int TargetTemperatureZone_1 = 0; // max 9 Bit = 511°C
+int TargetTemperatureZone_2 = 0; // max 9 Bit = 511°C
+// ->
 int RealTemperatureZone_1 = 0; // max 9 Bit = 511°C
 int RealTemperatureZone_2 = 0; // max 9 Bit = 511°C
+// ->
+int CombinedRealTempertureExtruderForMarlin = 44; // max 9 Bit = 511°C
+
+byte PwmValuePartCoolingFanMarlin = 0;
+// ->
 bool LuefterZone_1 = false;
 bool LuefterZone_2 = false;
 
@@ -22,7 +27,6 @@ int TempWatercooling_In = 0; // max 9 Bit = 511°C
 int TempWatercooling_Out = 0; // max 9 Bit = 511°C
 
 byte ExtruderCoolingStatusMarlin = 0; // 0 = off, 1 = on // muss 8 Bit, statt boolean sein
-byte pwmValuePartCoolingFan = 0; // max 8 Bit = 255
 
 float prozentTankladung = 0;
 void setup()
@@ -54,11 +58,6 @@ void loop()
 
   //watchdog_gameover();
 
-  // Hier Platz für Einwegcode
-  if (once == true)
-  {
-    once = false;
-  }
 
 
   SerialTastatur_CheckKeys();
