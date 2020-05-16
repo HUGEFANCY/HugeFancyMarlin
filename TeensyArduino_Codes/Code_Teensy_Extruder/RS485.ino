@@ -121,15 +121,15 @@ void RS485_Extruder_Send_Statusupdate()
   // Byte 4 Checksum
 
   buffer[0] = header_AbsenderExtruder_Statusupdate; // Bufferheader
-  if (CombinedTempertureExtruderForMarlin <= 255)
+  if (CombinedRealTempertureExtruderForMarlin <= 255)
   {
-    buffer[1] = CombinedTempertureExtruderForMarlin; // Wert von 0-255°C
+    buffer[1] = CombinedRealTempertureExtruderForMarlin; // Wert von 0-255°C
     buffer[2] = 0;
   }
-  else if ((CombinedTempertureExtruderForMarlin > 255) and (CombinedTempertureExtruderForMarlin <= 510))
+  else if ((CombinedRealTempertureExtruderForMarlin > 255) and (CombinedRealTempertureExtruderForMarlin <= 510))
   {
     buffer[1] = 255;
-    buffer[2] = CombinedTempertureExtruderForMarlin - 255; // Wert von 256-510°C
+    buffer[2] = CombinedRealTempertureExtruderForMarlin - 255; // Wert von 256-510°C
   }
   buffer[3] = 0;
   buffer[4] = checksum();
