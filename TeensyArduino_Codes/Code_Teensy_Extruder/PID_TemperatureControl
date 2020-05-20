@@ -25,17 +25,25 @@
 
 #include <PID_v1.h>
 
-#define PIN_INPUT 0
-#define RELAY_PIN 6
+#define RELAY_PIN_Zone1 6
+#define RELAY_PIN_Zone2 7
 
 //Define Variables we'll be connecting to
-double Setpoint, Input, Output;
+double Setpoint_Zone1, Input_Zone1, Output_Zone1; //Heating Zone 1
+double Setpoint_Zone2, Input_Zone2, Output_Zone2; //Heating Zone 2
 
-//Specify the links and initial tuning parameters
-double Kp=2, Ki=5, Kd=1;
-PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
+//Specify the links and initial tuning parameters 
+//TODO: find out if P_ON_M is needed (proportional on measurement) http://brettbeauregard.com/blog/2017/06/introducing-proportional-on-measurement/
 
-int WindowSize = 5000;
+//Heating Zone 1
+double Kp_Zone1=2, Ki_Zone1=5, Kd_Zone1=1;
+PID myPID_Zone1(&Input_Zone1, &Output_Zone1, &Setpoint_Zone1, Kp_Zone1, Ki_Zone1, Kd_Zone1, DIRECT);
+
+//Heating Zone 2
+double Kp_Zone2=2, Ki_Zone2=5, Kd_Zone2=1;
+PID myPID_Zone2(&Input_Zone2, &Output_Zone2, &Setpoint_Zone2, Kp_Zone2, Ki_Zone1, Kd_Zone2, DIRECT);
+
+int WindowSize = 4000;
 unsigned long windowStartTime;
 
 void setup()
@@ -43,19 +51,32 @@ void setup()
   windowStartTime = millis();
 
   //initialize the variables we're linked to
-  Setpoint = 100;
+  Setpoint_Zone1 = 0;
+  Setpoint_Zone2 = 0;
 
   //tell the PID to range between 0 and the full window size
-  myPID.SetOutputLimits(0, WindowSize);
+  myPID_Zone1.SetOutputLimits(0, WindowSize);
+  myPID_Zone2.SetOutputLimits(0, WindowSize);
+
 
   //turn the PID on
-  myPID.SetMode(AUTOMATIC);
+  myPID_Zone1.SetMode(AUTOMATIC);
+  myPID_Zone2.SetMode(AUTOMATIC);
 }
 
 void loop()
 {
-  Input = analogRead(PIN_INPUT);
-  myPID.Compute();
+  //Set the current temperature targets
+  Setpoint_Zone1 = TargetTemperatureZone1;
+  Setpoint_Zone2 = TargetTemperatureZone2;
+
+  //Get the current temperature 
+  Input_Zone1 = RealTemperatureZone1;
+  Input_Zone2 = RealTemperatureZone2;
+
+  //Compute PID from Input Values 
+  myPID_Zone1.Compute();
+  myPID_Zone2.Compute();
 
   /************************************************
    * turn the output pin on/off based on pid output
@@ -64,9 +85,15 @@ void loop()
   { //time to shift the Relay Window
     windowStartTime += WindowSize;
   }
-  if (Output < millis() - windowStartTime) 
+
+  if (Output_Zone1 < millis() - windowStartTime) 
   { 
-        digitalWrite(RELAY_PIN, HIGH);
-  else digitalWrite(RELAY_PIN, LOW);
+        digitalWrite(RELAY_PIN_Zone1, HIGH);
+  else digitalWrite(RELAY_PIN_Zone1, LOW);
+
+  if (Output_Zone2 < millis() - windowStartTime) 
+  { 
+        digitalWrite(RELAY_PIN_Zone2, HIGH);
+  else digitalWrite(RELAY_PIN_Zone2, LOW);
 
 }
