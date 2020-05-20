@@ -29,21 +29,21 @@ void PT100_MAX31865_setup()
 
 
 
-  thermo_zone_1.autoConvert(false);
-  thermo_zone_2.autoConvert(false);
+  //thermo_zone_1.autoConvert(false);
+  //thermo_zone_2.autoConvert(false);
 
-  thermo_zone_1.enable50Hz(true);
-  thermo_zone_2.enable50Hz(true);
+  thermo_zone_1.enable50Hz(false);
+  thermo_zone_2.enable50Hz(false);
 
   thermo_zone_1.begin(MAX31865_3WIRE);  // set to 2WIRE or 4WIRE as necessary
   thermo_zone_2.begin(MAX31865_3WIRE);  // set to 2WIRE or 4WIRE as necessary
 
 
-  thermo_zone_1.autoConvert(false);
-  thermo_zone_2.autoConvert(false);
+  //thermo_zone_1.autoConvert(false);
+  //thermo_zone_2.autoConvert(false);
 
-  thermo_zone_1.enable50Hz(true);
-  thermo_zone_2.enable50Hz(true);
+  //thermo_zone_1.enable50Hz(true);
+  //thermo_zone_2.enable50Hz(true);
 
   /* Configure:
 
