@@ -17,6 +17,7 @@ void setup()
   RS485_setup();
   setup_Funk();
   RGB_setup();
+  Relays_setup();
   I2C_Marlin_setup();
 
   Serial.println("Setup End");
@@ -26,7 +27,7 @@ void loop()
 {
   currentMillis = millis();
 
-  //SerialTastatur_CheckKeys();
+  SerialTastatur_CheckKeys();
 
   // Sende jede Sekunde eine neue Ziffer // Testcode
 
