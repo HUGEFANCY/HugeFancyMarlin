@@ -29,25 +29,25 @@ void PT100_MAX31865_setup()
 
 
 
-  //thermo_zone_1.autoConvert(false);
-  //thermo_zone_2.autoConvert(false);
+  thermo_zone_1.autoConvert(true);
+  thermo_zone_2.autoConvert(true);
 
-  thermo_zone_1.enable50Hz(false);
-  thermo_zone_2.enable50Hz(false);
+  thermo_zone_1.enable50Hz(true);
+  thermo_zone_2.enable50Hz(true);
 
   thermo_zone_1.begin(MAX31865_3WIRE);  // set to 2WIRE or 4WIRE as necessary
   thermo_zone_2.begin(MAX31865_3WIRE);  // set to 2WIRE or 4WIRE as necessary
 
 
-  //thermo_zone_1.autoConvert(false);
-  //thermo_zone_2.autoConvert(false);
-
-  //thermo_zone_1.enable50Hz(true);
-  //thermo_zone_2.enable50Hz(true);
+  thermo_zone_1.autoConvert(true);
+  thermo_zone_2.autoConvert(true);
+  
+  thermo_zone_1.enable50Hz(true);
+  thermo_zone_2.enable50Hz(true);
 
   /* Configure:
 
-    V_BIAS enabled
+    V_BIAS enfalse
     Auto-conversion
     1-shot disabled
     3-wire enabled
@@ -119,9 +119,8 @@ void PT100_MAX31865_loop()
     {
       RealTemperatureZone_1 = round(thermo_zone_1.temperature(RNOMINAL, RREF));
       RealTemperatureZone_2 = round(thermo_zone_2.temperature(RNOMINAL, RREF));
-      Serial.print("T Zone 1 = "); Serial.println(RealTemperatureZone_1);
-      Serial.print("T Zone 2 = "); Serial.println(RealTemperatureZone_2);
-      Serial.println();
+      
+
     }
   }
 }

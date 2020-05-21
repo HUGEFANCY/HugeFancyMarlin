@@ -2,27 +2,29 @@
 #include <math.h>
 #include <Metro.h> // Include the Metro library // https://www.pjrc.com/teensy/td_libs_Metro.html
 
-unsigned long currentMillis = 0;
+unsigned long currentMillis,startMillis = 0;
 int analog_resolution = 10; // sets resolution of analog writing as exponent of 2 (2^12=4096)
 
 
-// Extruder
-int TargetTempExtruderMarlin = 0; // max 9 Bit = 511° // Target Values from Marlin and Real Values from Hotend
+// Extruder temperatures
+int TargetTempExtruderMarlin = 60; // max 9 Bit = 511° // Target Values from Marlin and Real Values from Hotend
 // ->
-int TargetTemperatureZone_1 = 0; // max 9 Bit = 511°C
-int TargetTemperatureZone_2 = 0; // max 9 Bit = 511°C
-// ->
+int Zone1_TargetOffset = 15 ;  // Heating Zone 1 will be different from Zone 2
+int TargetTemperatureZone_1 = TargetTempExtruderMarlin - Zone1_TargetOffset; // max 9 Bit = 511°C
+int TargetTemperatureZone_2 = TargetTempExtruderMarlin; // max 9 Bit = 511°C
+
+ // ->
 int RealTemperatureZone_1 = 0; // max 9 Bit = 511°C
 int RealTemperatureZone_2 = 0; // max 9 Bit = 511°C
 // ->
-int CombinedRealTempertureExtruderForMarlin = 44; // max 9 Bit = 511°C
+int CombinedRealTempExtruder = 0; // max 9 Bit = 511°C
 
 byte PwmValuePartCoolingFanMarlin = 0;
-// ->
+// Hotend Fans 
 bool LuefterZone_1 = false;
 bool LuefterZone_2 = false;
 
-// Wasserkühlung
+// Water cooling temperatures
 int TempWatercooling_In = 0; // max 9 Bit = 511°C
 int TempWatercooling_Out = 0; // max 9 Bit = 511°C
 
@@ -31,7 +33,8 @@ byte ExtruderCoolingStatusMarlin = 0; // 0 = off, 1 = on // muss 8 Bit, statt bo
 float prozentTankladung = 0;
 void setup()
 {
-  Serial.begin(9600); // serieller Monitor
+  delay(000);
+  Serial.begin(9600); 
   delay(100);
 
   analogReadResolution(analog_resolution);
@@ -42,8 +45,11 @@ void setup()
   PT100_MAX31865_setup();
   Relays_setup();
   RGB_setup();
+  PID_setup();
+  Relays_clickCluck();
 
 
+  startMillis = millis(); //start timer for periodic executions
   Serial.println("Setup fertig");
 }
 
@@ -51,15 +57,22 @@ void loop()
 {
   currentMillis = millis(); // Für das periodische Aufrufen von diversen Funktionen ohne ein delay zu verursachen
 
-  RS485_Extruder_CheckIfUpdateAvalible();
+  //RS485_Extruder_CheckIfUpdateAvalible();
   PT100_MAX31865_loop();
   TM1637_update();
   TempWasser_loop();
+  PID_loop();
+  CombineRealTemps();
+
 
   //watchdog_gameover();
 
-
-
   SerialTastatur_CheckKeys();
 
+  if (currentMillis -startMillis > 2)
+  {
+    //Serial.println("periodic func");
+    PrintCombTemps();
+    startMillis = currentMillis;
+  }
 }

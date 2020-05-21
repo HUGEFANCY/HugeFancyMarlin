@@ -1,19 +1,20 @@
 Teensy Pinout: 
 
-
-
 These are the codes running on the Teensy that is located next to the Extruder-unit on the Z- axis:
 
 ## Code_Teensy_Extruder.ino
 - Main code running on the teensy, imports funcitons from the files below
+- runs the main loop
 
 ## Gameover.ino
 - safety watchdog 
+
 ## I2C_Master.ino
 - ? 
 
 ## PID_TemperatureControl
-- controls the hotend temperature via PID 
+- controls the hotend temperature via PID
+- controls the Hotend relays by calling Helper function from Relays.ino 
 
 ## Motoren.ino
 - ?
@@ -22,10 +23,10 @@ These are the codes running on the Teensy that is located next to the Extruder-u
 - BedLeveling Probe 
 
 ## PT100_MAX31865.ino
-- Interfaces with MAX31865 boards and thermocouples
+- Interfaces with MAX31865 boards and thermocouples for temperature reading
 
 ## Relays.ino
-- Control of relays for heater and light 
+- Helper funcitons of relays for heaters, cooling, and light 
 
 ## RGB_Led.ino
 - RGB-LED as a visual status indication located on the PCB

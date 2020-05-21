@@ -28,7 +28,7 @@ int Lesewassertemp(int Pin)
 
   TKelvin = 1 / ((1 / Tn) + ((double)1 / bWert) * log((double)widerstandNTC / Widerstand)); // ermittle die Temperatur in Kelvin
   T = round(TKelvin - kelvintemp); // ermittle die Temperatur in °C
-  Serial.println(T);
+  //Serial.println(T);
   return (T);
 
 }

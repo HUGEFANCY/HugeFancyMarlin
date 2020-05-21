@@ -8,10 +8,8 @@
  */
 
 /********************************************************
- * PID RelayOutput Example
- * Same as basic example, except that this time, the output
- * is going to a digital pin which (we presume) is controlling
- * a relay.  the pid is designed to Output an analog value,
+ * PID RelayOutput for Temperature control
+ * the pid library is designed to Output an analog value,
  * but the relay can only be On/Off.
  *
  *   to connect them together we use "time proportioning
@@ -25,8 +23,7 @@
 
 #include <PID_v1.h>
 
-#define RELAY_PIN_Zone1 6
-#define RELAY_PIN_Zone2 7
+//see Relays.ino for pinout 
 
 //Define Variables we'll be connecting to
 double Setpoint_Zone1, Input_Zone1, Output_Zone1; //Heating Zone 1
@@ -34,19 +31,18 @@ double Setpoint_Zone2, Input_Zone2, Output_Zone2; //Heating Zone 2
 
 //Specify the links and initial tuning parameters 
 //TODO: find out if P_ON_M is needed (proportional on measurement) http://brettbeauregard.com/blog/2017/06/introducing-proportional-on-measurement/
-
-//Heating Zone 1
+//Heating Zone_1
 double Kp_Zone1=2, Ki_Zone1=5, Kd_Zone1=1;
-PID myPID_Zone1(&Input_Zone1, &Output_Zone1, &Setpoint_Zone1, Kp_Zone1, Ki_Zone1, Kd_Zone1, DIRECT);
+PID myPID_Zone1(&Input_Zone1, &Output_Zone1, &Setpoint_Zone1, Kp_Zone1, Ki_Zone1, Kd_Zone1, 1, DIRECT);
 
-//Heating Zone 2
+//Heating Zone_2
 double Kp_Zone2=2, Ki_Zone2=5, Kd_Zone2=1;
-PID myPID_Zone2(&Input_Zone2, &Output_Zone2, &Setpoint_Zone2, Kp_Zone2, Ki_Zone1, Kd_Zone2, DIRECT);
+PID myPID_Zone2(&Input_Zone2, &Output_Zone2, &Setpoint_Zone2, Kp_Zone2, Ki_Zone1, Kd_Zone2, 1, DIRECT);
 
 int WindowSize = 4000;
 unsigned long windowStartTime;
 
-void setup()
+void PID_setup()
 {
   windowStartTime = millis();
 
@@ -64,15 +60,15 @@ void setup()
   myPID_Zone2.SetMode(AUTOMATIC);
 }
 
-void loop()
+void PID_loop()
 {
   //Set the current temperature targets
-  Setpoint_Zone1 = TargetTemperatureZone1;
-  Setpoint_Zone2 = TargetTemperatureZone2;
+  Setpoint_Zone1 = TargetTemperatureZone_1;
+  Setpoint_Zone2 = TargetTemperatureZone_2;
 
   //Get the current temperature 
-  Input_Zone1 = RealTemperatureZone1;
-  Input_Zone2 = RealTemperatureZone2;
+  Input_Zone1 = RealTemperatureZone_1;
+  Input_Zone2 = RealTemperatureZone_2;
 
   //Compute PID from Input Values 
   myPID_Zone1.Compute();
@@ -86,14 +82,26 @@ void loop()
     windowStartTime += WindowSize;
   }
 
-  if (Output_Zone1 < millis() - windowStartTime) 
+  if (Output_Zone1 > millis() - windowStartTime) 
   { 
-        digitalWrite(RELAY_PIN_Zone1, HIGH);
-  else digitalWrite(RELAY_PIN_Zone1, LOW);
+        RelayHeaterZone_1_SetStatus(true);
+        RelayCoolerZone_1_SetStatus(false) ;
 
-  if (Output_Zone2 < millis() - windowStartTime) 
+  }
+  else 
+  {
+    RelayHeaterZone_1_SetStatus(false);
+    RelayCoolerZone_1_SetStatus(true) ;   
+  }
+
+  if (Output_Zone2 > millis() - windowStartTime) 
   { 
-        digitalWrite(RELAY_PIN_Zone2, HIGH);
-  else digitalWrite(RELAY_PIN_Zone2, LOW);
-
+        RelayHeaterZone_2_SetStatus(true);
+        RelayCoolerZone_2_SetStatus(false) ;
+  }
+  else 
+  {
+    RelayHeaterZone_2_SetStatus(false);
+    RelayCoolerZone_2_SetStatus(true) ;         
+  }
 }
