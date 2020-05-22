@@ -57,6 +57,16 @@ void PrintCombTemps()
     Serial.print(",");
     //Serial.print("TZone2="); 
     Serial.print(RealTemperatureZone_2);
+    Serial.print(",");
+
+    //Serial.print(LuefterZone_1);
+    //Serial.print(",");
+    Serial.print(HeaterZone_1);
+    Serial.print(",");
+    //Serial.print(LuefterZone_2);
+    //Serial.print(",");
+    Serial.print(HeaterZone_2);
+    Serial.print(",");
 
     Serial.println();
 }

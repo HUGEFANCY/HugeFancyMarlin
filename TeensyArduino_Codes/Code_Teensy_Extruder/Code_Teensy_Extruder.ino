@@ -20,9 +20,13 @@ int RealTemperatureZone_2 = 0; // max 9 Bit = 511°C
 int CombinedRealTempExtruder = 0; // max 9 Bit = 511°C
 
 byte PwmValuePartCoolingFanMarlin = 0;
-// Hotend Fans 
-bool LuefterZone_1 = false;
-bool LuefterZone_2 = false;
+// Hotend Bools 
+//these are status bools  that do not affect the actual prcess but simply indicate a status. 
+//Changing them here will not activate the relays 
+int LuefterZone_1 = 0;
+int LuefterZone_2 = 0;
+int HeaterZone_1 = 0;
+int HeaterZone_2 = 0;
 
 // Water cooling temperatures
 int TempWatercooling_In = 0; // max 9 Bit = 511°C
@@ -33,7 +37,7 @@ byte ExtruderCoolingStatusMarlin = 0; // 0 = off, 1 = on // muss 8 Bit, statt bo
 float prozentTankladung = 0;
 void setup()
 {
-  delay(000);
+  delay(200);
   Serial.begin(9600); 
   delay(100);
 
@@ -69,7 +73,7 @@ void loop()
 
   SerialTastatur_CheckKeys();
 
-  if (currentMillis -startMillis > 2)
+  if (currentMillis -startMillis > 100)
   {
     //Serial.println("periodic func");
     PrintCombTemps();

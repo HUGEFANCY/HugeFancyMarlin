@@ -32,12 +32,12 @@ double Setpoint_Zone2, Input_Zone2, Output_Zone2; //Heating Zone 2
 //Specify the links and initial tuning parameters 
 //TODO: find out if P_ON_M is needed (proportional on measurement) http://brettbeauregard.com/blog/2017/06/introducing-proportional-on-measurement/
 //Heating Zone_1
-double Kp_Zone1=2, Ki_Zone1=5, Kd_Zone1=1;
-PID myPID_Zone1(&Input_Zone1, &Output_Zone1, &Setpoint_Zone1, Kp_Zone1, Ki_Zone1, Kd_Zone1, 1, DIRECT);
+double Kp_Zone1=1000, Ki_Zone1=10, Kd_Zone1=10;
+PID myPID_Zone1(&Input_Zone1, &Output_Zone1, &Setpoint_Zone1, Kp_Zone1, Ki_Zone1, Kd_Zone1, 0, DIRECT);
 
 //Heating Zone_2
-double Kp_Zone2=2, Ki_Zone2=5, Kd_Zone2=1;
-PID myPID_Zone2(&Input_Zone2, &Output_Zone2, &Setpoint_Zone2, Kp_Zone2, Ki_Zone1, Kd_Zone2, 1, DIRECT);
+double Kp_Zone2=1000, Ki_Zone2=10, Kd_Zone2=10;
+PID myPID_Zone2(&Input_Zone2, &Output_Zone2, &Setpoint_Zone2, Kp_Zone2, Ki_Zone1, Kd_Zone2, 0, DIRECT);
 
 int WindowSize = 4000;
 unsigned long windowStartTime;
@@ -85,23 +85,39 @@ void PID_loop()
   if (Output_Zone1 > millis() - windowStartTime) 
   { 
         RelayHeaterZone_1_SetStatus(true);
-        RelayCoolerZone_1_SetStatus(false) ;
+        //RelayCoolerZone_1_SetStatus(false) ;
+        LuefterZone_1 = 0;
+        HeaterZone_1 = 15;
+        //Serial.print(15);
+        //Serial.print(",");
 
   }
   else 
   {
     RelayHeaterZone_1_SetStatus(false);
-    RelayCoolerZone_1_SetStatus(true) ;   
+    RelayCoolerZone_1_SetStatus(true) ;
+    LuefterZone_1 = 18;
+    HeaterZone_1 = 0;
+    //Serial.print(0);
+    //Serial.print(",");   
   }
 
   if (Output_Zone2 > millis() - windowStartTime) 
   { 
         RelayHeaterZone_2_SetStatus(true);
-        RelayCoolerZone_2_SetStatus(false) ;
+        //RelayCoolerZone_2_SetStatus(false) ;
+        LuefterZone_2 = 0;
+        HeaterZone_2 = 10;
+        //Serial.print(10);
+        //Serial.print(",");
   }
   else 
   {
     RelayHeaterZone_2_SetStatus(false);
-    RelayCoolerZone_2_SetStatus(true) ;         
+    RelayCoolerZone_2_SetStatus(true) ;
+    LuefterZone_2 = 7;
+    HeaterZone_2 = 0;  
+    //Serial.print(0);
+    //Serial.print(",");       
   }
 }
