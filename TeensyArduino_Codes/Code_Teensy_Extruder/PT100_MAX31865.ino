@@ -23,7 +23,7 @@ Adafruit_MAX31865 thermo_zone_2 = Adafruit_MAX31865(CS_pin_zone_2, SDI_pin, SDO_
 
 Metro temperaturIntervall = Metro(500);
 
-const int temp_cycle_number = 5;
+const int temp_cycle_number = 4;
 double LastTempsZ1[temp_cycle_number] = {0};  //array with the last recorded temps 
 double LastTempsZ2[temp_cycle_number] = {0};  
 int i = 0;
