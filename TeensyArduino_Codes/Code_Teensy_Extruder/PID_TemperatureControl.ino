@@ -32,15 +32,16 @@ double Setpoint_Zone2, Input_Zone2, Output_Zone2; //Heating Zone 2
 //Specify the links and initial tuning parameters 
 //TODO: find out if P_ON_M is needed (proportional on measurement) http://brettbeauregard.com/blog/2017/06/introducing-proportional-on-measurement/
 //Heating Zone_1
-double Kp_Zone1=1000, Ki_Zone1=10, Kd_Zone1=10;
+double Kp_Zone1=300, Ki_Zone1=5, Kd_Zone1=500;
 PID myPID_Zone1(&Input_Zone1, &Output_Zone1, &Setpoint_Zone1, Kp_Zone1, Ki_Zone1, Kd_Zone1, 0, DIRECT);
 
 //Heating Zone_2
-double Kp_Zone2=1000, Ki_Zone2=10, Kd_Zone2=10;
+double Kp_Zone2=300, Ki_Zone2=5, Kd_Zone2=500;
 PID myPID_Zone2(&Input_Zone2, &Output_Zone2, &Setpoint_Zone2, Kp_Zone2, Ki_Zone1, Kd_Zone2, 0, DIRECT);
 
 int WindowSize = 4000;
 unsigned long windowStartTime;
+double averageZ1,averageZ2;
 
 void PID_setup()
 {
@@ -61,18 +62,25 @@ void PID_setup()
 }
 
 void PID_loop()
-{
+{ 
+
   //Set the current temperature targets
-  Setpoint_Zone1 = TargetTemperatureZone_1;
-  Setpoint_Zone2 = TargetTemperatureZone_2;
+  Setpoint_Zone1 = (double)TargetTemperatureZone_1;
+  Setpoint_Zone2 = (double)TargetTemperatureZone_2;
 
   //Get the current temperature 
-  Input_Zone1 = RealTemperatureZone_1;
-  Input_Zone2 = RealTemperatureZone_2;
+  //Input_Zone1 = RealTemperatureZone_1;
+  //Input_Zone2 = RealTemperatureZone_2;
+  Input_Zone1 = AveragedRealTempZone_1;
+  Input_Zone2 = AveragedRealTempZone_2;
 
   //Compute PID from Input Values 
   myPID_Zone1.Compute();
   myPID_Zone2.Compute();
+
+  HeatPowerZone_1 = Output_Zone1/WindowSize *25;
+  HeatPowerZone_2 = Output_Zone2/WindowSize *25;
+  
 
   /************************************************
    * turn the output pin on/off based on pid output

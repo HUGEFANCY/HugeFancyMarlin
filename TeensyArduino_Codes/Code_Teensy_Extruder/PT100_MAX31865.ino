@@ -23,6 +23,12 @@ Adafruit_MAX31865 thermo_zone_2 = Adafruit_MAX31865(CS_pin_zone_2, SDI_pin, SDO_
 
 Metro temperaturIntervall = Metro(500);
 
+const int temp_cycle_number = 5;
+double LastTempsZ1[temp_cycle_number] = {0};  //array with the last recorded temps 
+double LastTempsZ2[temp_cycle_number] = {0};  
+int i = 0;
+double helpsum = 0;
+
 
 void PT100_MAX31865_setup()
 {
@@ -120,6 +126,32 @@ void PT100_MAX31865_loop()
       RealTemperatureZone_1 = round(thermo_zone_1.temperature(RNOMINAL, RREF));
       RealTemperatureZone_2 = round(thermo_zone_2.temperature(RNOMINAL, RREF));
       
+      //AveragedRealTempZone_1 = thermo_zone_1.temperature(RNOMINAL, RREF);
+      //AveragedRealTempZone_2 = thermo_zone_2.temperature(RNOMINAL, RREF);
+      LastTempsZ1[i] =thermo_zone_1.temperature(RNOMINAL, RREF);
+      LastTempsZ2[i] =thermo_zone_2.temperature(RNOMINAL, RREF);
+      
+      helpsum = 0;
+      for (int j=0; j < temp_cycle_number; j++)
+      {
+        helpsum += LastTempsZ1[j];
+      } 
+      AveragedRealTempZone_1 = helpsum / temp_cycle_number;
+      
+
+      helpsum = 0; 
+      for (int j=0; j < temp_cycle_number; j++)
+      {
+        helpsum += LastTempsZ2[j];
+      }
+      AveragedRealTempZone_2 = helpsum / temp_cycle_number;
+      
+      i += 1;
+      if (i >= temp_cycle_number)
+      {
+        i = 0;
+      }
+
 
     }
   }

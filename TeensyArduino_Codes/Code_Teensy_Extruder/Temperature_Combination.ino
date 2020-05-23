@@ -12,7 +12,7 @@ const int waitErr = 10;
 
 void CombineRealTemps()
 {
-    int err_Z1, err_Z2  = 0;
+    int err_Z1 = 0, err_Z2  = 0;
     err_Z1 += TargetTemperatureZone_1 - RealTemperatureZone_1;
     err_Z2 += TargetTemperatureZone_2 - RealTemperatureZone_2;
 
@@ -39,10 +39,10 @@ void CombineRealTemps()
 
 void PrintCombTemps()
 {
-    Serial.print(",");
+    //Serial.print(",");
     //Serial.print("TargetTempfromMarlin:  ");
-    Serial.print(TargetTempExtruderMarlin);
-    Serial.print(",");
+    //Serial.print(TargetTempExtruderMarlin);
+    //Serial.print(",");
     //Serial.print("TargetTemp1:");
     Serial.print(TargetTemperatureZone_1);
     Serial.print(",");
@@ -50,13 +50,15 @@ void PrintCombTemps()
     Serial.print(TargetTemperatureZone_2);
     Serial.print(",");
     //Serial.print("CombinedRealTempExtruder:");
-    Serial.print(CombinedRealTempExtruder);
-    Serial.print(",");
+    //Serial.print(CombinedRealTempExtruder);
+    //Serial.print(",");
     //Serial.print("TZone1="); 
-    Serial.print(RealTemperatureZone_1);
+    //Serial.print(RealTemperatureZone_1);
+    Serial.print(AveragedRealTempZone_1);
     Serial.print(",");
     //Serial.print("TZone2="); 
-    Serial.print(RealTemperatureZone_2);
+    // Serial.print(RealTemperatureZone_2);
+    Serial.print(AveragedRealTempZone_2);
     Serial.print(",");
 
     //Serial.print(LuefterZone_1);
@@ -66,6 +68,11 @@ void PrintCombTemps()
     //Serial.print(LuefterZone_2);
     //Serial.print(",");
     Serial.print(HeaterZone_2);
+    Serial.print(",");
+
+    Serial.print(HeatPowerZone_1);
+    Serial.print(",");
+    Serial.print(HeatPowerZone_2);
     Serial.print(",");
 
     Serial.println();

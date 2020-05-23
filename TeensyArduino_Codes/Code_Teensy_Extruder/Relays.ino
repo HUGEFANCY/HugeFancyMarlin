@@ -118,34 +118,37 @@ void RelayLicht_SetStatus(bool statusSetzen)
 
 void Relays_clickCluck()
 {
-  //RelayHeaterZone_1_SetStatus(true);
-  delay(200);
-  //RelayHeaterZone_2_SetStatus(true);
-  delay(200);
+  
   RelayCoolerZone_1_SetStatus(true);
-  delay(200);
+  delay(500);
   RelayCoolerZone_2_SetStatus(true);
-  delay(100);
+  delay(500);
+
+  RelayHeaterZone_1_SetStatus(true);
+  delay(500);
+  RelayHeaterZone_2_SetStatus(true);
+  delay(500);
+  
 
   RelayHeaterZone_1_SetStatus(false);
-  delay(300);
+  delay(10);
   RelayHeaterZone_2_SetStatus(false);
-  delay(300);
+  delay(10);
   RelayCoolerZone_1_SetStatus(false);
-  delay(300);
+  delay(10);
   RelayCoolerZone_2_SetStatus(false);
-  delay(300);
+  delay(10);
 
   // Wasserkühlung
-  //RelayWatercooling_SetStatus(true);
-  delay(500);
-  //RelayWatercooling_SetStatus(false);
-  delay(500);
+  RelayWatercooling_SetStatus(true);
+  delay(100);
+  RelayWatercooling_SetStatus(false);
+  delay(100);
 
   // Licht
-  //RelayLicht_SetStatus(true);
+  RelayLicht_SetStatus(true);
   delay(200);
-  //RelayLicht_SetStatus(false);
+  RelayLicht_SetStatus(false);
   //delay(500);
 
 }
