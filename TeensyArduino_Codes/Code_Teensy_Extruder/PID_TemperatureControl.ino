@@ -32,12 +32,12 @@ double Setpoint_Zone2, Input_Zone2, Output_Zone2; //Heating Zone 2
 //Specify the links and initial tuning parameters 
 //TODO: find out if P_ON_M is needed (proportional on measurement) http://brettbeauregard.com/blog/2017/06/introducing-proportional-on-measurement/
 //Heating Zone_1
-double Kp_Zone1=20, Ki_Zone1=25, Kd_Zone1=350;
-PID myPID_Zone1(&Input_Zone1, &Output_Zone1, &Setpoint_Zone1, Kp_Zone1, Ki_Zone1, Kd_Zone1, 0, DIRECT);
+double Kp_Zone1=20, Ki_Zone1=15, Kd_Zone1=400;
+PID myPID_Zone1(&Input_Zone1, &Output_Zone1, &Setpoint_Zone1, Kp_Zone1, Ki_Zone1, Kd_Zone1, 1, DIRECT);
 
 //Heating Zon0
-double Kp_Zone2=20, Ki_Zone2=25, Kd_Zone2=350;
-PID myPID_Zone2(&Input_Zone2, &Output_Zone2, &Setpoint_Zone2, Kp_Zone2, Ki_Zone1, Kd_Zone2, 0, DIRECT);
+double Kp_Zone2=20, Ki_Zone2=15, Kd_Zone2=400;
+PID myPID_Zone2(&Input_Zone2, &Output_Zone2, &Setpoint_Zone2, Kp_Zone2, Ki_Zone1, Kd_Zone2, 1, DIRECT);
 
 int WindowSize = 4000;
 unsigned long windowStartTime;
