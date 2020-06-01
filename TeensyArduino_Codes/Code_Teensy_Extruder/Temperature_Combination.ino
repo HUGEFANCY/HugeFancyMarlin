@@ -46,9 +46,9 @@ void PrintCombTemps()
     //Serial.print("TargetTemp1:");
     Serial.print(TargetTemperatureZone_1);
     Serial.print(",");
-    //Serial.print("TargetTemp2:");
+    Serial.print("TargetTemp2:");
     Serial.print(TargetTemperatureZone_2);
-    Serial.print(",");
+    //Serial.print(",");
     //Serial.print("CombinedRealTempExtruder:");
     //Serial.print(CombinedRealTempExtruder);
     //Serial.print(",");

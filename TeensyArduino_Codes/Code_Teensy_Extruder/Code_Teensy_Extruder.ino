@@ -7,7 +7,7 @@ int analog_resolution = 10; // sets resolution of analog writing as exponent of 
 
 
 // Extruder temperatures
-int TargetTempExtruderMarlin = 75; // max 9 Bit = 511° // Target Values from Marlin and Real Values from Hotend
+int TargetTempExtruderMarlin = 130; // max 9 Bit = 511° // Target Values from Marlin and Real Values from Hotend
 // ->
 int Zone1_TargetOffset = 20 ;  // Heating Zone 1 will be different from Zone 2
 int TargetTemperatureZone_1 = TargetTempExtruderMarlin - Zone1_TargetOffset; // max 9 Bit = 511°C
