@@ -53,8 +53,9 @@ void setup()
   PT100_MAX31865_setup();
   Relays_setup();
   RGB_setup();
-  PID_setup();
-  //Relays_clickCluck();
+  //PID_setup();
+  autotune_setup();
+  Relays_clickCluck();
 
 
   startMillis = millis(); //start timer for periodic executions
@@ -69,8 +70,9 @@ void loop()
   PT100_MAX31865_loop();
   TM1637_update();
   TempWasser_loop();
-  PID_loop();
+  //PID_loop();
   CombineRealTemps();
+  autotune_loop();
   //Relays_clickCluck();
 
 
@@ -81,7 +83,7 @@ void loop()
   if (currentMillis -startMillis > 100)
   {
     //Serial.println("periodic func");
-    PrintCombTemps();
+    //PrintCombTemps();
     startMillis = currentMillis;
   }
 }
