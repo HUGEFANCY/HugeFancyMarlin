@@ -3,10 +3,10 @@
 
 byte ATuneModeRemember=2;
 double input=0, output=0, setpoint=0;
-double kp=2,ki=0.5,kd=2;
+double kp=5,ki=0.5,kd=100;
 
 double kpmodel=1.5, taup=100, theta[50];
-double outputStart=5;
+double outputStart=10;
 double aTuneStep=50, aTuneNoise=1, aTuneStartValue=100;
 unsigned int aTuneLookBack=20;
 
@@ -155,7 +155,7 @@ void SerialSend()
 {
   Serial.print("setpoint: ");Serial.print(setpoint); Serial.print(" ");
   Serial.print("input: ");Serial.print(input); Serial.print(" ");
-  Serial.print("output: ");Serial.print(output); Serial.print(" ");
+  Serial.print("output: ");Serial.print(output/WindowSize*100); Serial.print(" ");
   if(tuning){
     Serial.println("tuning mode");
   } else {
