@@ -54,9 +54,9 @@ void setup()
   Relays_setup();
   RGB_setup();
   //PID_setup();
-  autotune_setup();
+  
   Relays_clickCluck();
-
+  autotune_setup();
 
   startMillis = millis(); //start timer for periodic executions
   Serial.println("Setup fertig");

@@ -78,10 +78,10 @@ void PT100_MAX31865_loop()
     {
       Serial.print("Fault 0x"); Serial.println(fault, HEX);
       if (fault & MAX31865_FAULT_HIGHTHRESH) {
-        Serial.println("Zone 1: RTD High Threshold");
+        //Serial.println("Zone 1: RTD High Threshold");
       }
       if (fault & MAX31865_FAULT_LOWTHRESH) {
-        Serial.println("Zone 1: RTD Low Threshold");
+        //Serial.println("Zone 1: RTD Low Threshold");
       }
       if (fault & MAX31865_FAULT_REFINLOW) {
         Serial.println("Zone 1: REFIN- > 0.85 x Bias");
@@ -93,7 +93,7 @@ void PT100_MAX31865_loop()
         Serial.println("Zone 1: RTDIN- < 0.85 x Bias - FORCE- open");
       }
       if (fault & MAX31865_FAULT_OVUV) {
-        Serial.println("Zone 1: Under/Over voltage");
+        //Serial.println("Zone 1: Under/Over voltage");
       }
       thermo_zone_1.clearFault();
     }
@@ -102,10 +102,10 @@ void PT100_MAX31865_loop()
     {
       Serial.print("Fault 0x"); Serial.println(fault, HEX);
       if (fault & MAX31865_FAULT_HIGHTHRESH) {
-        Serial.println("Zone 2: RTD High Threshold");
+        //Serial.println("Zone 2: RTD High Threshold");
       }
       if (fault & MAX31865_FAULT_LOWTHRESH) {
-        Serial.println("Zone 2: RTD Low Threshold");
+        //Serial.println("Zone 2: RTD Low Threshold");
       }
       if (fault & MAX31865_FAULT_REFINLOW) {
         Serial.println("Zone 2: REFIN- > 0.85 x Bias");
@@ -117,7 +117,7 @@ void PT100_MAX31865_loop()
         Serial.println("Zone 2: RTDIN- < 0.85 x Bias - FORCE- open");
       }
       if (fault & MAX31865_FAULT_OVUV) {
-        Serial.println("Zone 2: Under/Over voltage");
+        //Serial.println("Zone 2: Under/Over voltage");
       }
       thermo_zone_2.clearFault();
     }
