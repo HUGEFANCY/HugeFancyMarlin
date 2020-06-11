@@ -28,7 +28,7 @@ void CombineRealTemps()
         // set the CombinedTemp as TargetTemp - waitErr
         CombinedRealTempExtruder = TargetTemperatureZone_2 - waitErr;
     }
-    else 
+    else
     {   //if Z2 is more than waitErr° lower/higher than the target
         //  or both are within waitErr° from their target 
         // set the CombinedTemp as Z2 RealTemp
@@ -46,9 +46,9 @@ void PrintCombTemps()
     //Serial.print("TargetTemp1:");
     Serial.print(TargetTemperatureZone_1);
     Serial.print(",");
-    Serial.print("TargetTemp2:");
+    //Serial.print("TargetTemp2:");
     Serial.print(TargetTemperatureZone_2);
-    //Serial.print(",");
+    Serial.print(",");
     //Serial.print("CombinedRealTempExtruder:");
     //Serial.print(CombinedRealTempExtruder);
     //Serial.print(",");
