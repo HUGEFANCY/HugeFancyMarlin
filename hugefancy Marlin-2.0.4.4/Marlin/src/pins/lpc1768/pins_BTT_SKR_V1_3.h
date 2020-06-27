@@ -43,8 +43,11 @@
     #define X_MIN_PIN        P1_28   // X+
   #endif
 #else
+  //ROBIN: Original Pins XMin Max
   #define X_MIN_PIN          P1_29   // X-
   #define X_MAX_PIN          P1_28   // X+
+  //#define X_MIN_PIN          P1_27   // X-
+  //#define X_MAX_PIN          P1_26   // X+
 #endif
 
 #if Y_STALL_SENSITIVITY
@@ -55,8 +58,11 @@
     #define Y_MIN_PIN        P1_26   // Y+
   #endif
 #else
+  //ROBIN: Original Pins YMin Max
   #define Y_MIN_PIN          P1_27   // Y-
   #define Y_MAX_PIN          P1_26   // Y+
+  //#define Y_MIN_PIN          P1_29   // Y-
+  //#define Y_MAX_PIN          P1_28   // Y+
 #endif
 
 #if Z_STALL_SENSITIVITY
@@ -68,8 +74,8 @@
   #endif
 #else
   //ROBIN TODO: Where to add second z- endstop ??
-  #define Z_MIN_PIN          P1_25   // Z-
-  #define Z_MAX_PIN          P1_24   // Z+
+  #define Z_MIN_PIN          P1_24   // Z-
+  #define Z_MAX_PIN          P1_25   // Z+
 #endif
 
 #define ONBOARD_ENDSTOPPULLUPS     // Board has built-in pullups
@@ -85,7 +91,7 @@
 // Z Probe (when not Z_MIN_PIN)
 //
 #ifndef Z_MIN_PROBE_PIN
-  #define Z_MIN_PROBE_PIN  P1_24  //ROBIN-- This is Z+(Zmax) signal pin
+  #define Z_MIN_PROBE_PIN  P1_25  //ROBIN-- This is Z+(Zmax) signal pin
 #endif
 
 //

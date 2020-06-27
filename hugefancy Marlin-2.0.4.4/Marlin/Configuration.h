@@ -604,7 +604,7 @@
 
 // Uncomment one of these options to enable CoreXY, CoreXZ, or CoreYZ kinematics
 // either in the usual order or reversed
-//#define COREXY
+#define COREXY
 //#define COREXZ
 //#define COREYZ
 //#define COREYX
@@ -654,12 +654,15 @@
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
-#define Y_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+//ROBIN: we use NC Endstops so all of them are set to false 
+
+#define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+
 #define X_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #define Y_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
-#define Z_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop. // Z2min
+#define Z_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop. // Z2min
 #define Z_MIN_PROBE_ENDSTOP_INVERTING true // Set to true to invert the logic of the probe.
 
 /**
@@ -738,7 +741,8 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 120.50, 120.50, 120.50, 120.50 } // X,Y = D_neutrale_Faser = 50,93mm
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 20.50, 20.50, 200.83, 120.50 } // X,Y = D_neutrale_Faser = 50,93mm
+//HUGEFANCY 25.06.2020 { 20.5, 20.5, 200.83, 120.5 }
 //{ 80, 80, 4000, 500 }
 
 /* HIER
@@ -781,7 +785,7 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 150, 150, 10, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 150, 150, 100, 25 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -1092,10 +1096,10 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR false
+#define INVERT_X_DIR false  
 #define INVERT_Y_DIR true
-#define INVERT_Z_DIR false
-#define INVERT_Z2_DIR false 
+#define INVERT_Z_DIR true
+#define INVERT_Z2_DIR true 
 
 // @section extruder
 
@@ -1130,7 +1134,7 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
 
 // The size of the print bed
 #define X_BED_SIZE 1500 //###
-#define Y_BED_SIZE 1900
+#define Y_BED_SIZE 1500
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0 //Bewegungsfeld hier einschränken und Koordinatenursprung an dieser Stelle setzen
@@ -1692,7 +1696,7 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
  * you must uncomment the following option or it won't work.
  *
  */
-#define SDSUPPORT
+//#define SDSUPPORT
 
 /**
  * SD CARD: SPI SPEED
@@ -1772,7 +1776,7 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
 //
 // Add individual axis homing items (Home X, Home Y, and Home Z) to the LCD menu.
 //
-//#define INDIVIDUAL_AXIS_HOMING_MENU
+#define INDIVIDUAL_AXIS_HOMING_MENU
 
 //
 // SPEAKER/BUZZER
@@ -1788,6 +1792,7 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
 //
 // Note: Test audio output with the G-Code:
 //  M300 S<frequency Hz> P<duration ms>
+
 //
 //#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 2
 //#define LCD_FEEDBACK_FREQUENCY_HZ 5000
