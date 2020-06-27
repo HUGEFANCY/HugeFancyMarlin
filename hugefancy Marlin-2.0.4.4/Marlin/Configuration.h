@@ -798,7 +798,7 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 800, 800, 100, 3000 }
+#define DEFAULT_MAX_ACCELERATION      { 30, 30, 100, 3000 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -1133,8 +1133,8 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
 // @section machine
 
 // The size of the print bed
-#define X_BED_SIZE 1500 //###
-#define Y_BED_SIZE 1500
+#define X_BED_SIZE 1555 //###
+#define Y_BED_SIZE 1265
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0 //Bewegungsfeld hier einschränken und Koordinatenursprung an dieser Stelle setzen
@@ -1405,7 +1405,7 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
 #endif
 
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY (80*60)
+#define HOMING_FEEDRATE_XY (20*60)
 #define HOMING_FEEDRATE_Z  (10*60)
 
 // Validate that endstops are triggered on homing moves
