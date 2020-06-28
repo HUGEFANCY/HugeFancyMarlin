@@ -785,7 +785,7 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 150, 150, 100, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 200, 200, 200, 25 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -798,7 +798,7 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 30, 30, 100, 3000 }
+#define DEFAULT_MAX_ACCELERATION      { 80, 80, 100, 3000 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -827,9 +827,9 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
  */
 #define CLASSIC_JERK
 #if ENABLED(CLASSIC_JERK)
-  #define DEFAULT_XJERK 10.0
-  #define DEFAULT_YJERK 10.0
-  #define DEFAULT_ZJERK  0.3
+  #define DEFAULT_XJERK 40.0
+  #define DEFAULT_YJERK 40.0
+  #define DEFAULT_ZJERK 40.0
 
   //#define TRAVEL_EXTRA_XYJERK 0.0     // Additional jerk allowance for all travel moves
 
@@ -1405,8 +1405,8 @@ https://www.matterhackers.com/news/3d-printer-firmware-settings-stepper-motor-co
 #endif
 
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY (20*60)
-#define HOMING_FEEDRATE_Z  (10*60)
+#define HOMING_FEEDRATE_XY (30*60)
+#define HOMING_FEEDRATE_Z  (20*60)
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS

@@ -1702,7 +1702,7 @@
 
 // The ASCII buffer for serial input
 #define MAX_CMD_SIZE 96
-#define BUFSIZE 32
+#define BUFSIZE 128
 
 // Transmission to Host Buffer Size
 // To save 386 bytes of PROGMEM (and TX_BUFFER_SIZE+3 bytes of RAM) set to 0.
@@ -1711,7 +1711,7 @@
 // For debug-echo: 128 bytes for the optimal speed.
 // Other output doesn't need to be that speedy.
 // :[0, 2, 4, 8, 16, 32, 64, 128, 256]
-#define TX_BUFFER_SIZE 0
+#define TX_BUFFER_SIZE 128
 
 // Host Receive Buffer Size
 // Without XON/XOFF flow control (see SERIAL_XON_XOFF below) 32 bytes should be enough.
@@ -2583,7 +2583,7 @@
   #define I2C_SLAVE_ADDRESS  0  // Set a value from 8 to 127 to act as a slave
   #define I2C_REMOTE_ADDRESS 9 //ROBIN-- this is the address of the i2c slave (a teensy in our case)
   #define I2C_TEMPCONTROL
-  #define I2C_SEND_INTERVALL 3000
+  #define I2C_SEND_INTERVALL 60000
 #endif
 
 // @section extras
