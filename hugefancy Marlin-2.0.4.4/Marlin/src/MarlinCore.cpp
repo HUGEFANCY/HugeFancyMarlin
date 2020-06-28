@@ -112,8 +112,6 @@
   I2C_TempControl i2c_temp_ctrl;
 #endif
 
-
-
 #if ENABLED(I2C_POSITION_ENCODERS)
   #include "feature/I2CPositionEncoder.h"
 #endif
