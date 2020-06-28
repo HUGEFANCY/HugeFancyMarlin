@@ -441,6 +441,11 @@ class Temperature {
       static millis_t next_auto_fan_check_ms;
     #endif
 
+   //ROBIN-- this is a variable to set when sending temperatures via i2c 
+    #if ENABLED(I2C_TEMPCONTROL)
+      static millis_t next_i2c_temp_send_ms;
+    #endif
+
     #if ENABLED(PROBING_HEATERS_OFF)
       static bool paused;
     #endif
@@ -610,6 +615,7 @@ class Temperature {
       }
     #endif
 
+    //ROBIN-- this returns current hotend target temp 
     FORCE_INLINE static int16_t degTargetHotend(const uint8_t E_NAME) {
       return (0
         #if HOTENDS

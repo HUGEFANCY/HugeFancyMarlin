@@ -1653,6 +1653,7 @@ void Temperature::updateTemperaturesFromRawValues() {
 #if MAX6675_SEPARATE_SPI
   SPIclass<MAX6675_DO_PIN, MOSI_PIN, MAX6675_SCK_PIN> max6675_spi;
 #endif
+
 // Init fans according to whether they're native PWM or Software PWM
 #ifdef ALFAWISE_UX0
   #define _INIT_SOFT_FAN(P) OUT_WRITE_OD(P, FAN_INVERTING ? LOW : HIGH)

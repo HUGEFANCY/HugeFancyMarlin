@@ -55,6 +55,12 @@ inline void idle_no_sleep() {
 #if ENABLED(EXPERIMENTAL_I2CBUS)
   #include "feature/twibus.h"
   extern TWIBus i2c;
+  
+#endif
+
+#if ENABLED(I2C_TEMPCONTROL)
+  #include "i2c_temperature_control.h"
+  extern I2C_TempControl i2c_temp_ctrl;
 #endif
 
 #if ENABLED(G38_PROBE_TARGET)
