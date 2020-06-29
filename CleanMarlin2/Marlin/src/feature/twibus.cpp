@@ -115,11 +115,12 @@ void TWIBus::echobuffer(const char pref[], uint8_t adr) {
 
 bool TWIBus::request(const uint8_t bytes) {
   if (!addr) return false;
+  Wire.begin();
 
   debug(PSTR("request"), bytes);
 
   // requestFrom() is a blocking function
-  if (Wire.requestFrom(addr, bytes) == 0) {
+  if (Wire.requestFrom(I2C_ADDRESS(addr), bytes) == 0) {
     debug("request fail", addr);
     return false;
   }
