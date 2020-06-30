@@ -5,3 +5,6 @@
 .vscode/arduino.json
 /.vscode/*
 /TeensyArduino_Codes/libs/Arduino-PID-Library-master/
+/CleanMarlin2/buildroot/
+/CleanMarlin2/buildroot/*
+
