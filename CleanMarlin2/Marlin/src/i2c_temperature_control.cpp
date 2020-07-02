@@ -40,7 +40,7 @@ uint8_t I2C_TempControl::send_target_temp(uint8_t target_hotend,uint16_t target_
 }
 
 uint8_t I2C_TempControl::request_hotend_temp(uint8_t target_hotend) {
-    //SERIAL_ECHOLNPAIR("request on hotend:",target_hotend);
+    SERIAL_ECHOLNPAIR("request on hotend:",target_hotend);
     i2c_c.address(I2C_REMOTE_ADDRESS);
     int req_bytes = 2;    //number of bytes to request
     uint16_t temp = 0; 
@@ -50,20 +50,20 @@ uint8_t I2C_TempControl::request_hotend_temp(uint8_t target_hotend) {
             answer[sizeof(answer)] = 0;             //null termination of array
             i2c_c.capture(&answer[0], req_bytes);    // Get the reply  
             
-            //SERIAL_ECHOLNPAIR("answer:", answer);
-            //SERIAL_ECHOLNPAIR("size-of-answer:",sizeof(answer));
+            SERIAL_ECHOLNPAIR("answer:", answer);
+            SERIAL_ECHOLNPAIR("size-of-answer:",sizeof(answer));
             uint16_t sum = 0;
 
             for (uint8_t i = 0; i < (sizeof(answer)); i++) {
-                //SERIAL_ECHOLNPAIR("sum addition: ", answer[i] & 0xFF);
+                SERIAL_ECHOLNPAIR("sum addition: ", answer[i] & 0xFF);
                 sum += answer[i] & 0xFF;    //needed to make a valid int 
             }
             temp = sum;  
-            //SERIAL_ECHOLN("----------");
-            //SERIAL_ECHOLNPAIR("int received temp:",temp);// print integer value of the received string just to check 
+            SERIAL_ECHOLN("----------");
+            SERIAL_ECHOLNPAIR("int received temp:",temp);// print integer value of the received string just to check 
             return temp;
         }
-    //SERIAL_ECHOLNPAIR("request failed tries left:",tries);
+    SERIAL_ECHOLNPAIR("request failed tries left:",tries);
     }
     return temp;
 }
