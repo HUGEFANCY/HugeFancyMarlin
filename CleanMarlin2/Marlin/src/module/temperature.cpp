@@ -1039,7 +1039,7 @@ void Temperature::manage_heater() {
   //ROBIN-- this one updates the temperature in the loop 
   #if ENABLED(I2C_TEMPCONTROL)
     if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms)){    //check if its time to request next temperature
-      SERIAL_ECHOLN("requesting temp");
+      //SERIAL_ECHOLN("requesting temp");
       temp_hotend[0].celsius = i2c_temp_ctrl.request_hotend_temp(0);      //update hotend temperature
       // Reset the watchdog on good temperature measurement
       watchdog_refresh();
