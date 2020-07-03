@@ -54,7 +54,7 @@ void setup()
   Relays_setup();
   RGB_setup();
   PID_setup();
-  Relays_clickCluck();
+  //Relays_clickCluck();
 
 
   startMillis = millis(); //start timer for periodic executions

@@ -60,6 +60,7 @@ void Motoren_setup()
   // NANOTEC
   // M_nanotec.setMaxSpeed(Nanotec_MaxSpeed);
   // M_nanotec.setAcceleration(Nanotec_Acceleration);
+
 }
 
 void Schrittmotor_L_aktiv(bool statusSetzen)

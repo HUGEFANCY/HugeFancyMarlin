@@ -120,9 +120,9 @@ void Relays_clickCluck()
 {
   
   RelayCoolerZone_1_SetStatus(true);
-  delay(30000);
+  delay(300);
   RelayCoolerZone_2_SetStatus(true);
-  delay(30000);
+  delay(300);
 
   RelayHeaterZone_1_SetStatus(true);
   delay(500);
@@ -133,9 +133,9 @@ void Relays_clickCluck()
   RelayHeaterZone_1_SetStatus(false);
   delay(10);
   RelayHeaterZone_2_SetStatus(false);
-  delay(10000);
+  delay(100);
   RelayCoolerZone_1_SetStatus(false);
-  delay(10000);
+  delay(100);
   RelayCoolerZone_2_SetStatus(false);
   delay(10);
 
