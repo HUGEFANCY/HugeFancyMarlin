@@ -42,16 +42,20 @@ void loop_Oled()
     u8x8.drawString(7, 3, itoa(TargetTemperatureZone_1, buf, decimal));
     u8x8.drawString(13, 3, "   ");
     u8x8.drawString(13, 3, itoa(RealTemperatureZone_1, buf, decimal));
- 
+
     u8x8.drawString(7, 5, "   ");
     u8x8.drawString(7, 5, itoa(TargetTemperatureZone_2, buf, decimal));
     u8x8.drawString(13, 5, "   ");
     u8x8.drawString(13, 5, itoa(RealTemperatureZone_2, buf, decimal));
 
   }
+
+  // Check these functions for changes
+  PotiNewTargetTemp();
+  ApplyNewTargetTemp();
 }
 
-void Oled(int zahl, int zeile)
+void Oled(int zahl, int zeile, int zeilenstart)
 {
   // for itoa function
   char buf[10];
@@ -59,7 +63,50 @@ void Oled(int zahl, int zeile)
   u8x8.setInverseFont(true);
 
   //10=Dezimalsystem
-  u8x8.drawString(0, zeile, "   ");
-  u8x8.drawString(0, zeile, itoa(zahl, buf, decimal));
+  u8x8.drawString(zeilenstart, zeile, "   ");
+  u8x8.drawString(zeilenstart, zeile, itoa(zahl, buf, decimal));
   u8x8.setInverseFont(false);
+}
+
+
+void PotiNewTargetTemp()
+{
+  if ((LastimeData.pot1 != Joystick.pot1) and (Joystick.button1 == 0))
+  {
+    Oled(Joystick.pot1, 3, 0);
+    LastimeData.pot1 = Joystick.pot1;
+    NewTargetTemp_Zone1 = Joystick.pot1;
+    NewTargetTempAvalible_Zone1 = true;
+  }
+
+  if ((LastimeData.pot2 != Joystick.pot2) and (Joystick.button2 == 0))
+  {
+    Oled(Joystick.pot2, 5, 0);
+    LastimeData.pot2 = Joystick.pot2;
+    NewTargetTemp_Zone2 = Joystick.pot2;
+    NewTargetTempAvalible_Zone2 = true;
+  }
+}
+
+void ApplyNewTargetTemp()
+{
+  if ((NewTargetTempAvalible_Zone1 == true) and (Joystick.button4 == 0))
+  {
+    TargetTemperatureZone_1 = NewTargetTemp_Zone1;
+    u8x8.clear();
+    Oled(TargetTemperatureZone_1, 3, 7);
+
+    NewTargetTempAvalible_Zone1 = false;
+    FunkData_Temp();
+  }
+
+  if ((NewTargetTempAvalible_Zone2 == true) and (Joystick.button4 == 0))
+  {
+    TargetTemperatureZone_2 = NewTargetTemp_Zone2;
+    u8x8.clear();
+    Oled(TargetTemperatureZone_2, 5, 7);
+
+    NewTargetTempAvalible_Zone2 = false;
+    FunkData_Temp();
+  }
 }

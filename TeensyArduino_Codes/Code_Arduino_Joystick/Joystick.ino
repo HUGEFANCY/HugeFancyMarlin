@@ -9,8 +9,9 @@
 #define b3 2   // Button 3
 #define b4 3   // Button 4
 
-struct DataPackageOutcoming // Max size of this struct is 32 bytes - NRF24L01 buffer limit
+struct DataPackage_Joystick // Max size of this struct is 32 bytes - NRF24L01 buffer limit
 {
+  byte header;
   byte j1PotX;
   byte j1PotY;
   byte j1Button;
@@ -26,9 +27,11 @@ struct DataPackageOutcoming // Max size of this struct is 32 bytes - NRF24L01 bu
   byte button3;
   byte button4;
 };
-DataPackageOutcoming dataOutgoing; // Create a variable with the above structure
 
-void setup_Inputs()
+DataPackage_Joystick Joystick; // Create a variable with the above structure
+DataPackage_Joystick LastimeData; // Create a variable with the above structure
+
+void setup_JoystickInputs()
 {
 
   // Activate the Arduino internal pull-up resistors
@@ -42,38 +45,56 @@ void setup_Inputs()
   pinMode(b4, INPUT_PULLUP);
 
   // Set initial default values
-  dataOutgoing.j1PotX = 127; // Values from 0 to 255. When Joystick is in resting position, the value is in the middle, or 127. We actually map the pot value from 0 to 1023 to 0 to 255 because that's one BYTE value
-  dataOutgoing.j1PotY = 127;
-  dataOutgoing.j2PotX = 127;
-  dataOutgoing.j2PotY = 127;
-  dataOutgoing.j1Button = 1;
-  dataOutgoing.j2Button = 1;
-  dataOutgoing.pot1 = 1;
-  dataOutgoing.pot2 = 1;
-  dataOutgoing.tSwitch1 = 1;
-  dataOutgoing.tSwitch2 = 1;
-  dataOutgoing.button1 = 1;
-  dataOutgoing.button2 = 1;
-  dataOutgoing.button3 = 1;
-  dataOutgoing.button4 = 1;
+  Joystick.header = 0;
+  Joystick.j1PotX = 127; // Values from 0 to 255. When Joystick is in resting position, the value is in the middle, or 127. We actually map the pot value from 0 to 1023 to 0 to 255 because that's one BYTE value
+  Joystick.j1PotY = 127;
+  Joystick.j2PotX = 127;
+  Joystick.j2PotY = 127;
+  Joystick.j1Button = 1;
+  Joystick.j2Button = 1;
+  Joystick.pot1 = 1;
+  Joystick.pot2 = 1;
+  Joystick.tSwitch1 = 1;
+  Joystick.tSwitch2 = 1;
+  Joystick.button1 = 1;
+  Joystick.button2 = 1;
+  Joystick.button3 = 1;
+  Joystick.button4 = 1;
+
+  // Set initial last time default values
+  LastimeData.j1PotX = 127; // Values from 0 to 255. When Joystick is in resting position, the value is in the middle, or 127. We actually map the pot value from 0 to 1023 to 0 to 255 because that's one BYTE value
+  LastimeData.j1PotY = 127;
+  LastimeData.j2PotX = 127;
+  LastimeData.j2PotY = 127;
+  LastimeData.j1Button = 1;
+  LastimeData.j2Button = 1;
+
+  LastimeData.pot1 = 1;
+  LastimeData.pot2 = 1;
+  LastimeData.tSwitch1 = 1;
+  LastimeData.tSwitch2 = 1;
+  LastimeData.button1 = 1;
+  LastimeData.button2 = 1;
+  LastimeData.button3 = 1;
+  LastimeData.button4 = 1;
 }
 
 void loop_Inputs()
 {
   // Read all analog inputs and map them to one Byte value
-  dataOutgoing.j1PotX = map(analogRead(A1), 0, 1023, 0, 255); // Convert the analog read value from 0 to 1023 into a BYTE value from 0 to 255
-  dataOutgoing.j1PotY = map(analogRead(A0), 0, 1023, 0, 255);
-  dataOutgoing.j2PotX = map(analogRead(A2), 0, 1023, 0, 255);
-  dataOutgoing.j2PotY = map(analogRead(A3), 0, 1023, 0, 255);
-  dataOutgoing.pot1 = map(analogRead(A7), 0, 1023, 0, 255);
-  dataOutgoing.pot2 = map(analogRead(A6), 0, 1023, 0, 255);
+  Joystick.j1PotX = map(analogRead(A1), 0, 1023, 0, 255); // Convert the analog read value from 0 to 1023 into a BYTE value from 0 to 255
+  Joystick.j1PotY = map(analogRead(A0), 0, 1023, 0, 255);
+  Joystick.j2PotX = map(analogRead(A2), 0, 1023, 0, 255);
+  Joystick.j2PotY = map(analogRead(A3), 0, 1023, 0, 255);
+  Joystick.pot1 = map(analogRead(A7), 0, 1023, 0, 255);
+  Joystick.pot2 = map(analogRead(A6), 0, 1023, 0, 255);
   // Read all digital inputs
-  dataOutgoing.j1Button = digitalRead(jB1);
-  dataOutgoing.j2Button = digitalRead(jB2);
-  dataOutgoing.tSwitch1 = digitalRead(t1);
-  dataOutgoing.tSwitch2 = digitalRead(t2);
-  dataOutgoing.button1 = digitalRead(b1);
-  dataOutgoing.button2 = digitalRead(b2);
-  dataOutgoing.button3 = digitalRead(b3);
-  dataOutgoing.button4 = digitalRead(b4);
+  Joystick.j1Button = digitalRead(jB1);
+  Joystick.j2Button = digitalRead(jB2);
+  Joystick.tSwitch1 = digitalRead(t1);
+  Joystick.tSwitch2 = digitalRead(t2);
+  Joystick.button1 = digitalRead(b1);
+  Joystick.button2 = digitalRead(b2);
+  Joystick.button3 = digitalRead(b3);
+  Joystick.button4 = digitalRead(b4);
 }

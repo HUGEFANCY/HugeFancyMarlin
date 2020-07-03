@@ -7,11 +7,15 @@
   Joystick by www.HowToMechatronics.com
 */
 
-int TargetTemperatureZone_1 = 111; // max 8 Bit = 255°C
-int TargetTemperatureZone_2 = 222; // max 8 Bit = 255°C
+int TargetTemperatureZone_1 = 0; // max 8 Bit = 255°C
+int TargetTemperatureZone_2 = 0; // max 8 Bit = 255°C
+int NewTargetTemp_Zone1 = 0;
+int NewTargetTemp_Zone2 = 0;
+bool NewTargetTempAvalible_Zone1 = false;
+bool NewTargetTempAvalible_Zone2 = false;
 
-int RealTemperatureZone_1 = 205; // max 8 Bit = 255°C // TEST ### ToDo
-int RealTemperatureZone_2 = 210; // max 8 Bit = 255°C
+int RealTemperatureZone_1 = 0; // max 8 Bit = 255°C // TEST ### ToDo
+int RealTemperatureZone_2 = 0; // max 8 Bit = 255°C
 
 #include <Arduino.h>
 #include <Metro.h> //Include Metro library
@@ -22,8 +26,7 @@ void setup()
   Serial.begin(9600);
   delay(100);
 
-  setup_Inputs();
-  setup_SerialDataOutput();
+  setup_JoystickInputs();
   setup_Funk();
   setup_Oled();
   Serial.println("Setup end");
