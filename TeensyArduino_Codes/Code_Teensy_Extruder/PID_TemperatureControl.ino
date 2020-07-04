@@ -32,11 +32,11 @@ double Setpoint_Zone2, Input_Zone2, Output_Zone2; //Heating Zone 2
 //Specify the links and initial tuning parameters 
 //TODO: find out if P_ON_M is needed (proportional on measurement) http://brettbeauregard.com/blog/2017/06/introducing-proportional-on-measurement/
 //Heating Zone_1
-double Kp_Zone1=100, Ki_Zone1=0.1274, Kd_Zone1=107.4;
+double Kp_Zone1=120, Ki_Zone1=0.3274, Kd_Zone1=150;
 PID myPID_Zone1(&Input_Zone1, &Output_Zone1, &Setpoint_Zone1, Kp_Zone1, Ki_Zone1, Kd_Zone1, 1, DIRECT);
 
 //Heating Zon0
-double Kp_Zone2=100, Ki_Zone2=0.1274, Kd_Zone2=107.4;
+double Kp_Zone2=120, Ki_Zone2=0.3274, Kd_Zone2=150;
 PID myPID_Zone2(&Input_Zone2, &Output_Zone2, &Setpoint_Zone2, Kp_Zone2, Ki_Zone1, Kd_Zone2, 1, DIRECT);
 
 int WindowSize = 4000;
@@ -79,6 +79,24 @@ void PID_loop()
   myPID_Zone1.Compute();
   myPID_Zone2.Compute();
 
+  if (Output_Zone1/WindowSize < 0.1 && Input_Zone1 > Setpoint_Zone1 *1.01)
+  {
+    RelayCoolerZone_1_SetStatus(true) ;
+  }
+  else
+  {
+   RelayCoolerZone_1_SetStatus(false) ;
+  }
+  
+  if (Output_Zone2/WindowSize < 0.1 && Input_Zone2 > Setpoint_Zone2 *1.01)
+  {
+    RelayCoolerZone_2_SetStatus(true) ;
+  }
+  else
+  {
+   RelayCoolerZone_2_SetStatus(false) ;
+  }
+
   /************************************************
    * turn the output pin on/off based on pid output
    ************************************************/
@@ -92,7 +110,7 @@ void PID_loop()
   if (OutputBufferZ1 > millis() - windowStartTime) 
   { 
     RelayHeaterZone_1_SetStatus(true);
-    RelayCoolerZone_1_SetStatus(false) ;
+    //RelayCoolerZone_1_SetStatus(false) ;
     LuefterZone_1 = 0;
     HeaterZone_1 = 15;
     //Serial.print(15);
@@ -113,7 +131,7 @@ void PID_loop()
   if (OutputBufferZ2 > millis() - windowStartTime) 
   { 
     RelayHeaterZone_2_SetStatus(true);
-    RelayCoolerZone_2_SetStatus(false) ;
+    //RelayCoolerZone_2_SetStatus(false) ;
     LuefterZone_2 = 0;
     HeaterZone_2 = 10;
     //Serial.print(10);

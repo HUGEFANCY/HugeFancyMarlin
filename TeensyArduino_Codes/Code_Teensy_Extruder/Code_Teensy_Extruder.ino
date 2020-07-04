@@ -7,9 +7,9 @@ int analog_resolution = 10; // sets resolution of analog writing as exponent of 
 
 
 // Extruder temperatures
-int TargetTempExtruderMarlin = 55; // max 9 Bit = 511° // Target Values from Marlin and Real Values from Hotend
+int TargetTempExtruderMarlin = 10; // max 9 Bit = 511° // Target Values from Marlin and Real Values from Hotend
 // ->
-int Zone1_TargetOffset = 20 ;  // Heating Zone 1 will be different from Zone 2
+int Zone1_TargetOffset = 10 ;  // Heating Zone 1 will be different from Zone 2
 int TargetTemperatureZone_1 = TargetTempExtruderMarlin - Zone1_TargetOffset; // max 9 Bit = 511°C
 int TargetTemperatureZone_2 = TargetTempExtruderMarlin; // max 9 Bit = 511°C
 
@@ -65,12 +65,13 @@ void loop()
 {
   currentMillis = millis(); // Für das periodische Aufrufen von diversen Funktionen ohne ein delay zu verursachen
 
-  //RS485_Extruder_CheckIfUpdateAvalible();
+  RS485_Extruder_CheckIfUpdateAvalible();
   PT100_MAX31865_loop();
   TM1637_update();
   TempWasser_loop();
   PID_loop();
   CombineRealTemps();
+  
   //Relays_clickCluck();
 
 
@@ -78,10 +79,11 @@ void loop()
 
   SerialTastatur_CheckKeys();
 
-  if (currentMillis -startMillis > 100)
+  /*if (currentMillis -startMillis > 100)
   {
     //Serial.println("periodic func");
     PrintCombTemps();
     startMillis = currentMillis;
   }
+  */
 }

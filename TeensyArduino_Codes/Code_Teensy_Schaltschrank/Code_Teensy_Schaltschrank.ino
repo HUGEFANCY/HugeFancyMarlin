@@ -26,7 +26,7 @@ void setup()
   setup_Funk();
   RGB_setup();
   Relays_setup();
-//  I2C_Marlin_setup();
+  I2C_Marlin_setup();
 
   Serial.println("Setup End");
 }

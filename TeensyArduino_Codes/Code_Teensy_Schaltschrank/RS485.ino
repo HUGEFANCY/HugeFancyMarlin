@@ -42,7 +42,8 @@ void RS485_setup()
 
 
 void RS485_Schaltschrank_CheckIfUpdateAvalible()
-{
+{ 
+  //Serial.println("Checking for Update");
   if (Serial2.available() > 0) // Check if there is any data available to read
   {
     uint8_t c = Serial2.read(); // read only one byte at a time
