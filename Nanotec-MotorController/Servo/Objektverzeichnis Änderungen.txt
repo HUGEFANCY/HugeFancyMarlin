@@ -9,3 +9,9 @@ Clock Direction Multiplier
 setze Index 2057 auf 8 (8 = 64er Microstepping, Hinweis: 512 = FullStep) // Dezimalwert!!
 Clock Direction Divider
 setze Index 2058 auf 0x1
+
+
+Im Plug and Drive 2 Menü
+- Nominal Current 18A
+- Max Current 30A
+- Max Duration of Max Current 100ms
