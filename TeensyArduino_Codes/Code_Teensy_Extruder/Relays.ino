@@ -26,6 +26,7 @@ void Relays_setup()
   RelayWatercooling_SetStatus(false);
   pinMode (RelayLicht_EN, OUTPUT);
   RelayLicht_SetStatus(false);
+  RelayWatercooling_SetStatus(true);
 }
 
 
@@ -33,12 +34,12 @@ void RelayHeaterZone_1_SetStatus(bool statusSetzen)
 {
   if (statusSetzen == true)
   {
-    digitalWrite(RelayHeaterZone_1_EN, LOW);
+    digitalWrite(RelayHeaterZone_1_EN, HIGH);
     delay(10);
   }
   else if (statusSetzen == false)
   {
-    digitalWrite(RelayHeaterZone_1_EN, HIGH);
+    digitalWrite(RelayHeaterZone_1_EN, LOW);
     delay(10);
   }
 }
@@ -47,12 +48,12 @@ void RelayHeaterZone_2_SetStatus(bool statusSetzen)
 {
   if (statusSetzen == true)
   {
-    digitalWrite(RelayHeaterZone_2_EN, LOW);
+    digitalWrite(RelayHeaterZone_2_EN, HIGH);
     delay(10);
   }
   else if (statusSetzen == false)
   {
-    digitalWrite(RelayHeaterZone_2_EN, HIGH);
+    digitalWrite(RelayHeaterZone_2_EN, LOW);
     delay(10);
   }
 }
@@ -61,12 +62,12 @@ void RelayCoolerZone_1_SetStatus(bool statusSetzen)
 {
   if (statusSetzen == true)
   {
-    digitalWrite(RelayCoolerZone_1_EN, LOW);
+    digitalWrite(RelayCoolerZone_1_EN, HIGH);
     delay(10);
   }
   else if (statusSetzen == false)
   {
-    digitalWrite(RelayCoolerZone_1_EN, HIGH);
+    digitalWrite(RelayCoolerZone_1_EN, LOW);
     delay(10);
   }
 }
@@ -75,12 +76,12 @@ void RelayCoolerZone_2_SetStatus(bool statusSetzen)
 {
   if (statusSetzen == true)
   {
-    digitalWrite(RelayCoolerZone_2_EN, LOW);
+    digitalWrite(RelayCoolerZone_2_EN, HIGH);
     delay(10);
   }
   else if (statusSetzen == false)
   {
-    digitalWrite(RelayCoolerZone_2_EN, HIGH);
+    digitalWrite(RelayCoolerZone_2_EN, LOW);
     delay(10);
   }
 }
@@ -117,6 +118,21 @@ void RelayLicht_SetStatus(bool statusSetzen)
 
 
 void Relays_clickCluck()
+{
+  
+  RelayCoolerZone_1_SetStatus(false);
+  delay(3000);
+  RelayCoolerZone_2_SetStatus(false);
+  delay(3000);
+  RelayCoolerZone_1_SetStatus(true);
+  delay(300);
+  RelayCoolerZone_2_SetStatus(true);
+  delay(300);
+  
+
+}
+
+void Relays_clickCluck2()
 {
   
   RelayCoolerZone_1_SetStatus(true);
