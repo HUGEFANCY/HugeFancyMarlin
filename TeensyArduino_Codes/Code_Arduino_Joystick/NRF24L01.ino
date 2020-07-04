@@ -24,11 +24,35 @@ Metro Metro_FunkCheck = Metro(50);
 
 struct DataPackageIncomming // Max size of this struct is 32 bytes - NRF24L01 buffer limit
 {
-  byte TargetTempZone1 = 0;
-  byte TargetTempZone2 = 0;
+  byte header = 0;
+  byte val1 = 0; // TargetTemperatureZone_1 (laut Teensy Schatschrank)
+  byte val2 = 0; // TargetTemperatureZone_2 (laut Teensy Schatschrank)
+  byte val3 = 0; // RealTemperatureZone_1
+  byte val4 = 0; // RealTemperatureZone_2
 };
 DataPackageIncomming dataIncoming; // Create a variable with the above structure
 
+
+
+struct DataPackageOutgoing // Max size of this struct is 32 bytes - NRF24L01 buffer limit
+{
+  byte header = 0; // 1 = Temp                // 2 = Joystick
+  byte val1 = 0;   // NewTargetTemp_Zone1     // j1PotX;
+  byte val2 = 0;   // NewTargetTemp_Zone2     // j1PotY;
+  byte val3 = 0;                              // j1Button;
+  byte val4 = 0; // j2PotX;
+  byte val5 = 0; // j2PotY;
+  byte val6 = 0; // j2Button;
+  byte val7 = 0; // pot1;
+  byte val8 = 0; // pot2;
+  byte val9 = 0; // tSwitch1;
+  byte val10 = 0; // tSwitch2;
+  byte val11 = 0; // button1;
+  byte val12 = 0; // button2;
+  byte val13 = 0; // button3;
+  byte val14 = 0; // button4;
+};
+DataPackageOutgoing dataOutgoing; // Create a variable with the above structure
 
 
 void setup_Funk()
@@ -44,11 +68,16 @@ void setup_Funk()
   //count How many retries before giving up, max 15
 }
 
-void FunkData()
+
+void FunkData_Temp()
 {
   // Send data:
   RF24NetworkHeader header(FunkMasterSchaltschrank);   // Address where the data is going
+  dataOutgoing.header = 1;
+  dataOutgoing.val1 = NewTargetTemp_Zone1;
+  dataOutgoing.val2 = NewTargetTemp_Zone2;
   bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
+  Serial.println("Funk DATA Temp!");
 }
 
 
@@ -62,12 +91,26 @@ void loop_FunkCheck()
     RF24NetworkHeader header(FunkMasterSchaltschrank);
     network.read(header, &dataIncoming, sizeof(dataIncoming)); // Read the incoming data
 
-    if (header.from_node == FunkMasterSchaltschrank)
+    if ((header.from_node == FunkMasterSchaltschrank) and (dataIncoming.header == 1))
     {
-      Serial.println("--- Incomming Data --- ");
-      Serial.print("TargetTempZone1 = "); Serial.println(dataIncoming.TargetTempZone1);
-      Serial.print("TargetTempZone2 = "); Serial.println(dataIncoming.TargetTempZone2);
-      Serial.println();
+      Serial.println("Funk kam an");
+
+      if ((dataIncoming.val1 != TargetTemperatureZone_1) and (NewTargetTempAvalible_Zone1 == false))
+      {
+        TargetTemperatureZone_1 = dataIncoming.val1;
+      }
+      if ((dataIncoming.val2 != TargetTemperatureZone_2) and (NewTargetTempAvalible_Zone2 == false))
+      {
+        TargetTemperatureZone_2 = dataIncoming.val2;
+      }
+      if (dataIncoming.val3 != RealTemperatureZone_1)
+      {
+        RealTemperatureZone_1 = dataIncoming.val3;
+      }
+      if (dataIncoming.val4 != RealTemperatureZone_2)
+      {
+        RealTemperatureZone_2 = dataIncoming.val4;
+      }
     }
   }
 }

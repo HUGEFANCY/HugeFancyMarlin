@@ -24,27 +24,31 @@ const uint16_t FunkSlaveJoystick = 01; // Joystick, Slave
 
 struct DataPackageIncoming // Max size of this struct is 32 bytes - NRF24L01 buffer limit
 {
-  byte j1PotX;
-  byte j1PotY;
-  byte j1Button;
-  byte j2PotX;
-  byte j2PotY;
-  byte j2Button;
-  byte pot1;
-  byte pot2;
-  byte tSwitch1;
-  byte tSwitch2;
-  byte button1;
-  byte button2;
-  byte button3;
-  byte button4;
+  byte header = 0; // 1 = Temp                // 2 = Joystick
+  byte val1 = 0;   // NewTargetTemp_Zone1     // j1PotX;
+  byte val2 = 0;   // NewTargetTemp_Zone2     // j1PotY;
+  byte val3 = 0;                              // j1Button;
+  byte val4 = 0; // j2PotX;
+  byte val5 = 0; // j2PotY;
+  byte val6 = 0; // j2Button;
+  byte val7 = 0; // pot1;
+  byte val8 = 0; // pot2;
+  byte val9 = 0; // tSwitch1;
+  byte val10 = 0; // tSwitch2;
+  byte val11 = 0; // button1;
+  byte val12 = 0; // button2;
+  byte val13 = 0; // button3;
+  byte val14 = 0; // button4;
 };
 DataPackageIncoming dataIncoming; // Create a variable with the above structure
 
 struct DataPackageOutgoing // Max size of this struct is 32 bytes - NRF24L01 buffer limit
 {
-  byte TargetTempZone1 = 0;
-  byte TargetTempZone2 = 0;
+  byte header = 0;
+  byte val1 = 0; // TargetTemperatureZone_1 (laut Teensy Schatschrank)
+  byte val2 = 0; // TargetTemperatureZone_2 (laut Teensy Schatschrank)
+  byte val3 = 0; // RealTemperatureZone_1
+  byte val4 = 0; // RealTemperatureZone_2
 };
 DataPackageOutgoing dataOutgoing; // Create a variable with the above structure
 
@@ -74,19 +78,27 @@ void loop_FunkCheck()
     RF24NetworkHeader header(FunkSlaveJoystick);
     network.read(header, &dataIncoming, sizeof(dataIncoming)); // Read the incoming data
 
-    if (header.from_node == FunkSlaveJoystick)
+    if ((header.from_node == FunkSlaveJoystick) and (dataIncoming.header == 1))
     {
-      Serial.println("--- Incomming Data --- ");
-      Serial.print("pot1 = "); Serial.println(dataIncoming.pot1);
-      Serial.print("pot2 = "); Serial.println(dataIncoming.pot2);
-      Serial.println();
+      TargetTemperatureZone_1 = dataIncoming.val1;
+      TargetTemperatureZone_2 = dataIncoming.val2;
+      Serial.println("Funk funktet new target Temps");
+      Serial.println(TargetTemperatureZone_1);
+      Serial.println(TargetTemperatureZone_2);
     }
   }
+  FunkData_Temp(); // Anschließend senden wir mal was
 }
 
-void FunkData()
+void FunkData_Temp()
 {
   // Send data:
   RF24NetworkHeader header(FunkSlaveJoystick);   // Address where the data is going
+  dataOutgoing.header = 1; // Temp
+  dataOutgoing.val1 = TargetTemperatureZone_1;
+  dataOutgoing.val2 = TargetTemperatureZone_2;
+  dataOutgoing.val3 = RealTemperatureZone_1;
+  dataOutgoing.val4 = RealTemperatureZone_2;
+
   bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
 }

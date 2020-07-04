@@ -7,6 +7,14 @@ unsigned long RS485_gesendet_LastUpdatePreviousMillis = 0;
 // Global variables, TargetTemp from Marlin and RealTemp from Hotend
 int TargetTempExtruderMarlin = 0; // max 9 Bit - 1 = 510°C
 int RealTempExtruderForMarlin = 0; // max 9 Bit - 1 = 510°C
+
+
+int TargetTemperatureZone_1 = 0; // max 8 Bit = 255°C
+int TargetTemperatureZone_2 = 0; // max 8 Bit = 255°C
+int RealTemperatureZone_1 = 22; // max 8 Bit = 255°C // TEST ### ToDo
+int RealTemperatureZone_2 = 33; // max 8 Bit = 255°C
+
+
 byte PwmValuePartCoolingFanMarlin = 0;  //not yet implemented 
 
 void setup()
@@ -18,7 +26,7 @@ void setup()
   setup_Funk();
   RGB_setup();
   Relays_setup();
-  I2C_Marlin_setup();
+//  I2C_Marlin_setup();
 
   Serial.println("Setup End");
 }
