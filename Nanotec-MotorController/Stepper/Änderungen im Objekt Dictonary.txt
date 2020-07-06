@@ -17,3 +17,9 @@ MICROSTEPPING
 setze Index 2057 auf 32 (32 = 16er Microstepping, Hinweis: 512 = FullStep) // Dezimalwert!!
 Clock Direction Divider
 setze Index 2058 auf 0x1
+
+Bremse
+2038h:1h 500ms
+2038h:2h 2000ms
+2038h:3h 1000ms
+2038h:4h 100ms

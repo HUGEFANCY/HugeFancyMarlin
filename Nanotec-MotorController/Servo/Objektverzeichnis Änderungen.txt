@@ -12,6 +12,6 @@ setze Index 2058 auf 0x1
 
 
 Im Plug and Drive 2 Menü
-- Nominal Current 18A
-- Max Current 30A
-- Max Duration of Max Current 100ms
+- Nominal Current 17500mA
+- Max Current 34A
+- Max Duration of Max Current 500ms
