@@ -1457,7 +1457,8 @@
  * NOTE: This method is less reliable as it can only catch hangups while
  * interrupts are enabled.
  */
-#define USE_WATCHDOG
+//ROBIN TODO
+//#define USE_WATCHDOG
 #if ENABLED(USE_WATCHDOG)
   //#define WATCHDOG_RESET_MANUAL
 #endif
@@ -2602,8 +2603,8 @@
 #if ENABLED(EXPERIMENTAL_I2CBUS)
   #define I2C_SLAVE_ADDRESS  0  // Set a value from 8 to 127 to act as a slave
   #define I2C_REMOTE_ADDRESS 9 //ROBIN-- this is the address of the i2c slave (a teensy in our case)
-  #define I2C_TEMPCONTROL
-  #define I2C_SEND_INTERVALL 1000
+  #define I2C_TEMPCONTROL       //Robin -- send temperature measurements via I2C 
+  #define I2C_SEND_INTERVALL 100
 #endif
 
 // @section extras
