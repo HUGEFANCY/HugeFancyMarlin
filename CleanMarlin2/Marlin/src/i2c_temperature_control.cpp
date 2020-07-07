@@ -39,12 +39,14 @@ uint8_t I2C_TempControl::send_target_temp(uint8_t target_hotend,uint16_t target_
     return 1;
 }
 
-uint8_t I2C_TempControl::request_hotend_temp(uint8_t target_hotend) {
+uint8_t I2C_TempControl::request_hotend_temp(uint8_t target_hotend) 
+{
     //SERIAL_ECHOLNPAIR("request on hotend:",target_hotend);
     i2c_c.address(I2C_REMOTE_ADDRESS);
     int req_bytes = 2;    //number of bytes to request
-    uint16_t temp = 0;      //temperature that will be returned 
-    for (uint8_t tries=5; tries--;) {
+    uint16_t temp = 0; 
+    for (uint8_t tries = 5; tries <= 2; tries--) 
+    {
         if (i2c_c.request(req_bytes)){              // Request req_bytes number of bytes
             char answer[req_bytes]={};              // a buffer to store the reply
             answer[sizeof(answer)] = 0;             //null termination of array
@@ -54,7 +56,8 @@ uint8_t I2C_TempControl::request_hotend_temp(uint8_t target_hotend) {
             //SERIAL_ECHOLNPAIR("size-of-answer:",sizeof(answer));
             uint16_t sum = 0;
 
-            for (uint8_t i = 0; i < (sizeof(answer)); i++) {
+            for (uint8_t i = 0; i < (sizeof(answer)); i++) 
+            {
                 //SERIAL_ECHOLNPAIR("sum addition: ", answer[i] & 0xFF);
                 sum += answer[i] & 0xFF;    //needed to make a valid int 
             }
