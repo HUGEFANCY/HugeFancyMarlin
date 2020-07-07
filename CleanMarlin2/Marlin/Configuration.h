@@ -2198,7 +2198,7 @@
   #define RGB_LED_R_PIN 25
   #define RGB_LED_G_PIN 27
   #define RGB_LED_B_PIN 29
-  #define RGB_LED_W_PIN -1
+  //#define RGB_LED_W_PIN -1
 #endif
 
 // Support for Adafruit Neopixel LED driver
