@@ -45,7 +45,6 @@ void loop()
   {
     //Serial.println("RS485_SendIntervall");
     RS485_gesendet_LastUpdatePreviousMillis = currentMillis;
-    //TargetTempExtruderMarlin++;
     if (TargetTempExtruderMarlin >= 510)
     {
       TargetTempExtruderMarlin = 0;

@@ -7,23 +7,38 @@ void RGB_setup()
 {
   FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   delay(20);
-  leds[0] = CRGB(0, 0, 0); 
+  RGB_Aus();
+  RGB_Rot();
+  delay(1000);
+  RGB_Gruen();
+  delay(1000);
+  RGB_Blau();
+  delay(1000);
+  RGB_Aus();
+  delay(10);
+}
+
+
+void RGB_Rot()
+{
   leds[0] = CRGB(255, 0, 0);
   FastLED.show();
-  delay(2000);
-  leds[0] = CRGB(0, 0, 0);
-  FastLED.show();
-  delay(10);
+}
+
+void RGB_Gruen()
+{
   leds[0] = CRGB(0, 255, 0);
   FastLED.show();
-  delay(2000);
-  leds[0] = CRGB(0, 0, 0);
-  FastLED.show();
-  delay(10);
+}
+
+void RGB_Blau()
+{
   leds[0] = CRGB(0, 0, 255);
   FastLED.show();
-  delay(2000);
+}
+
+void RGB_Aus()
+{
   leds[0] = CRGB(0, 0, 0);
   FastLED.show();
-  delay(10);
 }

@@ -15,7 +15,8 @@
 
 int target_temp_buffer = 0;
 
-void I2C_Marlin_setup() {
+void I2C_Marlin_setup() 
+{
   Wire2.begin(I2C_SLAVE, 0x9, WIRE2_PINS, I2C_PULLUP_EXT, 400000); // begin i2c on pins 3+4 as slave with address 9
   Wire2.onRequest(requestEvent); // Function to execute on data request from master (Marlin)
   Wire2.onReceive(receiveEvent); // Function to execute on data receive from master
@@ -30,9 +31,11 @@ void I2C_Marlin_setup() {
    @details --
    no params no return
 */
-void receiveEvent() {
-
-  while (0 < Wire2.available()) {
+void receiveEvent() 
+{
+  RGB_Rot();
+  while (0 < Wire2.available()) 
+  {
     byte x = Wire2.read();
     target_temp_buffer += x & 0xFF;
   }
@@ -40,6 +43,7 @@ void receiveEvent() {
   Serial.println(target_temp_buffer);
   TargetTempExtruderMarlin = target_temp_buffer;
   target_temp_buffer = 0;
+  RGB_Aus();
 }
 
 
@@ -51,7 +55,7 @@ void receiveEvent() {
 */
 void requestEvent()
 {
-
+  RGB_Blau();
   byte response[ANSWERSIZE];
   int target_temp = RealTempExtruderForMarlin;
 
@@ -71,4 +75,5 @@ void requestEvent()
     response[1] = 255;
   }
   Wire2.write(response, sizeof(response)); //send value to Marlin vial i2c
+  RGB_Aus();
 }
