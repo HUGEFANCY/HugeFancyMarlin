@@ -1457,7 +1457,7 @@
  * NOTE: This method is less reliable as it can only catch hangups while
  * interrupts are enabled.
  */
-#define USE_WATCHDOG
+//#define USE_WATCHDOG //###
 #if ENABLED(USE_WATCHDOG)
   //#define WATCHDOG_RESET_MANUAL
 #endif
@@ -2603,7 +2603,7 @@
   #define I2C_SLAVE_ADDRESS  0  // Set a value from 8 to 127 to act as a slave
   #define I2C_REMOTE_ADDRESS 9 //ROBIN-- this is the address of the i2c slave (a teensy in our case)
   #define I2C_TEMPCONTROL
-  #define I2C_SEND_INTERVALL 1000
+  #define I2C_SEND_INTERVALL 250
 #endif
 
 // @section extras
@@ -3142,7 +3142,7 @@
 //
 // M100 Free Memory Watcher to debug memory usage
 //
-//#define M100_FREE_MEMORY_WATCHER
+#define M100_FREE_MEMORY_WATCHER
 
 //
 // M43 - display pin status, toggle pins, watch pins, watch endstops & toggle LED, test servo probe
