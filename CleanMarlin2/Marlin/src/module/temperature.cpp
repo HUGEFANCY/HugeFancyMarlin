@@ -1078,7 +1078,7 @@ void Temperature::manage_heater() {
 
       //ROBIN-- Send temperatures for hotend[0]
       #if ENABLED(I2C_TEMPCONTROL)  //check if i2c tempcontrol is activated 
-        if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms)){    // check if its time to request next temperature
+        if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms)){    // check if its time to send current target temperature
           i2c_temp_ctrl.send_target_temp(0,temp_hotend[0].target);
         } 
       #else
