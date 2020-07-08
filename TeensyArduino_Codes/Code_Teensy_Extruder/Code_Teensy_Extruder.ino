@@ -54,8 +54,7 @@ void setup()
   Relays_setup();
   RGB_setup();
   PID_setup();
-  //Relays_clickCluck();
-
+  KuehlungPWM_setup();
 
   startMillis = millis(); //start timer for periodic executions
   Serial.println("Setup fertig");
@@ -69,10 +68,10 @@ void loop()
   PT100_MAX31865_loop();
   TM1637_update();
   TempWasser_loop();
+  KuehlungPWM_loop();
   PID_loop();
   CombineRealTemps();
   
-  //Relays_clickCluck();
 
 
   //watchdog_gameover();

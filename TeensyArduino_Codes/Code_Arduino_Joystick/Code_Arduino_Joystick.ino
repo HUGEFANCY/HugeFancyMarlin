@@ -14,6 +14,8 @@ int NewTargetTemp_Zone2 = 0;
 bool NewTargetTempAvalible_Zone1 = false;
 bool NewTargetTempAvalible_Zone2 = false;
 
+int PwmValuePartCoolingFanMarlin = 0;
+
 int RealTemperatureZone_1 = 0; // max 8 Bit = 255°C // TEST ### ToDo
 int RealTemperatureZone_2 = 0; // max 8 Bit = 255°C
 
@@ -21,7 +23,7 @@ int RealTemperatureZone_2 = 0; // max 8 Bit = 255°C
 #include <Metro.h> //Include Metro library
 
 
-void setup() 
+void setup()
 {
   Serial.begin(9600);
   delay(100);
@@ -39,4 +41,6 @@ void loop()
   loop_FunkCheck();
   loop_SerialDataOutput();
   loop_Oled();
+
+
 }

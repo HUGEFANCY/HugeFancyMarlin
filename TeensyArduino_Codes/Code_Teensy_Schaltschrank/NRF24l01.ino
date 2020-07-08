@@ -24,10 +24,10 @@ const uint16_t FunkSlaveJoystick = 01; // Joystick, Slave
 
 struct DataPackageIncoming // Max size of this struct is 32 bytes - NRF24L01 buffer limit
 {
-  byte header = 0; // 1 = Temp                // 2 = Joystick
-  byte val1 = 0;   // NewTargetTemp_Zone1     // j1PotX;
-  byte val2 = 0;   // NewTargetTemp_Zone2     // j1PotY;
-  byte val3 = 0;                              // j1Button;
+  byte header = 0; // 1 = Temp                      // 2 = Joystick
+  byte val1 = 0;   // NewTargetTemp_Zone1           // j1PotX;
+  byte val2 = 0;   // NewTargetTemp_Zone2           // j1PotY;
+  byte val3 = 0;   // PwmValuePartCoolingFanMarlin  // j1Button;
   byte val4 = 0; // j2PotX;
   byte val5 = 0; // j2PotY;
   byte val6 = 0; // j2Button;
@@ -82,9 +82,11 @@ void loop_FunkCheck()
     {
       TargetTemperatureZone_1 = dataIncoming.val1;
       TargetTemperatureZone_2 = dataIncoming.val2;
+      PwmValuePartCoolingFanMarlin = dataIncoming.val3;
       Serial.println("Funk funktet new target Temps");
       Serial.println(TargetTemperatureZone_1);
       Serial.println(TargetTemperatureZone_2);
+      Serial.print("PWM Cooling = ");Serial.println(PwmValuePartCoolingFanMarlin);
     }
   }
   FunkData_Temp(); // Anschließend senden wir mal was

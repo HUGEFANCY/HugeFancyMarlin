@@ -36,10 +36,10 @@ DataPackageIncomming dataIncoming; // Create a variable with the above structure
 
 struct DataPackageOutgoing // Max size of this struct is 32 bytes - NRF24L01 buffer limit
 {
-  byte header = 0; // 1 = Temp                // 2 = Joystick
-  byte val1 = 0;   // NewTargetTemp_Zone1     // j1PotX;
-  byte val2 = 0;   // NewTargetTemp_Zone2     // j1PotY;
-  byte val3 = 0;                              // j1Button;
+  byte header = 0; // 1 = Temp                        // 2 = Joystick
+  byte val1 = 0;   // NewTargetTemp_Zone1             // j1PotX;
+  byte val2 = 0;   // NewTargetTemp_Zone2             // j1PotY;
+  byte val3 = 0;   // PwmValuePartCoolingFanMarlin    // j1Button;
   byte val4 = 0; // j2PotX;
   byte val5 = 0; // j2PotY;
   byte val6 = 0; // j2Button;
@@ -76,6 +76,7 @@ void FunkData_Temp()
   dataOutgoing.header = 1;
   dataOutgoing.val1 = NewTargetTemp_Zone1;
   dataOutgoing.val2 = NewTargetTemp_Zone2;
+  dataOutgoing.val3 = PwmValuePartCoolingFanMarlin;
   bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
   Serial.println("Funk DATA Temp!");
 }
@@ -113,4 +114,9 @@ void loop_FunkCheck()
       }
     }
   }
+  if ((Joystick.button4 == 0) and (Joystick.tSwitch1 == false)) // Funk PWM Cooling
+  {
+    FunkData_Temp();
+  }
+
 }

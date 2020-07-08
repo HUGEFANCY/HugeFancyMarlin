@@ -15,7 +15,7 @@ int RealTemperatureZone_1 = 22; // max 8 Bit = 255°C // TEST ### ToDo
 int RealTemperatureZone_2 = 33; // max 8 Bit = 255°C
 
 
-byte PwmValuePartCoolingFanMarlin = 0;  //not yet implemented 
+byte PwmValuePartCoolingFanMarlin = 0;  // not yet verbundewn mit Marlin 
 
 void setup()
 {

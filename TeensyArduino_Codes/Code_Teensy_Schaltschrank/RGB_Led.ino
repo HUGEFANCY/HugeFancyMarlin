@@ -25,6 +25,12 @@ void RGB_Rot()
   FastLED.show();
 }
 
+void RGB_Lila()
+{
+  leds[0] = CRGB(255, 0, 255);
+  FastLED.show();
+}
+
 void RGB_Gruen()
 {
   leds[0] = CRGB(0, 255, 0);

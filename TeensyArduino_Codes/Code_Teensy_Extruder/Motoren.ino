@@ -15,10 +15,13 @@ const int M_L_EN = 29; // Enable Pin //15
 Stepper M_L(27, 28); // Step, Dir // 16,17
 StepControl StepController_L; // Controller, Stepping Mode
 
+
+/*
 // Motor Zusatz
 const int M_Zusatz_EN = 26; // Enable Pin
 const int M_Zusatz_Endstop = 25; // Endstop Pin
 Stepper M_Zusatz(30, 31); // Step, Dir
+*/
 
 /*
   // NANOTEC
