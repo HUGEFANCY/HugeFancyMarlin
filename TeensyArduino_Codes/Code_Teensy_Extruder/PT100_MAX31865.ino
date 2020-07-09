@@ -32,9 +32,6 @@ double helpsum = 0;
 
 void PT100_MAX31865_setup()
 {
-
-
-
   thermo_zone_1.autoConvert(true);
   thermo_zone_2.autoConvert(true);
 
@@ -43,8 +40,7 @@ void PT100_MAX31865_setup()
 
   thermo_zone_1.begin(MAX31865_3WIRE);  // set to 2WIRE or 4WIRE as necessary
   thermo_zone_2.begin(MAX31865_3WIRE);  // set to 2WIRE or 4WIRE as necessary
-
-
+  
   thermo_zone_1.autoConvert(true);
   thermo_zone_2.autoConvert(true);
   
@@ -65,11 +61,8 @@ void PT100_MAX31865_setup()
   */
 }
 
-
-
 void PT100_MAX31865_loop()
 {
-
   if (temperaturIntervall.check() == 1)  // check if the metro has passed its interval
   {
     // Check and print any faults

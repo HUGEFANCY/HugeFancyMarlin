@@ -14,6 +14,8 @@
 // B -> Kabelterminal 18
 // GND -> Teensy GND
 
+Metro sendeIntervall = Metro(500);
+
 const byte RS485_enablePin = 13;
 
 // Senden
@@ -42,18 +44,19 @@ void RS485_setup()
 
 
 void RS485_Schaltschrank_CheckIfUpdateAvalible()
-{ 
+{
   //Serial.println("Checking for Update");
   if (Serial2.available() > 0) // Check if there is any data available to read
   {
+    RGB_Rot();
     uint8_t c = Serial2.read(); // read only one byte at a time
 
     if (c == header_AbsenderExtruder_Statusupdate) // Check if header is found
     {
       // We must consider that we may sometimes receive unformatted data, and given the case we must ignore it and restart our reading code.
       // If it's the first time we find the header, we restart readCounter indicating that data is coming.
-      // It's possible the header appears again as a data byte. 
-        //That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
+      // It's possible the header appears again as a data byte.
+      //That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
       if (!firstTimeHeader)
       {
         isHeader = 1;
@@ -92,34 +95,41 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
         firstTimeHeader = 0;
       }
     }
+    RGB_Aus();
   }
+
 }
 
-void RS485_Schaltschrank_Send_Statusupdate()
+void loop_RS485_Schaltschrank_Send_Statusupdate()
 {
-  Serial.println("Sende Statusupdate Schaltschrank");
-  
-  // Byte 0 Header
-  // Byte 1 TargetTempExtruderMarlin Byte 01
-  // Byte 2 TargetTempExtruderMarlin Byte 02
-  // Byte 3 pwmValuePartCoolingFanMarlin
-  // Byte 4 Checksum
-
-  buffer[0] = header_AbsenderSchaltschrank_Statusupdate;
-  if (TargetTempExtruderMarlin <= 255)
+  if (sendeIntervall.check() == 1)  // check if the metro has passed its interval
   {
-    buffer[1] = TargetTempExtruderMarlin; // Value between 0-255°C
-    buffer[2] = 0;
-  }
-  else if ((TargetTempExtruderMarlin > 255) and (TargetTempExtruderMarlin <= 510))
-  {
-    buffer[1] = 255;
-    buffer[2] = TargetTempExtruderMarlin - 255; // Value between 256-510°C
-  }
-  buffer[3] = PwmValuePartCoolingFanMarlin;
-  buffer[4] = checksum();
+    RGB_Lila();
+    Serial.println("Sende Statusupdate Schaltschrank");
 
-  Serial2.write(buffer, bufferSize); // send all bytes stored in the buffer
+    // Byte 0 Header
+    // Byte 1 TargetTempExtruderMarlin Byte 01
+    // Byte 2 TargetTempExtruderMarlin Byte 02
+    // Byte 3 pwmValuePartCoolingFanMarlin
+    // Byte 4 Checksum
+
+    buffer[0] = header_AbsenderSchaltschrank_Statusupdate;
+    if (TargetTempExtruderMarlin <= 255)
+    {
+      buffer[1] = TargetTempExtruderMarlin; // Value between 0-255°C
+      buffer[2] = 0;
+    }
+    else if ((TargetTempExtruderMarlin > 255) and (TargetTempExtruderMarlin <= 510))
+    {
+      buffer[1] = 255;
+      buffer[2] = TargetTempExtruderMarlin - 255; // Value between 256-510°C
+    }
+    buffer[3] = PwmValuePartCoolingFanMarlin;
+    buffer[4] = checksum();
+
+    Serial2.write(buffer, bufferSize); // send all bytes stored in the buffer
+    RGB_Aus();
+  }
 }
 
 
@@ -155,8 +165,8 @@ uint8_t checksum()
   return result;
 }
 
-// This a common checksum validation method. 
-// We perform a sum of all bytes, except the one that corresponds to the original checksum value. 
+// This a common checksum validation method.
+// We perform a sum of all bytes, except the one that corresponds to the original checksum value.
 // After summing we need to AND the result to a byte value.
 
 uint8_t verifyChecksum(uint8_t originalResult)

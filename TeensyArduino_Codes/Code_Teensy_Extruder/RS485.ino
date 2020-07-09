@@ -1,3 +1,4 @@
+
 // RS485 long distance communication betweent Teensy_Schaltschrank (Master) and Teensy_Extruder (Slave) via UART with selfmade Communication Protocol
 // Tutorial RS485 UART: https://circuitdigest.com/microcontroller-projects/rs485-serial-communication-between-arduino-uno-and-arduino-nano
 // Tutorial designing a communication protocol: https://henryforceblog.wordpress.com/2015/03/12/designing-a-communication-protocol-using-arduinos-serial-library/
@@ -44,6 +45,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
 {
   if (Serial1.available() > 0) // Check if there is any data available to read
   {
+    Serial.println("Update verfügbar");
     uint8_t c = Serial1.read(); // read only one byte at a time
 
     if ((c == header_AbsenderSchaltschrank_Statusupdate) or (c == header_AbsenderSchaltschrank_FarbmischerAktion)) // Check if header is found
@@ -73,7 +75,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
         {
           if (buffer[0] == header_AbsenderSchaltschrank_Statusupdate)
           {
-            // Byte 0 Header 
+            // Byte 0 Header
             // Byte 1 TargetTempExtruderMarlin Byte 01
             // Byte 2 TargetTempExtruderMarlin Byte 02
             // Byte 3 pwmValuePartCoolingFanMarlin
@@ -91,7 +93,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
           }
           if (buffer[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
           {
-            // Byte 0 Header 
+            // Byte 0 Header
             // Byte 1 Schaufeln Links
             // Byte 2 Schaufeln Rechts
             // Byte 3 frei
@@ -112,9 +114,10 @@ void RS485_Extruder_CheckIfUpdateAvalible()
 
 void RS485_Extruder_Send_Statusupdate()
 {
+  RGB_Lila();
   Serial.println("Sende Statusupdate Extruder");
-  
-  // Byte 0 Header 
+
+  // Byte 0 Header
   // Byte 1 RealTempExtruderForMarlin_01 Byte 01
   // Byte 2 RealTempExtruderForMarlin_02 Byte 02
   // Byte 3 leer
@@ -136,6 +139,7 @@ void RS485_Extruder_Send_Statusupdate()
 
   // Senden
   Serial1.write(buffer, bufferSize);
+  RGB_Aus();
 }
 
 //We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.

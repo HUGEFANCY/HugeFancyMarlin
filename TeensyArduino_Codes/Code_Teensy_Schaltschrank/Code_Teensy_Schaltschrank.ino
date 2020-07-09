@@ -1,8 +1,8 @@
 #include <Arduino.h>
 
 unsigned long currentMillis = 0;
-
 unsigned long RS485_gesendet_LastUpdatePreviousMillis = 0;
+#include <Metro.h> // Include the Metro library // https://www.pjrc.com/teensy/td_libs_Metro.html
 
 // Global variables, TargetTemp from Marlin and RealTemp from Hotend
 
@@ -33,27 +33,9 @@ void setup()
 
 void loop()
 {
-  currentMillis = millis();
-
   SerialTastatur_CheckKeys();
-
-  // Sende jede Sekunde eine neue Ziffer // Testcode
-
-  // Aufruf ohne Blockieren alle RS485_SendIntervall ms
-  const int RS485_SendIntervall = 1000;
-  if (currentMillis - RS485_gesendet_LastUpdatePreviousMillis >= RS485_SendIntervall) 
-  {
-    //Serial.println("RS485_SendIntervall");
-    RS485_gesendet_LastUpdatePreviousMillis = currentMillis;
-    if (TargetTempExtruderMarlin >= 510)
-    {
-      TargetTempExtruderMarlin = 0;
-    }
-    RS485_Schaltschrank_Send_Statusupdate();
-  }
-  
+  loop_RS485_Schaltschrank_Send_Statusupdate();
   RS485_Schaltschrank_CheckIfUpdateAvalible();
   loop_FunkCheck();
-
   //watchdog_gameover();
 }

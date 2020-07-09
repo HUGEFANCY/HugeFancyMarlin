@@ -33,7 +33,7 @@ void I2C_Marlin_setup()
 */
 void receiveEvent()
 {
-  RGB_Lila();
+  RGB_Gruen();
   while (0 < Wire2.available())
   {
     byte x = Wire2.read();
