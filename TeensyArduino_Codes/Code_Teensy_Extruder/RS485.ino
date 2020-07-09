@@ -59,7 +59,6 @@ void RS485_Extruder_CheckIfUpdateAvalible()
         firstTimeHeader = 1;
       }
     }
-    Serial.println(c);
     buffer[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
     readCounter++;
 
@@ -74,7 +73,6 @@ void RS485_Extruder_CheckIfUpdateAvalible()
         {
           if (buffer[0] == header_AbsenderSchaltschrank_Statusupdate)
           {
-            Serial.println("richtiger header");
             // Byte 0 Header
             // Byte 1 TargetTempExtruderMarlin Byte 01
             // Byte 2 TargetTempExtruderMarlin Byte 02
@@ -82,8 +80,9 @@ void RS485_Extruder_CheckIfUpdateAvalible()
             // Byte 4 Checksum
 
             TargetTempExtruderMarlin = buffer[1] + buffer[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
-            Serial.println(TargetTempExtruderMarlin);
+            Serial.print("TargetTempExtruderMarlin = ");Serial.println(TargetTempExtruderMarlin);
             PwmValuePartCoolingFanMarlin = buffer[3];
+            KuehlungPWM(); // Kühlung aktuallisieren
 
             // Timeout Verbindung Schaltschrank – Extruder weggebrochen
             RS485_updateVariables_LastUpdatePreviousMillis = currentMillis; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben

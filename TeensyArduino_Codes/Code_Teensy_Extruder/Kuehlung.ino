@@ -1,22 +1,19 @@
 
-byte pwmPinKuehlung = 30;
+byte pwmKuehlungPin = 30;
 byte fakeGroundPin = 31;
-Metro KuehlungUpdateIntervall = Metro(1000);
 
 void KuehlungPWM_setup()
 {
-  pinMode(pwmPinKuehlung, OUTPUT); // Setzt den Pin als output.
+  pinMode(pwmKuehlungPin, OUTPUT); // Setzt den Pin als output
+
+  // GND machen
   pinMode(fakeGroundPin, OUTPUT);
   digitalWrite(fakeGroundPin, LOW);
 }
 
-void KuehlungPWM_loop()
+void KuehlungPWM()
 {
-  if (KuehlungUpdateIntervall.check() == 1)  // check if the metro has passed its interval
-  {
-    int PWMvalue = map(PwmValuePartCoolingFanMarlin, 0, 255, 255, 0); // PWM Wert umdrehen
-    analogWrite(pwmPinKuehlung, PWMvalue);
-    Serial.println("K");
-  }
-  
+  int PWMvalue = map(PwmValuePartCoolingFanMarlin, 0, 255, 255, 0); // PWM Wert umdrehen
+  analogWrite(pwmKuehlungPin, PWMvalue);
+  Serial.print("PWMvalue = "); Serial.println(PWMvalue);
 }

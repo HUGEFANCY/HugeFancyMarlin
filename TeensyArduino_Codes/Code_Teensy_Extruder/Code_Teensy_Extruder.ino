@@ -2,7 +2,7 @@
 #include <math.h>
 #include <Metro.h> // Include the Metro library // https://www.pjrc.com/teensy/td_libs_Metro.html
 
-unsigned long currentMillis,startMillis = 0;
+unsigned long currentMillis, startMillis = 0;
 int analog_resolution = 10; // sets resolution of analog writing as exponent of 2 (2^12=4096)
 
 
@@ -13,7 +13,7 @@ int Zone1_TargetOffset = 10 ;  // Heating Zone 1 will be different from Zone 2
 int TargetTemperatureZone_1 = TargetTempExtruderMarlin - Zone1_TargetOffset; // max 9 Bit = 511°C
 int TargetTemperatureZone_2 = TargetTempExtruderMarlin; // max 9 Bit = 511°C
 
- // ->
+// ->
 int RealTemperatureZone_1 = 0; // max 9 Bit = 511°C
 int RealTemperatureZone_2 = 0; // max 9 Bit = 511°C
 double AveragedRealTempZone_1 = 0; //average temperature over the last 5 measurements
@@ -24,9 +24,9 @@ double HeatPowerZone_2 = 0;
 int CombinedRealTempExtruder = 0; // max 9 Bit = 511°C
 
 byte PwmValuePartCoolingFanMarlin = 0;
-// Hotend Bools 
-//these are status bools  that do not affect the actual prcess but simply indicate a status. 
-//Changing them here will not activate the relays 
+// Hotend Bools
+//these are status bools  that do not affect the actual prcess but simply indicate a status.
+//Changing them here will not activate the relays
 int LuefterZone_1 = 0;
 int LuefterZone_2 = 0;
 int HeaterZone_1 = 0;
@@ -42,8 +42,12 @@ float prozentTankladung = 0;
 void setup()
 {
   delay(200);
-  Serial.begin(9600); 
+  Serial.begin(9600);
   delay(100);
+
+  KuehlungPWM_setup();
+  KuehlungPWM();
+  delay(10000);
 
   analogReadResolution(analog_resolution);
 
@@ -54,7 +58,7 @@ void setup()
   Relays_setup();
   RGB_setup();
   PID_setup();
-  KuehlungPWM_setup();
+
 
   startMillis = millis(); //start timer for periodic executions
   Serial.println("Setup fertig");
@@ -68,10 +72,9 @@ void loop()
   PT100_MAX31865_loop();
   TM1637_update();
   TempWasser_loop();
-  KuehlungPWM_loop();
   PID_loop();
   CombineRealTemps();
-  
+
 
 
   //watchdog_gameover();
@@ -79,10 +82,10 @@ void loop()
   SerialTastatur_CheckKeys();
 
   /*if (currentMillis -startMillis > 100)
-  {
+    {
     //Serial.println("periodic func");
     PrintCombTemps();
     startMillis = currentMillis;
-  }
+    }
   */
 }
