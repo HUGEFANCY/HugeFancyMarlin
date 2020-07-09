@@ -48,7 +48,6 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
   //Serial.println("Checking for Update");
   if (Serial2.available() > 0) // Check if there is any data available to read
   {
-    RGB_Rot();
     uint8_t c = Serial2.read(); // read only one byte at a time
 
     if (c == header_AbsenderExtruder_Statusupdate) // Check if header is found
@@ -79,6 +78,7 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
         {
           if (buffer[0] == header_AbsenderExtruder_Statusupdate)
           {
+            Serial.println("Empfange Statusupdate Schaltschrank");
             // Byte 0 Header
             // Byte 1 RealTempExtruderForMarlin_01 Byte 01
             // Byte 2 RealTempExtruderForMarlin_02 Byte 02
@@ -88,14 +88,12 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
             RealTempExtruderForMarlin = buffer[1] + buffer[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
             Serial.print("RealTempExtruderForMarlin = "); Serial.println(RealTempExtruderForMarlin);
           }
-
         }
         // restart header flag
         isHeader = 0;
         firstTimeHeader = 0;
       }
     }
-    RGB_Aus();
   }
 
 }
@@ -104,7 +102,6 @@ void loop_RS485_Schaltschrank_Send_Statusupdate()
 {
   if (sendeIntervall.check() == 1)  // check if the metro has passed its interval
   {
-    RGB_Lila();
     Serial.println("Sende Statusupdate Schaltschrank");
 
     // Byte 0 Header
@@ -128,7 +125,6 @@ void loop_RS485_Schaltschrank_Send_Statusupdate()
     buffer[4] = checksum();
 
     Serial2.write(buffer, bufferSize); // send all bytes stored in the buffer
-    RGB_Aus();
   }
 }
 

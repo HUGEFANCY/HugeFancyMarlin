@@ -45,7 +45,6 @@ void RS485_Extruder_CheckIfUpdateAvalible()
 {
   if (Serial1.available() > 0) // Check if there is any data available to read
   {
-    Serial.println("Update verfügbar");
     uint8_t c = Serial1.read(); // read only one byte at a time
 
     if ((c == header_AbsenderSchaltschrank_Statusupdate) or (c == header_AbsenderSchaltschrank_FarbmischerAktion)) // Check if header is found
@@ -60,6 +59,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
         firstTimeHeader = 1;
       }
     }
+    Serial.println(c);
     buffer[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
     readCounter++;
 
@@ -69,12 +69,12 @@ void RS485_Extruder_CheckIfUpdateAvalible()
 
       if (isHeader) // if header was found
       {
-
         uint8_t checksumValue = buffer[4]; // get checksum value from buffer's last value, according to defined protocol
         if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
         {
           if (buffer[0] == header_AbsenderSchaltschrank_Statusupdate)
           {
+            Serial.println("richtiger header");
             // Byte 0 Header
             // Byte 1 TargetTempExtruderMarlin Byte 01
             // Byte 2 TargetTempExtruderMarlin Byte 02
