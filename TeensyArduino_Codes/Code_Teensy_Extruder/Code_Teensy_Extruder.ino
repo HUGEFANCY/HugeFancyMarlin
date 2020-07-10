@@ -7,11 +7,11 @@ int analog_resolution = 10; // sets resolution of analog writing as exponent of 
 
 
 // Extruder temperatures
-int TargetTempExtruderMarlin = 10; // max 9 Bit = 511° // Target Values from Marlin and Real Values from Hotend
+int TargetTempExtruderMarlin = 0; // max 9 Bit = 511° // Target Values from Marlin and Real Values from Hotend
 // ->
-int Zone1_TargetOffset = 10 ;  // Heating Zone 1 will be different from Zone 2
-int TargetTemperatureZone_1 = TargetTempExtruderMarlin - Zone1_TargetOffset; // max 9 Bit = 511°C
-int TargetTemperatureZone_2 = TargetTempExtruderMarlin; // max 9 Bit = 511°C
+const int Zone1_TargetOffset = 10 ;  // Heating Zone 1 will be different from Zone 2
+int TargetTemperatureZone_1 = 0; // max 9 Bit = 511°C
+int TargetTemperatureZone_2 = 0; // max 9 Bit = 511°C
 
 // ->
 int RealTemperatureZone_1 = 0; // max 9 Bit = 511°C
@@ -80,11 +80,12 @@ void loop()
 
   SerialTastatur_CheckKeys();
 
-  /*if (currentMillis -startMillis > 100)
+  if (currentMillis -startMillis > 1000)
     {
-    //Serial.println("periodic func");
-    PrintCombTemps();
+    Serial.print("RealTemperatureZone_1 = ");Serial.println(TargetTemperatureZone_1);
+    Serial.print("RealTemperatureZone_2 = ");Serial.println(TargetTemperatureZone_2);
+    //PrintCombTemps();
     startMillis = currentMillis;
     }
-  */
+  
 }
