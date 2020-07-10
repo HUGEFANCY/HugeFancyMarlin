@@ -1,14 +1,9 @@
 
 byte pwmKuehlungPin = 30;
-byte fakeGroundPin = 31;
 
 void KuehlungPWM_setup()
 {
   pinMode(pwmKuehlungPin, OUTPUT); // Setzt den Pin als output
-
-  // GND machen
-  pinMode(fakeGroundPin, OUTPUT);
-  digitalWrite(fakeGroundPin, LOW);
 }
 
 void KuehlungPWM()

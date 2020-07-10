@@ -47,7 +47,6 @@ void setup()
 
   KuehlungPWM_setup();
   KuehlungPWM();
-  delay(10000);
 
   analogReadResolution(analog_resolution);
 
