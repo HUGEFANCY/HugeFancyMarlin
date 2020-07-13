@@ -46,7 +46,8 @@ void RS485_setup()
 void RS485_Schaltschrank_CheckIfUpdateAvalible()
 {
   //Serial.println("Checking for Update");
-  if (Serial2.available() > 0) // Check if there is any data available to read
+  int BreakCounter = 0;
+  while (Serial2.available() > 0) // Check if there is any data available to read
   {
     uint8_t c = Serial2.read(); // read only one byte at a time
 
@@ -93,6 +94,13 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
         isHeader = 0;
         firstTimeHeader = 0;
       }
+    }
+    
+    BreakCounter++;
+    if (BreakCounter >= 10)
+    {
+      Serial.println("Break Loop");
+      break;
     }
   }
 
@@ -153,7 +161,8 @@ uint8_t checksum()
   uint8_t result = 0;
   uint16_t sum = 0;
 
-  for (uint8_t i = 0; i < (bufferSize - 1); i++) {
+  for (uint8_t i = 0; i < (bufferSize - 1); i++) 
+  {
     sum += buffer[i];
   }
   result = sum & 0xFF;

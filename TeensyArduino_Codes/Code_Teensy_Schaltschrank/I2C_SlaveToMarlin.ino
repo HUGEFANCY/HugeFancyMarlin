@@ -20,7 +20,6 @@ void I2C_Marlin_setup()
   Wire2.begin(I2C_SLAVE, 0x9, WIRE2_PINS, I2C_PULLUP_EXT, 400000); // begin i2c on pins 3+4 as slave with address 9
   Wire2.onRequest(requestEvent); // Function to execute on data request from master (Marlin)
   Wire2.onReceive(receiveEvent); // Function to execute on data receive from master
-  //Serial.begin(9600); // start serial // not necessary since it is initialised in the main .ino
   Serial.println("I2C Slave ready!");
 }
 
@@ -39,7 +38,7 @@ void receiveEvent()
     byte x = Wire2.read();
     target_temp_buffer += x & 0xFF;
   }
-  //Serial.print("Bekomme von Marlin: target_temp_buffer = ");Serial.println(target_temp_buffer);
+  Serial.print("Bekomme von Marlin: target_temp_buffer = ");Serial.println(target_temp_buffer);
   TargetTempExtruderMarlin = target_temp_buffer;
   target_temp_buffer = 0;
   RGB_Aus();
@@ -61,7 +60,7 @@ void requestEvent()
   //Serial.print("Request event! sending: ");
   //Serial.println(target_temp);
 
-  //Serial.print("Sende zu Marlin: target_temp = ");Serial.println(target_temp);
+  Serial.print("Sende zu Marlin: target_temp = ");Serial.println(target_temp);
   if (target_temp <= 255) {
     response[0] = target_temp; // Wert von 0-255°C
     response[1] = 0;
