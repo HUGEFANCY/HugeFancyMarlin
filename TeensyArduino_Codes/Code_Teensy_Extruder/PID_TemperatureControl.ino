@@ -79,7 +79,7 @@ void PID_loop()
   myPID_Zone1.Compute();
   myPID_Zone2.Compute();
 
-  if (Output_Zone1/WindowSize < 0.1 && Input_Zone1 > Setpoint_Zone1 *1.01)
+  if (Output_Zone1/WindowSize < 0.5 && Input_Zone1 > Setpoint_Zone1 *1.01)
   {
     RelayCoolerZone_1_SetStatus(true) ;
   }
@@ -88,7 +88,7 @@ void PID_loop()
    RelayCoolerZone_1_SetStatus(false) ;
   }
   
-  if (Output_Zone2/WindowSize < 0.1 && Input_Zone2 > Setpoint_Zone2 *1.01)
+  if (Output_Zone2/WindowSize < 0.5 && Input_Zone2 > Setpoint_Zone2 *1.01)
   {
     RelayCoolerZone_2_SetStatus(true) ;
   }
