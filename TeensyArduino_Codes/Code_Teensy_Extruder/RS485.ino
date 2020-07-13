@@ -43,7 +43,8 @@ void RS485_setup()
 
 void RS485_Extruder_CheckIfUpdateAvalible()
 {
-  if (Serial1.available() > 0) // Check if there is any data available to read
+  int BreakCounter = 0;
+  while (Serial1.available() > 0) // Check if there is any data available to read
   {
     uint8_t c = Serial1.read(); // read only one byte at a time
 
@@ -66,7 +67,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
     {
       readCounter = 0;
 
-      if (isHeader) // if header was found
+      if (isHeader == 1) // if header was found
       {
         uint8_t checksumValue = buffer[4]; // get checksum value from buffer's last value, according to defined protocol
         if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
@@ -80,7 +81,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
             // Byte 4 Checksum
 
             TargetTempExtruderMarlin = buffer[1] + buffer[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
-            Serial.print("TargetTempExtruderMarlin = ");Serial.println(TargetTempExtruderMarlin);
+            Serial.print("Empfange Statusupdate vom Schaltschrank: TargetTempExtruderMarlin = "); Serial.println(TargetTempExtruderMarlin);
             PwmValuePartCoolingFanMarlin = buffer[3];
             KuehlungPWM(); // Kühlung aktuallisieren
 
@@ -108,13 +109,19 @@ void RS485_Extruder_CheckIfUpdateAvalible()
         firstTimeHeader = 0;
       }
     }
+    BreakCounter++;
+    if (BreakCounter >= 10)
+    {
+      Serial.println("Break Loop");
+      break;
+    }
   }
 }
 
 void RS485_Extruder_Send_Statusupdate()
 {
   RGB_Lila();
-  Serial.println("Sende Statusupdate Extruder");
+  Serial.println("Sende Statusupdate an Schaltschrank");
 
   // Byte 0 Header
   // Byte 1 RealTempExtruderForMarlin_01 Byte 01
