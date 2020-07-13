@@ -39,8 +39,7 @@ void receiveEvent()
     byte x = Wire2.read();
     target_temp_buffer += x & 0xFF;
   }
-  //Serial.print("Receive event! value:");
-  //Serial.println(target_temp_buffer);
+  Serial.print("Bekomme von Marlin: target_temp_buffer = ");Serial.println(target_temp_buffer);
   TargetTempExtruderMarlin = target_temp_buffer;
   target_temp_buffer = 0;
   RGB_Aus();
@@ -55,13 +54,14 @@ void receiveEvent()
 */
 void requestEvent()
 {
-  RGB_Blau();
+  RGB_Rot();
   byte response[ANSWERSIZE];
   int target_temp = RealTempExtruderForMarlin;
 
   //Serial.print("Request event! sending: ");
   //Serial.println(target_temp);
 
+  Serial.print("Sende zu Marlin: target_temp = ");Serial.println(target_temp);
   if (target_temp <= 255) {
     response[0] = target_temp; // Wert von 0-255°C
     response[1] = 0;
@@ -77,5 +77,6 @@ void requestEvent()
     }
   */
   Wire2.write(response, sizeof(response)); //send value to Marlin vial i2c
+
   RGB_Aus();
 }
