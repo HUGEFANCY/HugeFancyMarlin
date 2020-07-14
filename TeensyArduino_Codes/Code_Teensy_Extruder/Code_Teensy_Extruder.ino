@@ -80,7 +80,7 @@ void loop()
 
   SerialTastatur_CheckKeys();
 
-  if (currentMillis -startMillis > 1000)
+  if (currentMillis - startMillis > 1000)
     {
     Serial.print("RealTemperatureZone_1 = ");Serial.println(TargetTemperatureZone_1);
     Serial.print("RealTemperatureZone_2 = ");Serial.println(TargetTemperatureZone_2);

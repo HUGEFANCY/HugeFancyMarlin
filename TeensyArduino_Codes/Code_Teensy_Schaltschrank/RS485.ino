@@ -14,7 +14,7 @@
 // B -> Kabelterminal 18
 // GND -> Teensy GND
 
-Metro sendeIntervall = Metro(500);
+Metro sendeIntervall = Metro(100);
 
 const byte RS485_enablePin = 13;
 

@@ -5,6 +5,9 @@
 
 Metro DisplayIntervall = Metro(1000);
 
+Metro DisplayBlink = Metro(500);
+boolean changeBlink_ActiveStatus = true;
+
 // PINOUT
 // VCC -> 5V
 // GND -> GND Teensy
@@ -67,5 +70,73 @@ void TM1637_update()
     TM1637_TempWatercoolingCold.showNumberDec(TempWatercooling_Out, false); // ### ToDo: hier später die momentane TempExtruderObenrum
     TM1637_pwmValuePartCoolingFan.showNumberDec(PwmValuePartCoolingFanMarlin, false);
     TM1637_prozentTankladung.showNumberDec(TargetTempExtruderMarlin, false);
+  }
+
+
+  if ((abs(TargetTemperatureZone_1 - RealTemperatureZone_1) > 5) and (abs(TargetTemperatureZone_2 - RealTemperatureZone_2) > 5))
+  {
+    Blink_TempZone_12();
+  }
+  else if (abs(TargetTemperatureZone_1 - RealTemperatureZone_1) > 5)
+  {
+    Blink_TempZone_1();
+  }
+  else if (abs(TargetTemperatureZone_2 - RealTemperatureZone_2) > 5)
+  {
+    Blink_TempZone_2();
+  }
+}
+
+void Blink_TempZone_12()
+{
+  if (DisplayBlink.check() == 1)  // check if the metro has passed its interval
+  {
+    if (changeBlink_ActiveStatus == false)
+    {
+      TM1637_TempExtruderZone_1.showNumberDec(RealTemperatureZone_1, false);
+      TM1637_TempExtruderZone_2.showNumberDec(RealTemperatureZone_2, false);
+      changeBlink_ActiveStatus = true;
+    }
+    else if (changeBlink_ActiveStatus == true)
+    {
+      TM1637_TempExtruderZone_1.clear();
+      TM1637_TempExtruderZone_2.clear();
+      changeBlink_ActiveStatus = false;
+    }
+  }
+}
+
+void Blink_TempZone_1()
+{
+  if (DisplayBlink.check() == 1)  // check if the metro has passed its interval
+  {
+    if (changeBlink_ActiveStatus == false)
+    {
+      TM1637_TempExtruderZone_1.showNumberDec(RealTemperatureZone_1, false);
+      changeBlink_ActiveStatus = true;
+    }
+    else if (changeBlink_ActiveStatus == true)
+    {
+      TM1637_TempExtruderZone_1.clear();
+      changeBlink_ActiveStatus = false;
+    }
+  }
+}
+
+void Blink_TempZone_2()
+{
+  if (DisplayBlink.check() == 1)  // check if the metro has passed its interval
+  {
+    if (changeBlink_ActiveStatus == false)
+    {
+      TM1637_TempExtruderZone_2.showNumberDec(RealTemperatureZone_2, false);
+      changeBlink_ActiveStatus = true;
+    }
+    else if (changeBlink_ActiveStatus == true)
+    {
+      TM1637_TempExtruderZone_2.clear();
+      changeBlink_ActiveStatus = false;
+    }
+
   }
 }
