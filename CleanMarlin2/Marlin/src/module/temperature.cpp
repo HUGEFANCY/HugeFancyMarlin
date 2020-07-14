@@ -1108,7 +1108,7 @@ void Temperature::manage_heater() {
   //ROBIN-- this checks if its time to reset the i2c send intervall timer
   //ROBINTODO: could be better done with a flag so that it is not done multiple times 
   if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms)){    // check if its time to update the send interval 
-    SERIAL_ECHOLNPAIR("advance Send intervall", ms);
+    //SERIAL_ECHOLNPAIR("advance Send intervall", ms);
     next_i2c_temp_send_ms = ms + I2C_SEND_INTERVALL;    // set the next time to request 
   }  
 

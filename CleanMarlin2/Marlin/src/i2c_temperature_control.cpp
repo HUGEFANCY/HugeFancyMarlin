@@ -45,7 +45,7 @@ uint8_t I2C_TempControl::request_hotend_temp(uint8_t target_hotend)
     i2c_c.address(I2C_REMOTE_ADDRESS);
     int req_bytes = 2;    //number of bytes to request
     uint16_t temp = 0; 
-    for (uint8_t tries = 5; tries <= 2; tries--) 
+    for (uint8_t tries = 5; tries >= 1; tries--) 
     {
         if (i2c_c.request(req_bytes)){              // Request req_bytes number of bytes
             char answer[req_bytes]={};              // a buffer to store the reply
