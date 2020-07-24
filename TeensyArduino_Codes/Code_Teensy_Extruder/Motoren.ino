@@ -32,14 +32,17 @@ Stepper M_Zusatz(30, 31); // Step, Dir
 */
 
 
-const int motorsteps = 16; // 200 Schrittmotor, 16 Servo
-const int gear_ratio = 40; // >0 entspricht Untersetzung
+const int motorsteps = 200; // 200 Schrittmotor, 16 Servo
+const int gear_ratio = 1; // >0 entspricht Untersetzung
 
-const int M_LR_microstepping = 16; // TMC 2209 16 = Standard ohne Jumper
-const int M_LR_MaxSpeed = 8000;
-const int M_LR_Acceleration = 1000;
+const int M_LR_microstepping = 8; // TMC 2209 16 = Standard ohne Jumper
+const int M_LR_MaxSpeed = 200;
+const int M_LR_Acceleration = 50;
+int MotorSpeed = 200; // Umdrehungen, speed steps/s,
+int MotorAcceleration = 150; // acceleration mm/s^2
 
-const int Anzahl_Schaufeln = 8;
+
+const int Anzahl_Schaufeln = 3;
 
 
 void Motoren_setup()

@@ -7,14 +7,14 @@ boolean SerialTastatur_CheckKeys()
     if (ch == '1') // Tastaturanschlag "1"
     {
       Serial.println("Motor Links");
-      Schrittmotor_L(1, 8000, 1000); // Umdrehungen, speed steps/s, acceleration mm/s^2
+      Schrittmotor_L(1, MotorSpeed, MotorAcceleration); // Umdrehungen, speed steps/s, acceleration mm/s^2
       return true;
     }
 
     if (ch == '2') // Tastaturanschlag "2"
     {
       Serial.println("Motor Rechts");
-      Schrittmotor_R(1, 8000, 1000); // Umdrehungen, speed steps/s, acceleration mm/s^2
+      Schrittmotor_R(1, MotorSpeed, MotorAcceleration); // Umdrehungen, speed steps/s, acceleration mm/s^2
       // Schrittmotor_nanotec(1, 80 * 64, 50 * 64);
       return true;
     }
