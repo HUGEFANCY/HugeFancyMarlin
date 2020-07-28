@@ -110,7 +110,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
       }
     }
     BreakCounter++;
-    if (BreakCounter >= 10)
+    if (BreakCounter >= 20)
     {
       Serial.println("Break Loop");
       break;

@@ -73,6 +73,7 @@ void loop()
   TempWasser_loop();
   PID_loop();
   CombineRealTemps();
+  Stepper_loop();
 
 
 

@@ -20,6 +20,17 @@ boolean SerialTastatur_CheckKeys()
       RelayKompressor(false);
       return true;
     }
+
+
+    if (ch == 'f') // Tastaturanschlag "2"
+    {
+      Serial.println("--- Farbe ---"); Serial.println();
+      RS485_Schaltschrank_Send_FarbmischerAktion(1, 3);
+      return true;
+    }
+
+
+
   }
 
 

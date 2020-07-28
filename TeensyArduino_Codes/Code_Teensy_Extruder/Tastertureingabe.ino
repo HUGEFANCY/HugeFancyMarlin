@@ -56,6 +56,12 @@ boolean SerialTastatur_CheckKeys()
 
     }
 
+    if (ch == 'f') // Tastaturanschlag "f"
+    {
+      Farbmischer_GibFarbe(1, 3);
+    }
+
+
   }
 
 

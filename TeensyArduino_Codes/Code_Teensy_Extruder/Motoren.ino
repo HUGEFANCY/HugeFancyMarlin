@@ -8,19 +8,19 @@
 // Motor Rechts = F1
 const int M_R_EN = 33; // Enable Pin
 Stepper M_R(34, 35); // Step, Dir
-StepControl StepController_R; // Controller, Stepping Mode
 
 // Motor Links = F2
 const int M_L_EN = 29; // Enable Pin //15
 Stepper M_L(27, 28); // Step, Dir // 16,17
-StepControl StepController_L; // Controller, Stepping Mode
+
+StepControl StepController; // Controller, Stepping Mode
 
 
 /*
-// Motor Zusatz
-const int M_Zusatz_EN = 26; // Enable Pin
-const int M_Zusatz_Endstop = 25; // Endstop Pin
-Stepper M_Zusatz(30, 31); // Step, Dir
+  // Motor Zusatz
+  const int M_Zusatz_EN = 26; // Enable Pin
+  const int M_Zusatz_Endstop = 25; // Endstop Pin
+  Stepper M_Zusatz(30, 31); // Step, Dir
 */
 
 /*
@@ -43,6 +43,9 @@ int MotorAcceleration = 150; // acceleration mm/s^2
 
 
 const int Anzahl_Schaufeln = 3;
+
+
+Metro StepperTurnOffIntervall = Metro(1000);
 
 
 void Motoren_setup()
@@ -89,11 +92,11 @@ void Schrittmotor_L(int Umdrehungen, int Speed, int Acceleration)
   M_L.setAcceleration(Acceleration); // stp/s^2
 
   M_L.setTargetRel(Umdrehungen * gear_ratio * motorsteps * M_LR_microstepping); // 1600 = 1 REV with TMC2209
-  StepController_L.move(M_L);
+  StepController.moveAsync(M_L);
 
   M_L.setMaxSpeed(M_LR_MaxSpeed);         // stp/s
   M_L.setAcceleration(M_LR_Acceleration); // stp/s^2
-  Schrittmotor_L_aktiv(false);
+  //Schrittmotor_L_aktiv(false);
 }
 
 void Schrittmotor_R_aktiv(bool value)
@@ -116,26 +119,34 @@ void Schrittmotor_R(int Umdrehungen, int Speed, int Acceleration)
   M_R.setAcceleration(Acceleration); // stp/s^2
 
   M_R.setTargetRel(Umdrehungen * motorsteps * gear_ratio * M_LR_microstepping); // 1600 = 1 REV with TMC2209
-  StepController_R.move(M_R);
+  StepController.moveAsync(M_R);
 
   M_R.setMaxSpeed(M_LR_MaxSpeed); // stp/s
   M_R.setAcceleration(M_LR_Acceleration); // stp/s^2
-  Schrittmotor_R_aktiv(false);
+  //Schrittmotor_R_aktiv(false);
 }
 
 
 void Farbmischer_GibFarbe(int GibSchaufeln_L, int GibSchaufeln_R)
 {
-  if (GibSchaufeln_L != 0)
-  {
+
     float Drehwinkel_L = 2 * PI / Anzahl_Schaufeln * GibSchaufeln_L;
     M_L.setTargetRel(Drehwinkel_L * 200 * M_LR_microstepping); // 1600 = 1 REV with TMC2209
-    StepController_L.move(M_L);
-  }
-  if (GibSchaufeln_R != 0)
+
+    float Drehwinkel_R = 2 * PI / Anzahl_Schaufeln * GibSchaufeln_R;
+    M_R.setTargetRel(Drehwinkel_R * 200 * M_LR_microstepping); // 1600 = 1 REV with TMC2209
+  
+StepController.moveAsync(M_L, M_R);
+}
+
+void Stepper_loop()
+{
+  if (StepperTurnOffIntervall.check() == 1)
   {
-    //float Drehwinkel_R = 2 * PI / Anzahl_Schaufeln * GibSchaufeln_R;
-    //MR.setTargetRel(Drehwinkel_R * 200 * microstepping); // 1600 = 1 REV with TMC2209
-    //StepController_R.move(MR);
+    if (StepController.isRunning() == false)
+    {
+      Schrittmotor_L_aktiv(false);
+      Schrittmotor_R_aktiv(false);
+    }
   }
 }
