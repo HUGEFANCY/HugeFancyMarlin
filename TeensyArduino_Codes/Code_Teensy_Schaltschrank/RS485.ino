@@ -37,7 +37,7 @@ const uint8_t header_AbsenderSchaltschrank_FarbmischerAktion = 0x7C;
 void RS485_setup()
 {
   while (!Serial2); // Serial1 Teensy 3.2 defekt?
-  Serial2.begin(9600); // Serial1 für RS485
+  Serial2.begin(115200); // Serial1 für RS485
   Serial2.transmitterEnable(RS485_enablePin);
   delay(10);
 }
