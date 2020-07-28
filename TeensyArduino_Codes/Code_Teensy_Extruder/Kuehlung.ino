@@ -10,5 +10,5 @@ void KuehlungPWM()
 {
   int PWMvalue = map(PwmValuePartCoolingFanMarlin, 0, 255, 255, 0); // PWM Wert umdrehen
   analogWrite(pwmKuehlungPin, PWMvalue);
-  Serial.print("PWMvalue = "); Serial.println(PwmValuePartCoolingFanMarlin);
+  //Serial.print("PWMvalue = "); Serial.println(PwmValuePartCoolingFanMarlin);
 }

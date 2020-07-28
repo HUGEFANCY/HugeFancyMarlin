@@ -17,8 +17,8 @@
 const byte RS485_enablePin = 13;
 
 // Send
-const uint8_t bufferSize = 5;
-uint8_t buffer[bufferSize];
+const uint8_t bufferSizeRS485 = 5;
+uint8_t bufferRS485[bufferSizeRS485];
 // Receive
 uint8_t readCounter = 0;
 uint8_t isHeader = 0;
@@ -36,7 +36,7 @@ const uint8_t header_AbsenderSchaltschrank_FarbmischerAktion = 0x7C;
 void RS485_setup()
 {
   while (!Serial1);
-  Serial1.begin(9600); // Serial1 für RS485
+  Serial1.begin(115200); // Serial1 für RS485
   Serial1.transmitterEnable(RS485_enablePin);
   delay(10);
 }
@@ -55,24 +55,27 @@ void RS485_Extruder_CheckIfUpdateAvalible()
       // It's possible the header appears again as a data byte. That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
       if (!firstTimeHeader)
       {
-        isHeader = 1;
+        isHeader = true;
         readCounter = 0;
-        firstTimeHeader = 1;
+        firstTimeHeader = true;
       }
     }
-    buffer[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
+    bufferRS485[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
+    Serial.print("counter = ");Serial.print(readCounter);Serial.print(" // ");Serial.println(bufferRS485[readCounter]);
     readCounter++;
+     
+   
 
-    if (readCounter >= bufferSize) // prior overflow, we have to restart readCounter
+    if (readCounter >= bufferSizeRS485) // prior overflow, we have to restart readCounter
     {
       readCounter = 0;
 
       if (isHeader == 1) // if header was found
       {
-        uint8_t checksumValue = buffer[4]; // get checksum value from buffer's last value, according to defined protocol
-        if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
+        uint8_t checksumValue = bufferRS485[4]; // get checksum value from buffer's last value, according to defined protocol
+        if (verifyChecksum(checksumValue) == true) // perform checksum validation, it's optional but really suggested
         {
-          if (buffer[0] == header_AbsenderSchaltschrank_Statusupdate)
+          if (bufferRS485[0] == header_AbsenderSchaltschrank_Statusupdate)
           {
             // Byte 0 Header
             // Byte 1 TargetTempExtruderMarlin Byte 01
@@ -80,9 +83,9 @@ void RS485_Extruder_CheckIfUpdateAvalible()
             // Byte 3 pwmValuePartCoolingFanMarlin
             // Byte 4 Checksum
 
-            TargetTempExtruderMarlin = buffer[1] + buffer[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
+            TargetTempExtruderMarlin = bufferRS485[1] + bufferRS485[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
             Serial.print("Empfange Statusupdate vom Schaltschrank: TargetTempExtruderMarlin = "); Serial.println(TargetTempExtruderMarlin);
-            PwmValuePartCoolingFanMarlin = buffer[3];
+            PwmValuePartCoolingFanMarlin = bufferRS485[3];
             KuehlungPWM(); // Kühlung aktuallisieren
 
             // Timeout Verbindung Schaltschrank – Extruder weggebrochen
@@ -91,6 +94,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
             // Antwort und sende das eigene Statusupdate
             RS485_Extruder_Send_Statusupdate();
           }
+          /*
           if (buffer[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
           {
             // Byte 0 Header
@@ -103,6 +107,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
             byte Schaufeln_R = buffer[2];
             Farbmischer_GibFarbe(Schaufeln_L, Schaufeln_R); // Motoren Farbmischer starten
           }
+          */
         }
         // restart header flag
         isHeader = 0;
@@ -110,10 +115,14 @@ void RS485_Extruder_CheckIfUpdateAvalible()
       }
     }
     BreakCounter++;
-    if (BreakCounter >= 20)
+    if (BreakCounter >= 10)
     {
       Serial.println("Break Loop");
       break;
+    }
+    else
+    {
+      delay(50);
     }
   }
 }
@@ -129,22 +138,22 @@ void RS485_Extruder_Send_Statusupdate()
   // Byte 3 leer
   // Byte 4 Checksum
 
-  buffer[0] = header_AbsenderExtruder_Statusupdate; // Bufferheader
+  bufferRS485[0] = header_AbsenderExtruder_Statusupdate; // Bufferheader
   if (CombinedRealTempExtruder <= 255)
   {
-    buffer[1] = CombinedRealTempExtruder; // Wert von 0-255°C
-    buffer[2] = 0;
+    bufferRS485[1] = CombinedRealTempExtruder; // Wert von 0-255°C
+    bufferRS485[2] = 0;
   }
   else if ((CombinedRealTempExtruder > 255) and (CombinedRealTempExtruder <= 510))
   {
-    buffer[1] = 255;
-    buffer[2] = CombinedRealTempExtruder - 255; // Wert von 256-510°C
+    bufferRS485[1] = 255;
+    bufferRS485[2] = CombinedRealTempExtruder - 255; // Wert von 256-510°C
   }
-  buffer[3] = 0;
-  buffer[4] = checksum();
+  bufferRS485[3] = 0;
+  bufferRS485[4] = checksum();
 
   // Senden
-  Serial1.write(buffer, bufferSize);
+  Serial1.write(bufferRS485, bufferSizeRS485);
   RGB_Aus();
 }
 
@@ -153,8 +162,8 @@ uint8_t checksum() {
   uint8_t result = 0;
   uint16_t sum = 0;
 
-  for (uint8_t i = 0; i < (bufferSize - 1); i++) {
-    sum += buffer[i];
+  for (uint8_t i = 0; i < (bufferSizeRS485 - 1); i++) {
+    sum += bufferRS485[i];
   }
   result = sum & 0xFF;
 
@@ -167,9 +176,9 @@ uint8_t verifyChecksum(uint8_t originalResult)
   uint8_t result = 0;
   uint16_t sum = 0;
 
-  for (uint8_t i = 0; i < (bufferSize - 1); i++)
+  for (uint8_t i = 0; i < (bufferSizeRS485 - 1); i++)
   {
-    sum += buffer[i];
+    sum += bufferRS485[i];
   }
   result = sum & 0xFF;
 

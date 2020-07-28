@@ -58,7 +58,6 @@ void setup()
   RGB_setup();
   PID_setup();
 
-
   startMillis = millis(); //start timer for periodic executions
   Serial.println("Setup fertig");
 }
@@ -83,10 +82,9 @@ void loop()
 
   if (currentMillis - startMillis > 1000)
     {
-    Serial.print("RealTemperatureZone_1 = ");Serial.println(TargetTemperatureZone_1);
-    Serial.print("RealTemperatureZone_2 = ");Serial.println(TargetTemperatureZone_2);
+    //Serial.print("RealTemperatureZone_1 = ");Serial.println(TargetTemperatureZone_1);
+    //Serial.print("RealTemperatureZone_2 = ");Serial.println(TargetTemperatureZone_2);
     //PrintCombTemps();
     startMillis = currentMillis;
     }
-  
 }

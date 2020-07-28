@@ -12,7 +12,14 @@ const int waitErr = 10;
 
 void CombineRealTemps()
 {   
-    TargetTemperatureZone_1 = TargetTempExtruderMarlin - Zone1_TargetOffset; // max 9 Bit = 511°C
+    if (TargetTempExtruderMarlin - Zone1_TargetOffset >= 0)
+    {
+      TargetTemperatureZone_1 = TargetTempExtruderMarlin - Zone1_TargetOffset; // max 9 Bit = 511°C
+    }
+    else 
+    {
+      TargetTemperatureZone_1 = 0;
+    }
     TargetTemperatureZone_2 = TargetTempExtruderMarlin; // max 9 Bit = 511°C
     
     int err_Z1 = 0, err_Z2  = 0;
