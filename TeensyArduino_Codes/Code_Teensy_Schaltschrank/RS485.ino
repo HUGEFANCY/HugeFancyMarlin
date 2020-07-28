@@ -27,9 +27,9 @@ uint8_t isHeader = 0;
 uint8_t firstTimeHeader = 0; // Flag that helps us restart counter when we first find header byte
 
 // headers
-const uint8_t header_AbsenderExtruder_Statusupdate = 0x7A;
-const uint8_t header_AbsenderSchaltschrank_Statusupdate = 0x7B;
-const uint8_t header_AbsenderSchaltschrank_FarbmischerAktion = 0x7C;
+const uint8_t header_AbsenderExtruder_Statusupdate = 13;
+const uint8_t header_AbsenderSchaltschrank_Statusupdate = 14;
+const uint8_t header_AbsenderSchaltschrank_FarbmischerAktion = 15;
 
 //const uint8_t header_AbsenderExtruder_Statusupdate = 0x7A; // Header
 //const uint8_t header_AnswerUpdateVariables = 0x7C; // Bufferheader: Aktion Farbmischer
@@ -167,7 +167,7 @@ uint8_t checksum()
   {
     sum += bufferRS485[i];
   }
-    sum = sum + 1;
+    sum = sum + 10;
   result = sum & 0xFF;
 
   return result;
@@ -186,7 +186,7 @@ uint8_t verifyChecksum(uint8_t originalResult)
   {
     sum += bufferRS485[i];
   }
-    sum = sum + 1;
+    sum = sum + 10;
   result = sum & 0xFF;
 
   if (originalResult == result)
