@@ -44,7 +44,7 @@ void RS485_setup()
 void RS485_Extruder_CheckIfUpdateAvalible()
 {
   int BreakCounter = 0;
-  while (BreakCounter <= 20)
+  while (BreakCounter <= 50)
   {
     if (Serial1.available() > 0) // Check if there is any data available to read
     {
@@ -117,7 +117,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
         }
       }
       BreakCounter++;
-      delay(5);
+      //delay(5);
     }
   }
   Serial.println("Break Loop");
@@ -158,10 +158,12 @@ uint8_t checksum() {
   uint8_t result = 0;
   uint16_t sum = 0;
 
-  for (uint8_t i = 0; i < (bufferSizeRS485 - 1); i++) {
+  for (uint8_t i = 0; i < (bufferSizeRS485 - 1); i++)
+  {
     sum += bufferRS485[i];
   }
-  result = (sum + 1) & 0xFF;
+  sum = sum + 1;
+  result = sum & 0xFF;
 
   return result;
 }
@@ -176,7 +178,8 @@ uint8_t verifyChecksum(uint8_t originalResult)
   {
     sum += bufferRS485[i];
   }
-  result = (sum + 1) & 0xFF;
+    sum = sum + 1;
+  result = sum & 0xFF;
 
   if (originalResult == result)
   {
