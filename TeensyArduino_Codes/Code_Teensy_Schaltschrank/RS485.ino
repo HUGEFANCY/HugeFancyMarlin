@@ -19,8 +19,8 @@ Metro sendeIntervall = Metro(100);
 const byte RS485_enablePin = 13;
 
 // Senden
-const uint8_t bufferSize = 5;
-uint8_t buffer[bufferSize];
+const uint8_t bufferSizebufferRS485 = 5;
+uint8_t bufferbufferRS485[bufferSizebufferRS485];
 // Empfangen
 uint8_t readCounter = 0;
 uint8_t isHeader = 0;
@@ -47,64 +47,64 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
 {
   //Serial.println("Checking for Update");
   int BreakCounter = 0;
-  while (Serial2.available() > 0) // Check if there is any data available to read
+  while (BreakCounter <= 100)
   {
-    uint8_t c = Serial2.read(); // read only one byte at a time
-
-    if (c == header_AbsenderExtruder_Statusupdate) // Check if header is found
+    if (Serial1.available() > 0) // Check if there is any data available to read
     {
-      // We must consider that we may sometimes receive unformatted data, and given the case we must ignore it and restart our reading code.
-      // If it's the first time we find the header, we restart readCounter indicating that data is coming.
-      // It's possible the header appears again as a data byte.
-      //That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
-      if (!firstTimeHeader)
+      uint8_t c = Serial2.read(); // read only one byte at a time
+
+      if (c == header_AbsenderExtruder_Statusupdate) // Check if header is found
       {
-        isHeader = 1;
-        readCounter = 0;
-        firstTimeHeader = 1;
-      }
-    }
-    buffer[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
-    readCounter++;
-
-    if (readCounter >= bufferSize) // prior overflow, we have to restart readCounter
-    {
-      readCounter = 0;
-
-      if (isHeader) // if header was found
-      {
-
-        uint8_t checksumValue = buffer[4]; // get checksum value from buffer's last value, according to defined protocol
-        if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
+        // We must consider that we may sometimes receive unformatted data, and given the case we must ignore it and restart our reading code.
+        // If it's the first time we find the header, we restart readCounter indicating that data is coming.
+        // It's possible the header appears again as a data byte.
+        //That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
+        if (!firstTimeHeader)
         {
-          if (buffer[0] == header_AbsenderExtruder_Statusupdate)
-          {
-            Serial.println("Empfange Statusupdate Schaltschrank");
-            // Byte 0 Header
-            // Byte 1 RealTempExtruderForMarlin_01 Byte 01
-            // Byte 2 RealTempExtruderForMarlin_02 Byte 02
-            // Byte 3 Empty
-            // Byte 4 Checksum
-
-            RealTempExtruderForMarlin = buffer[1] + buffer[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
-            Serial.print("RealTempExtruderForMarlin = "); Serial.println(RealTempExtruderForMarlin);
-          }
+          isHeader = 1;
+          readCounter = 0;
+          firstTimeHeader = 1;
         }
-        // restart header flag
-        isHeader = 0;
-        firstTimeHeader = 0;
       }
-    }
-    
-    BreakCounter++;
-    if (BreakCounter >= 10)
-    {
-      Serial.println("Break Loop");
-      break;
+      bufferbufferRS485[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
+      readCounter++;
+
+      if (readCounter >= bufferSizebufferRS485) // prior overflow, we have to restart readCounter
+      {
+        readCounter = 0;
+
+        if (isHeader) // if header was found
+        {
+
+          uint8_t checksumValue = bufferbufferRS485[4]; // get checksum value from buffer's last value, according to defined protocol
+          if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
+          {
+            if (bufferbufferRS485[0] == header_AbsenderExtruder_Statusupdate)
+            {
+              Serial.println("Empfange Statusupdate Schaltschrank");
+              // Byte 0 Header
+              // Byte 1 RealTempExtruderForMarlin_01 Byte 01
+              // Byte 2 RealTempExtruderForMarlin_02 Byte 02
+              // Byte 3 Empty
+              // Byte 4 Checksum
+
+              RealTempExtruderForMarlin = bufferbufferRS485[1] + bufferbufferRS485[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
+              Serial.print("RealTempExtruderForMarlin = "); Serial.println(RealTempExtruderForMarlin);
+            }
+          }
+          // restart header flag
+          isHeader = 0;
+          firstTimeHeader = 0;
+        }
+      }
+
+      BreakCounter++;
+      delay(10);
     }
   }
-
+  Serial.println("Break Loop");
 }
+
 
 void loop_RS485_Schaltschrank_Send_Statusupdate()
 {
@@ -118,21 +118,21 @@ void loop_RS485_Schaltschrank_Send_Statusupdate()
     // Byte 3 pwmValuePartCoolingFanMarlin
     // Byte 4 Checksum
 
-    buffer[0] = header_AbsenderSchaltschrank_Statusupdate;
+    bufferbufferRS485[0] = header_AbsenderSchaltschrank_Statusupdate;
     if (TargetTempExtruderMarlin <= 255)
     {
-      buffer[1] = TargetTempExtruderMarlin; // Value between 0-255°C
-      buffer[2] = 0;
+      bufferbufferRS485[1] = TargetTempExtruderMarlin; // Value between 0-255°C
+      bufferbufferRS485[2] = 0;
     }
     else if ((TargetTempExtruderMarlin > 255) and (TargetTempExtruderMarlin <= 510))
     {
-      buffer[1] = 255;
-      buffer[2] = TargetTempExtruderMarlin - 255; // Value between 256-510°C
+      bufferbufferRS485[1] = 255;
+      bufferbufferRS485[2] = TargetTempExtruderMarlin - 255; // Value between 256-510°C
     }
-    buffer[3] = PwmValuePartCoolingFanMarlin;
-    buffer[4] = checksum();
+    bufferbufferRS485[3] = PwmValuePartCoolingFanMarlin;
+    bufferbufferRS485[4] = checksum();
 
-    Serial2.write(buffer, bufferSize); // send all bytes stored in the buffer
+    Serial2.write(bufferbufferRS485, bufferSizebufferRS485); // send all bytes stored in the buffer
   }
 }
 
@@ -146,13 +146,13 @@ void RS485_Schaltschrank_Send_FarbmischerAktion(byte SchaufelnMotor_L, byte Scha
   // Byte 3 frei
   // Byte 4 Checksum
 
-  buffer[0] = header_AbsenderSchaltschrank_FarbmischerAktion;
-  buffer[1] = SchaufelnMotor_L;
-  buffer[2] = SchaufelnMotor_R;
-  buffer[3] = 0; // frei
-  buffer[4] = checksum();
+  bufferbufferRS485[0] = header_AbsenderSchaltschrank_FarbmischerAktion;
+  bufferbufferRS485[1] = SchaufelnMotor_L;
+  bufferbufferRS485[2] = SchaufelnMotor_R;
+  bufferbufferRS485[3] = 0; // frei
+  bufferbufferRS485[4] = checksum();
 
-  Serial2.write(buffer, bufferSize); // We send all bytes stored in the buffer
+  Serial2.write(bufferbufferRS485, bufferSizebufferRS485); // We send all bytes stored in the buffer
 }
 
 //We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
@@ -161,9 +161,9 @@ uint8_t checksum()
   uint8_t result = 0;
   uint16_t sum = 0;
 
-  for (uint8_t i = 0; i < (bufferSize - 1); i++) 
+  for (uint8_t i = 0; i < (bufferSizebufferRS485 - 1); i++)
   {
-    sum += buffer[i];
+    sum += bufferbufferRS485[i];
   }
   result = sum & 0xFF;
 
@@ -179,9 +179,9 @@ uint8_t verifyChecksum(uint8_t originalResult)
   uint8_t result = 0;
   uint16_t sum = 0;
 
-  for (uint8_t i = 0; i < (bufferSize - 1); i++)
+  for (uint8_t i = 0; i < (bufferSizebufferRS485 - 1); i++)
   {
-    sum += buffer[i];
+    sum += bufferbufferRS485[i];
   }
   result = sum & 0xFF;
 
