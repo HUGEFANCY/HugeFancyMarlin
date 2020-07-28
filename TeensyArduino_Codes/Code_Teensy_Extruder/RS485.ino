@@ -44,7 +44,7 @@ void RS485_setup()
 void RS485_Extruder_CheckIfUpdateAvalible()
 {
   int BreakCounter = 0;
-  while (BreakCounter <= 100)
+  while (BreakCounter <= 20)
   {
     if (Serial1.available() > 0) // Check if there is any data available to read
     {
@@ -117,7 +117,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
         }
       }
       BreakCounter++;
-      delay(10);
+      delay(5);
     }
   }
   Serial.println("Break Loop");
