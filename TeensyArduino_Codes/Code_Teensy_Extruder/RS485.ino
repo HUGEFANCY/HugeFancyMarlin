@@ -161,7 +161,7 @@ uint8_t checksum() {
   for (uint8_t i = 0; i < (bufferSizeRS485 - 1); i++) {
     sum += bufferRS485[i];
   }
-  result = (sum + 1) & 0xFF;
+  result = sum & 0xFF;
 
   return result;
 }
@@ -176,7 +176,7 @@ uint8_t verifyChecksum(uint8_t originalResult)
   {
     sum += bufferRS485[i];
   }
-  result = (sum + 1) & 0xFF;
+  result = sum & 0xFF;
 
   if (originalResult == result)
   {
