@@ -98,9 +98,9 @@ void RS485_Extruder_CheckIfUpdateAvalible()
               // Antwort und sende das eigene Statusupdate
               RS485_Extruder_Send_Statusupdate();
             }
-            
-              if (bufferRS485[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
-              {
+
+            if (bufferRS485[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
+            {
               // Byte 0 Header
               // Byte 1 Schaufeln Links
               // Byte 2 Schaufeln Rechts
@@ -110,8 +110,8 @@ void RS485_Extruder_CheckIfUpdateAvalible()
               byte Schaufeln_L = bufferRS485[1];
               byte Schaufeln_R = bufferRS485[2];
               Farbmischer_GibFarbe(Schaufeln_L, Schaufeln_R); // Motoren Farbmischer starten
-              }
-            
+            }
+
           }
           // restart header flag
           isHeader = 0;
@@ -149,7 +149,15 @@ void RS485_Extruder_Send_Statusupdate()
     bufferRS485[2] = CombinedRealTempExtruder - 255; // Wert von 256-510°C
   }
   bufferRS485[3] = 0;
-  bufferRS485[4] = checksum();
+  
+  if (checksum() == bufferRS485[1])
+  {
+    bufferRS485[4] = checksum() + 1;
+  }
+  else
+  {
+    bufferRS485[4] = checksum();
+  }
 
   // Senden
   Serial1.write(bufferRS485, bufferSizeRS485);
@@ -157,7 +165,7 @@ void RS485_Extruder_Send_Statusupdate()
 }
 
 //We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
-uint8_t checksum() 
+uint8_t checksum()
 {
   uint8_t result = 0;
   uint16_t sum = 0;
@@ -182,7 +190,7 @@ uint8_t verifyChecksum(uint8_t originalResult)
   }
   result = sum & 0xFF;
 
-  if (originalResult == result)
+  if ((originalResult == result) or (originalResult == (result + 1)))
   {
     return 1;
   } else
