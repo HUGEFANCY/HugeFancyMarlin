@@ -130,7 +130,16 @@ void loop_RS485_Schaltschrank_Send_Statusupdate()
       bufferRS485[2] = TargetTempExtruderMarlin - 255; // Value between 256-510°C
     }
     bufferRS485[3] = PwmValuePartCoolingFanMarlin;
-    bufferRS485[4] = checksum();
+
+    if (checksum() == bufferRS485[1])
+    {
+      bufferRS485[4] = checksum() + 1;
+    } 
+    else
+    {
+      bufferRS485[4] = checksum();
+    }
+
 
     Serial2.write(bufferRS485, bufferSizebufferRS485); // send all bytes stored in the buffer
   }
@@ -150,7 +159,17 @@ void RS485_Schaltschrank_Send_FarbmischerAktion(byte SchaufelnMotor_L, byte Scha
   bufferRS485[1] = SchaufelnMotor_L;
   bufferRS485[2] = SchaufelnMotor_R;
   bufferRS485[3] = 0; // frei
-  bufferRS485[4] = checksum();
+
+  // checksum
+  if (checksum() == bufferRS485[1])
+  {
+    bufferRS485[4] = checksum() + 1;
+  }
+  else
+  {
+    bufferRS485[4] = checksum();
+  }
+
 
   Serial2.write(bufferRS485, bufferSizebufferRS485); // We send all bytes stored in the buffer
 }
@@ -185,7 +204,7 @@ uint8_t verifyChecksum(uint8_t originalResult)
   }
   result = sum & 0xFF;
 
-  if (originalResult == result)
+  if ((originalResult == result) or (originalResult == (result + 1)))
   {
     return 1;
   } else
