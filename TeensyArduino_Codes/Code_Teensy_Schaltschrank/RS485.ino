@@ -19,8 +19,8 @@ Metro sendeIntervall = Metro(100);
 const byte RS485_enablePin = 13;
 
 // Senden
-const uint8_t bufferSizebufferRS485 = 5;
-uint8_t bufferbufferRS485[bufferSizebufferRS485];
+const uint8_t bufferSizeRS485 = 5;
+uint8_t bufferRS485[bufferSizeRS485];
 // Empfangen
 uint8_t readCounter = 0;
 uint8_t isHeader = 0;
@@ -45,10 +45,11 @@ void RS485_setup()
 
 void RS485_Schaltschrank_CheckIfUpdateAvalible()
 {
-  //Serial.println("Checking for Update");
+  Serial.println("Checking for Update");
   int BreakCounter = 0;
-  while (BreakCounter <= 100)
+  while (BreakCounter <= 20)
   {
+    //Serial.println("check serial availability");
     if (Serial1.available() > 0) // Check if there is any data available to read
     {
       uint8_t c = Serial2.read(); // read only one byte at a time
@@ -66,20 +67,20 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
           firstTimeHeader = 1;
         }
       }
-      bufferbufferRS485[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
+      bufferRS485[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
       readCounter++;
 
-      if (readCounter >= bufferSizebufferRS485) // prior overflow, we have to restart readCounter
+      if (readCounter >= bufferSizeRS485) // prior overflow, we have to restart readCounter
       {
         readCounter = 0;
 
         if (isHeader) // if header was found
         {
 
-          uint8_t checksumValue = bufferbufferRS485[4]; // get checksum value from buffer's last value, according to defined protocol
+          uint8_t checksumValue = bufferRS485[4]; // get checksum value from buffer's last value, according to defined protocol
           if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
           {
-            if (bufferbufferRS485[0] == header_AbsenderExtruder_Statusupdate)
+            if (bufferRS485[0] == header_AbsenderExtruder_Statusupdate)
             {
               Serial.println("Empfange Statusupdate Schaltschrank");
               // Byte 0 Header
@@ -88,7 +89,7 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
               // Byte 3 Empty
               // Byte 4 Checksum
 
-              RealTempExtruderForMarlin = bufferbufferRS485[1] + bufferbufferRS485[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
+              RealTempExtruderForMarlin = bufferRS485[1] + bufferRS485[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
               Serial.print("RealTempExtruderForMarlin = "); Serial.println(RealTempExtruderForMarlin);
             }
           }
@@ -98,9 +99,9 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
         }
       }
 
-      BreakCounter++;
-      delay(10);
     }
+    BreakCounter++;
+    delay(5);
   }
   Serial.println("Break Loop");
 }
@@ -108,6 +109,7 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
 
 void loop_RS485_Schaltschrank_Send_Statusupdate()
 {
+  Serial.println("checking if its time to send");
   if (sendeIntervall.check() == 1)  // check if the metro has passed its interval
   {
     Serial.println("Sende Statusupdate Schaltschrank");
@@ -118,21 +120,21 @@ void loop_RS485_Schaltschrank_Send_Statusupdate()
     // Byte 3 pwmValuePartCoolingFanMarlin
     // Byte 4 Checksum
 
-    bufferbufferRS485[0] = header_AbsenderSchaltschrank_Statusupdate;
+    bufferRS485[0] = header_AbsenderSchaltschrank_Statusupdate;
     if (TargetTempExtruderMarlin <= 255)
     {
-      bufferbufferRS485[1] = TargetTempExtruderMarlin; // Value between 0-255°C
-      bufferbufferRS485[2] = 0;
+      bufferRS485[1] = TargetTempExtruderMarlin; // Value between 0-255°C
+      bufferRS485[2] = 0;
     }
     else if ((TargetTempExtruderMarlin > 255) and (TargetTempExtruderMarlin <= 510))
     {
-      bufferbufferRS485[1] = 255;
-      bufferbufferRS485[2] = TargetTempExtruderMarlin - 255; // Value between 256-510°C
+      bufferRS485[1] = 255;
+      bufferRS485[2] = TargetTempExtruderMarlin - 255; // Value between 256-510°C
     }
-    bufferbufferRS485[3] = PwmValuePartCoolingFanMarlin;
-    bufferbufferRS485[4] = checksum();
+    bufferRS485[3] = PwmValuePartCoolingFanMarlin;
+    bufferRS485[4] = checksum();
 
-    Serial2.write(bufferbufferRS485, bufferSizebufferRS485); // send all bytes stored in the buffer
+    Serial2.write(bufferRS485, bufferSizeRS485); // send all bytes stored in the buffer
   }
 }
 
@@ -146,13 +148,13 @@ void RS485_Schaltschrank_Send_FarbmischerAktion(byte SchaufelnMotor_L, byte Scha
   // Byte 3 frei
   // Byte 4 Checksum
 
-  bufferbufferRS485[0] = header_AbsenderSchaltschrank_FarbmischerAktion;
-  bufferbufferRS485[1] = SchaufelnMotor_L;
-  bufferbufferRS485[2] = SchaufelnMotor_R;
-  bufferbufferRS485[3] = 0; // frei
-  bufferbufferRS485[4] = checksum();
+  bufferRS485[0] = header_AbsenderSchaltschrank_FarbmischerAktion;
+  bufferRS485[1] = SchaufelnMotor_L;
+  bufferRS485[2] = SchaufelnMotor_R;
+  bufferRS485[3] = 0; // frei
+  bufferRS485[4] = checksum();
 
-  Serial2.write(bufferbufferRS485, bufferSizebufferRS485); // We send all bytes stored in the buffer
+  Serial2.write(bufferRS485, bufferSizeRS485); // We send all bytes stored in the buffer
 }
 
 //We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
@@ -161,9 +163,9 @@ uint8_t checksum()
   uint8_t result = 0;
   uint16_t sum = 0;
 
-  for (uint8_t i = 0; i < (bufferSizebufferRS485 - 1); i++)
+  for (uint8_t i = 0; i < (bufferSizeRS485 - 1); i++)
   {
-    sum += bufferbufferRS485[i];
+    sum += bufferRS485[i];
   }
   result = sum & 0xFF;
 
@@ -179,9 +181,9 @@ uint8_t verifyChecksum(uint8_t originalResult)
   uint8_t result = 0;
   uint16_t sum = 0;
 
-  for (uint8_t i = 0; i < (bufferSizebufferRS485 - 1); i++)
+  for (uint8_t i = 0; i < (bufferSizeRS485 - 1); i++)
   {
-    sum += bufferbufferRS485[i];
+    sum += bufferRS485[i];
   }
   result = sum & 0xFF;
 
