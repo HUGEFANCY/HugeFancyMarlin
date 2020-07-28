@@ -140,7 +140,7 @@ void Farbmischer_GibFarbe(int GibSchaufeln_L, int GibSchaufeln_R)
   M_L.setTargetRel(GibSchaufeln_L * motorsteps * gear_ratio * M_LR_microstepping / Anzahl_Schaufeln);
   M_R.setTargetRel(GibSchaufeln_R * motorsteps * gear_ratio * M_LR_microstepping / Anzahl_Schaufeln);
 
-
+  Serial.println("Motoren Farbe drehen");
   StepController.moveAsync(M_L, M_R);
 }
 
