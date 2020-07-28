@@ -58,8 +58,17 @@ boolean SerialTastatur_CheckKeys()
 
     if (ch == 'f') // Tastaturanschlag "f"
     {
+      Farbmischer_GibFarbe(1, 1);
+    }
+        if (ch == 'g') // Tastaturanschlag "f"
+    {
+      Farbmischer_GibFarbe(0, 1);
+    }
+            if (ch == 'h') // Tastaturanschlag "f"
+    {
       Farbmischer_GibFarbe(1, 3);
     }
+
 
 
   }

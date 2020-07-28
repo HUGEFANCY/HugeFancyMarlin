@@ -3,7 +3,7 @@
 #include <TeensyStep.h>
 // Git: https://github.com/luni64/TeensyStep DOCUMENTATION
 
-// PINOUT
+// PINOUTMotorSpeed
 
 // Motor Rechts = F1
 const int M_R_EN = 33; // Enable Pin
@@ -36,8 +36,8 @@ const int motorsteps = 200; // 200 Schrittmotor, 16 Servo
 const int gear_ratio = 1; // >0 entspricht Untersetzung
 
 const int M_LR_microstepping = 8; // TMC 2209 16 = Standard ohne Jumper
-const int M_LR_MaxSpeed = 200;
-const int M_LR_Acceleration = 50;
+const int M_LR_MaxSpeed = 400;
+const int M_LR_Acceleration = 500;
 int MotorSpeed = 200; // Umdrehungen, speed steps/s,
 int MotorAcceleration = 150; // acceleration mm/s^2
 
@@ -129,14 +129,19 @@ void Schrittmotor_R(int Umdrehungen, int Speed, int Acceleration)
 
 void Farbmischer_GibFarbe(int GibSchaufeln_L, int GibSchaufeln_R)
 {
+  Schrittmotor_L_aktiv(true);
+  M_L.setMaxSpeed(M_LR_MaxSpeed); // stp/s
+  M_L.setAcceleration(M_LR_Acceleration); // stp/s^2
 
-    float Drehwinkel_L = 2 * PI / Anzahl_Schaufeln * GibSchaufeln_L;
-    M_L.setTargetRel(Drehwinkel_L * 200 * M_LR_microstepping); // 1600 = 1 REV with TMC2209
+  Schrittmotor_R_aktiv(true);
+  M_R.setMaxSpeed(M_LR_MaxSpeed); // stp/s
+  M_R.setAcceleration(M_LR_Acceleration); // stp/s^2
 
-    float Drehwinkel_R = 2 * PI / Anzahl_Schaufeln * GibSchaufeln_R;
-    M_R.setTargetRel(Drehwinkel_R * 200 * M_LR_microstepping); // 1600 = 1 REV with TMC2209
-  
-StepController.moveAsync(M_L, M_R);
+  M_L.setTargetRel(GibSchaufeln_L * motorsteps * gear_ratio * M_LR_microstepping / Anzahl_Schaufeln);
+  M_R.setTargetRel(GibSchaufeln_R * motorsteps * gear_ratio * M_LR_microstepping / Anzahl_Schaufeln);
+
+
+  StepController.moveAsync(M_L, M_R);
 }
 
 void Stepper_loop()
