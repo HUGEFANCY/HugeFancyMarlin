@@ -25,9 +25,9 @@ uint8_t isHeader = 0;
 uint8_t firstTimeHeader = 0; // Flag that helps us restart counter when we first find header byte
 
 // headers
-const uint8_t header_AbsenderExtruder_Statusupdate = 0x7A;
-const uint8_t header_AbsenderSchaltschrank_Statusupdate = 0x7B;
-const uint8_t header_AbsenderSchaltschrank_FarbmischerAktion = 0x7C;
+const uint8_t header_AbsenderExtruder_Statusupdate = 13;
+const uint8_t header_AbsenderSchaltschrank_Statusupdate = 14;
+const uint8_t header_AbsenderSchaltschrank_FarbmischerAktion = 15;
 
 //const uint8_t header_updateVariables = 0x7E; // Bufferheader: Verkündung Teensy Schaltschrank
 //const uint8_t header_AnswerUpdateVariables = 0x7C; // Bufferheader: Aktion Farbmischer
@@ -44,7 +44,7 @@ void RS485_setup()
 void RS485_Extruder_CheckIfUpdateAvalible()
 {
   int BreakCounter = 0;
-  while (BreakCounter <= 50)
+  while (BreakCounter <= 20)
   {
     if (Serial1.available() > 0) // Check if there is any data available to read
     {
@@ -96,8 +96,8 @@ void RS485_Extruder_CheckIfUpdateAvalible()
               // Antwort und sende das eigene Statusupdate
               RS485_Extruder_Send_Statusupdate();
             }
-            /*
-              if (buffer[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
+            
+              if (bufferRS485[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
               {
               // Byte 0 Header
               // Byte 1 Schaufeln Links
@@ -105,11 +105,11 @@ void RS485_Extruder_CheckIfUpdateAvalible()
               // Byte 3 frei
               // Byte 4 Checksum
 
-              byte Schaufeln_L = buffer[1];
-              byte Schaufeln_R = buffer[2];
+              byte Schaufeln_L = bufferRS485[1];
+              byte Schaufeln_R = bufferRS485[2];
               Farbmischer_GibFarbe(Schaufeln_L, Schaufeln_R); // Motoren Farbmischer starten
               }
-            */
+            
           }
           // restart header flag
           isHeader = 0;
@@ -162,7 +162,7 @@ uint8_t checksum() {
   {
     sum += bufferRS485[i];
   }
-  sum = sum + 1;
+  sum = sum + 10;
   result = sum & 0xFF;
 
   return result;
@@ -178,7 +178,7 @@ uint8_t verifyChecksum(uint8_t originalResult)
   {
     sum += bufferRS485[i];
   }
-    sum = sum + 1;
+    sum = sum + 10;
   result = sum & 0xFF;
 
   if (originalResult == result)
