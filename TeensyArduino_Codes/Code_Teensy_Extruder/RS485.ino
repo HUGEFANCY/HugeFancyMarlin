@@ -44,87 +44,83 @@ void RS485_setup()
 void RS485_Extruder_CheckIfUpdateAvalible()
 {
   int BreakCounter = 0;
-  while (Serial1.available() > 0) // Check if there is any data available to read
+  while (BreakCounter <= 100)
   {
-    uint8_t c = Serial1.read(); // read only one byte at a time
-
-    if ((c == header_AbsenderSchaltschrank_Statusupdate) or (c == header_AbsenderSchaltschrank_FarbmischerAktion)) // Check if header is found
+    if (Serial1.available() > 0) // Check if there is any data available to read
     {
-      // We must consider that we may sometimes receive unformatted data, and given the case we must ignore it and restart our reading code.
-      // If it's the first time we find the header, we restart readCounter indicating that data is coming.
-      // It's possible the header appears again as a data byte. That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
-      if (!firstTimeHeader)
-      {
-        isHeader = true;
-        readCounter = 0;
-        firstTimeHeader = true;
-      }
-    }
-    bufferRS485[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
-    Serial.print("counter = ");Serial.print(readCounter);Serial.print(" // ");Serial.println(bufferRS485[readCounter]);
-    readCounter++;
-     
-   
+      uint8_t c = Serial1.read(); // read only one byte at a time
 
-    if (readCounter >= bufferSizeRS485) // prior overflow, we have to restart readCounter
-    {
-      readCounter = 0;
-
-      if (isHeader == 1) // if header was found
+      if ((c == header_AbsenderSchaltschrank_Statusupdate) or (c == header_AbsenderSchaltschrank_FarbmischerAktion)) // Check if header is found
       {
-        uint8_t checksumValue = bufferRS485[4]; // get checksum value from buffer's last value, according to defined protocol
-        if (verifyChecksum(checksumValue) == true) // perform checksum validation, it's optional but really suggested
+        // We must consider that we may sometimes receive unformatted data, and given the case we must ignore it and restart our reading code.
+        // If it's the first time we find the header, we restart readCounter indicating that data is coming.
+        // It's possible the header appears again as a data byte. That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
+        if (!firstTimeHeader)
         {
-          if (bufferRS485[0] == header_AbsenderSchaltschrank_Statusupdate)
-          {
-            // Byte 0 Header
-            // Byte 1 TargetTempExtruderMarlin Byte 01
-            // Byte 2 TargetTempExtruderMarlin Byte 02
-            // Byte 3 pwmValuePartCoolingFanMarlin
-            // Byte 4 Checksum
-
-            TargetTempExtruderMarlin = bufferRS485[1] + bufferRS485[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
-            Serial.print("Empfange Statusupdate vom Schaltschrank: TargetTempExtruderMarlin = "); Serial.println(TargetTempExtruderMarlin);
-            PwmValuePartCoolingFanMarlin = bufferRS485[3];
-            KuehlungPWM(); // Kühlung aktuallisieren
-
-            // Timeout Verbindung Schaltschrank – Extruder weggebrochen
-            RS485_updateVariables_LastUpdatePreviousMillis = currentMillis; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben
-
-            // Antwort und sende das eigene Statusupdate
-            RS485_Extruder_Send_Statusupdate();
-          }
-          /*
-          if (buffer[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
-          {
-            // Byte 0 Header
-            // Byte 1 Schaufeln Links
-            // Byte 2 Schaufeln Rechts
-            // Byte 3 frei
-            // Byte 4 Checksum
-
-            byte Schaufeln_L = buffer[1];
-            byte Schaufeln_R = buffer[2];
-            Farbmischer_GibFarbe(Schaufeln_L, Schaufeln_R); // Motoren Farbmischer starten
-          }
-          */
+          isHeader = true;
+          readCounter = 0;
+          firstTimeHeader = true;
         }
-        // restart header flag
-        isHeader = 0;
-        firstTimeHeader = 0;
       }
-    }
-    BreakCounter++;
-    if (BreakCounter >= 10)
-    {
-      Serial.println("Break Loop");
-      break;
-    }
-    else
-    {
-      delay(50);
+      bufferRS485[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
+      Serial.print("counter = "); Serial.print(readCounter); Serial.print(" // "); Serial.println(bufferRS485[readCounter]);
+      readCounter++;
+
+
+
+      if (readCounter >= bufferSizeRS485) // prior overflow, we have to restart readCounter
+      {
+        readCounter = 0;
+
+        if (isHeader == 1) // if header was found
+        {
+          uint8_t checksumValue = bufferRS485[4]; // get checksum value from buffer's last value, according to defined protocol
+          if (verifyChecksum(checksumValue) == true) // perform checksum validation, it's optional but really suggested
+          {
+            if (bufferRS485[0] == header_AbsenderSchaltschrank_Statusupdate)
+            {
+              // Byte 0 Header
+              // Byte 1 TargetTempExtruderMarlin Byte 01
+              // Byte 2 TargetTempExtruderMarlin Byte 02
+              // Byte 3 pwmValuePartCoolingFanMarlin
+              // Byte 4 Checksum
+
+              TargetTempExtruderMarlin = bufferRS485[1] + bufferRS485[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
+              Serial.print("Empfange Statusupdate vom Schaltschrank: TargetTempExtruderMarlin = "); Serial.println(TargetTempExtruderMarlin);
+              PwmValuePartCoolingFanMarlin = bufferRS485[3];
+              KuehlungPWM(); // Kühlung aktuallisieren
+
+              // Timeout Verbindung Schaltschrank – Extruder weggebrochen
+              RS485_updateVariables_LastUpdatePreviousMillis = currentMillis; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben
+
+              // Antwort und sende das eigene Statusupdate
+              RS485_Extruder_Send_Statusupdate();
+            }
+            /*
+              if (buffer[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
+              {
+              // Byte 0 Header
+              // Byte 1 Schaufeln Links
+              // Byte 2 Schaufeln Rechts
+              // Byte 3 frei
+              // Byte 4 Checksum
+
+              byte Schaufeln_L = buffer[1];
+              byte Schaufeln_R = buffer[2];
+              Farbmischer_GibFarbe(Schaufeln_L, Schaufeln_R); // Motoren Farbmischer starten
+              }
+            */
+          }
+          // restart header flag
+          isHeader = 0;
+          firstTimeHeader = 0;
+        }
+      }
+      BreakCounter++;
+      delay(10);
     }
   }
+  Serial.println("Break Loop");
 }
 
 void RS485_Extruder_Send_Statusupdate()
