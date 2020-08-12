@@ -7,7 +7,7 @@ unsigned long RS485_gesendet_LastUpdatePreviousMillis = 0;
 // Global variables, TargetTemp from Marlin and RealTemp from Hotend
 
 int TargetTempExtruderMarlin = 0; // max 9 Bit - 1 = 510°C
-int RealTempExtruderForMarlin = 0; // max 9 Bit - 1 = 510°C
+int CombinedRealTempExtruder = 0; // max 9 Bit - 1 = 510°C
 
 int TargetTemperatureZone_1 = 0; // max 8 Bit = 255°C
 int TargetTemperatureZone_2 = 0; // max 8 Bit = 255°C

@@ -45,12 +45,11 @@ void RS485_setup()
 
 void RS485_Schaltschrank_CheckIfUpdateAvalible()
 {
-  Serial.println("Checking for Update");
   int BreakCounter = 0;
   while (BreakCounter <= 20)
   {
     //Serial.println("check serial availability");
-    if (Serial1.available() > 0) // Check if there is any data available to read
+    if (Serial2.available() > 0) // Check if there is any data available to read
     {
       uint8_t c = Serial2.read(); // read only one byte at a time
 
@@ -62,12 +61,13 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
         //That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
         if (!firstTimeHeader)
         {
-          isHeader = 1;
+          isHeader = true;
           readCounter = 0;
-          firstTimeHeader = 1;
+          firstTimeHeader = true;
         }
       }
-      bufferRS485[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
+      bufferRS485[readCounter] = c; // store received byte, increase readCounter 
+      //Serial.print("counter = "); Serial.print(readCounter); Serial.print(" // "); Serial.println(bufferRS485[readCounter]);
       readCounter++;
 
       if (readCounter >= bufferSizeRS485) // prior overflow, we have to restart readCounter
@@ -80,17 +80,18 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
           uint8_t checksumValue = bufferRS485[4]; // get checksum value from buffer's last value, according to defined protocol
           if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
           {
+            Serial.println("Header Update Tempertur found");
             if (bufferRS485[0] == header_AbsenderExtruder_Statusupdate)
             {
               Serial.println("Empfange Statusupdate Schaltschrank");
               // Byte 0 Header
-              // Byte 1 RealTempExtruderForMarlin_01 Byte 01
-              // Byte 2 RealTempExtruderForMarlin_02 Byte 02
+              // Byte 1 CombinedRealTempExtruder Byte 01
+              // Byte 2 CombinedRealTempExtruder Byte 02
               // Byte 3 Empty
               // Byte 4 Checksum
 
-              RealTempExtruderForMarlin = bufferRS485[1] + bufferRS485[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
-              Serial.print("RealTempExtruderForMarlin = "); Serial.println(RealTempExtruderForMarlin);
+              CombinedRealTempExtruder = bufferRS485[1] + bufferRS485[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
+              Serial.print("CombinedRealTempExtruder = "); Serial.println(CombinedRealTempExtruder);
             }
           }
           // restart header flag

@@ -78,7 +78,7 @@ void loop_FunkCheck()
     RF24NetworkHeader header(FunkSlaveJoystick);
     network.read(header, &dataIncoming, sizeof(dataIncoming)); // Read the incoming data
 
-    if ((header.from_node == FunkSlaveJoystick) and (dataIncoming.header == 1))
+    if ((header.from_node == FunkSlaveJoystick) and (dataIncoming.header == 1)) // header 1 = temp
     {
       TargetTemperatureZone_1 = dataIncoming.val1;
       TargetTemperatureZone_2 = dataIncoming.val2;
@@ -86,8 +86,24 @@ void loop_FunkCheck()
       Serial.println("Funk funktet new target Temps");
       Serial.println(TargetTemperatureZone_1);
       Serial.println(TargetTemperatureZone_2);
-      Serial.print("PWM Cooling = ");Serial.println(PwmValuePartCoolingFanMarlin);
+      Serial.print("PWM Cooling = "); Serial.println(PwmValuePartCoolingFanMarlin);
     }
+
+
+
+    if ((header.from_node == FunkSlaveJoystick) and (dataIncoming.header == 2)) // header 2 = Farbauswurf
+    {
+      int FarbauswurfRad1 = dataIncoming.val1;  // (1 Farbauswurf = 1/3 Umdrehung)
+      int FarbauswurfRad2 = dataIncoming.val2;  // (1 Farbauswurf = 1/3 Umdrehung)
+      Serial.print("Farbauswurf Rad 01 = ");Serial.println(FarbauswurfRad1);
+      Serial.print("Farbauswurf Rad 02 = ");Serial.println(FarbauswurfRad2);
+
+      RS485_Schaltschrank_Send_FarbmischerAktion(1, FarbauswurfRad1); // Rad 1, = (1 Farbauswurf = 1/3 Umdrehung)
+      RS485_Schaltschrank_Send_FarbmischerAktion(2, FarbauswurfRad2); // Rad 2, eine Umdrehung
+    }
+
+
+    
   }
   FunkData_Temp(); // Anschließend senden wir mal was
 }

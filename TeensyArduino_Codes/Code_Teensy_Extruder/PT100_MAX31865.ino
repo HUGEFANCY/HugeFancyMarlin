@@ -118,6 +118,10 @@ void PT100_MAX31865_loop()
     {
       RealTemperatureZone_1 = round(thermo_zone_1.temperature(RNOMINAL, RREF));
       RealTemperatureZone_2 = round(thermo_zone_2.temperature(RNOMINAL, RREF));
+
+
+
+      // calculate average Temp over the last four messurements
       
       //AveragedRealTempZone_1 = thermo_zone_1.temperature(RNOMINAL, RREF);
       //AveragedRealTempZone_2 = thermo_zone_2.temperature(RNOMINAL, RREF);

@@ -63,7 +63,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
         }
       }
       bufferRS485[readCounter] = c; // store received byte, increase readCounter ### FEHLER???
-      Serial.print("counter = "); Serial.print(readCounter); Serial.print(" // "); Serial.println(bufferRS485[readCounter]);
+      //Serial.print("counter = "); Serial.print(readCounter); Serial.print(" // "); Serial.println(bufferRS485[readCounter]);
       readCounter++;
 
 
@@ -133,6 +133,8 @@ void RS485_Extruder_Send_Statusupdate()
   // Byte 2 RealTempExtruderForMarlin_02 Byte 02
   // Byte 3 leer
   // Byte 4 Checksum
+
+  Serial.print("CombinedRealTempExtruder = ");Serial.println(CombinedRealTempExtruder);
 
   bufferRS485[0] = header_AbsenderExtruder_Statusupdate; // Bufferheader
   if (CombinedRealTempExtruder <= 255)
