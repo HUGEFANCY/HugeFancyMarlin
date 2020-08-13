@@ -133,9 +133,9 @@
 
 #define E0_STEP_PIN        P2_13
 #define E0_DIR_PIN         P0_11
-#define E0_ENABLE_PIN      P2_12
+#define E0_ENABLE_PIN      P2_12 
 #ifndef E0_CS_PIN
-  #define E0_CS_PIN        P0_23
+  #define E0_CS_PIN        P0_23_A0 //###
 #endif
 
 #ifndef E1_CS_PIN
