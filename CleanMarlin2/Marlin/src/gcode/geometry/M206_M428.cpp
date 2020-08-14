@@ -61,7 +61,7 @@ void GcodeSuite::M206() {
  *       Use M206 to set these values directly.
  */
 void GcodeSuite::M428() {
-  if (axis_unhomed_error()) return;
+  if (axis_unhomed_error(_BV(Z_AXIS))) return;
 
   xyz_float_t diff;
   LOOP_XYZ(i) {
@@ -81,6 +81,16 @@ void GcodeSuite::M428() {
   LCD_MESSAGEPGM(MSG_HOME_OFFSETS_APPLIED);
   BUZZ(100, 659);
   BUZZ(100, 698);
+}
+
+void GcodeSuite::M429() {
+  if (axis_unhomed_error()) return;
+
+  float z_offset = current_position.z;
+
+  set_home_offset(Z_AXIS, -z_offset);
+  report_current_position();
+  LCD_MESSAGEPGM(MSG_HOME_OFFSETS_APPLIED);
 }
 
 #endif // HAS_M206_COMMAND

@@ -217,6 +217,7 @@
  * M422 - Set Z Stepper automatic alignment position using probe. X<units> Y<units> A<axis> (Requires Z_STEPPER_AUTO_ALIGN)
  * M425 - Enable/Disable and tune backlash correction. (Requires BACKLASH_COMPENSATION and BACKLASH_GCODE)
  * M428 - Set the home_offset based on the current_position. Nearest edge applies. (Disabled by NO_WORKSPACE_OFFSETS or DELTA)
+ * M429 - Set the home_offset Z-value based on the current Z-height. (Disabled by NO_WORKSPACE_OFFSETS or DELTA)
  * M486 - Identify and cancel objects. (Requires CANCEL_OBJECTS)
  * M500 - Store parameters in EEPROM. (Requires EEPROM_SETTINGS)
  * M501 - Restore parameters from EEPROM. (Requires EEPROM_SETTINGS)
@@ -825,6 +826,7 @@ private:
 
   #if HAS_M206_COMMAND
     static void M428();
+    static void M429();
   #endif
 
   #if ENABLED(CANCEL_OBJECTS)
