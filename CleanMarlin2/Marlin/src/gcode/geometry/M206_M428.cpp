@@ -83,4 +83,14 @@ void GcodeSuite::M428() {
   BUZZ(100, 698);
 }
 
+void GcodeSuite::M429() {
+  if (axis_unhomed_error()) return;
+
+  float z_offset = current_position.z;
+
+  set_home_offset(Z_AXIS, -z_offset);
+  report_current_position();
+  LCD_MESSAGEPGM(MSG_HOME_OFFSETS_APPLIED);
+}
+
 #endif // HAS_M206_COMMAND
