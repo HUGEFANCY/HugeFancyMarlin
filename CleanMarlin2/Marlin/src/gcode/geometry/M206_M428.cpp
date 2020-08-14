@@ -61,7 +61,7 @@ void GcodeSuite::M206() {
  *       Use M206 to set these values directly.
  */
 void GcodeSuite::M428() {
-  if (axis_unhomed_error(_BV(Z_AXIS))) return;
+  if (axis_unhomed_error()) return;
 
   xyz_float_t diff;
   LOOP_XYZ(i) {
@@ -84,7 +84,7 @@ void GcodeSuite::M428() {
 }
 
 void GcodeSuite::M429() {
-  if (axis_unhomed_error()) return;
+  if (axis_unhomed_error(_BV(Z_AXIS))) return;
 
   float z_offset = current_position.z;
 
