@@ -755,7 +755,7 @@
 
 
 //////////////// GOCDE M201 //////////////////
-#define DEFAULT_MAX_ACCELERATION      { 150, 150, 20, 30 } //30accel 1000?
+#define DEFAULT_MAX_ACCELERATION      { 80, 80, 20, 30 } //30accel 1000?
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -788,8 +788,8 @@
 // M
 #define CLASSIC_JERK 
 #if ENABLED(CLASSIC_JERK)
-  #define DEFAULT_XJERK 5.0
-  #define DEFAULT_YJERK 5.0
+  #define DEFAULT_XJERK 20.0
+  #define DEFAULT_YJERK 20.0
   #define DEFAULT_ZJERK 5.0
 
   //#define TRAVEL_EXTRA_XYJERK 0.0     // Additional jerk allowance for all travel moves
