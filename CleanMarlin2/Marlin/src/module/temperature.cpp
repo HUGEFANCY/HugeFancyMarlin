@@ -1044,7 +1044,6 @@ void Temperature::manage_heater() {
       temp_hotend[0].celsius = i2c_temp_ctrl.request_hotend_temp();      //update hotend temperature
       // Reset the watchdog on good temperature measurement
       watchdog_refresh();
-      raw_temps_ready = false;
     } 
    #else
     updateTemperaturesFromRawValues(); // also resets the watchdog
