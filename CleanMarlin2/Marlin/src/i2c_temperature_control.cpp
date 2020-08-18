@@ -26,8 +26,8 @@ boolean I2C_TempControl::send_target_temp(uint16_t target_temperature)
     } 
     //SERIAL_ECHOLN("sending target temp via i2c!");      // print 
     i2c_c.address(I2C_REMOTE_ADDRESS);
-    uint16_t sum = 0;
-    sum = buffer[0] + buffer[1];
+    //uint16_t sum = 0;
+    //sum = buffer[0] + buffer[1];
     //SERIAL_ECHOLNPAIR("target sum to send:    ", sum);      // print 
 
     i2c_c.addbytes_as_bytes(&buffer[0],2);
@@ -63,4 +63,5 @@ uint16_t I2C_TempControl::request_hotend_temp()
         return temp;
     //SERIAL_ECHOLNPAIR("request failed tries left:",tries);
     }
+    return temp;
 }
