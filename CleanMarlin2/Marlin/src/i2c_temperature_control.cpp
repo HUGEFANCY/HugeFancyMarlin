@@ -33,6 +33,7 @@ boolean I2C_TempControl::send_target_temp(uint16_t target_temperature)
     i2c_c.addbytes_as_bytes(&buffer[0],2);
     i2c_c.send();
     //SERIAL_ECHOLN("i2c target temp sent ------- ");      // print 
+    delay(50);
     return 1;
 }
 
@@ -44,7 +45,9 @@ uint16_t I2C_TempControl::request_hotend_temp()
     uint16_t temp = 0; 
     for (uint8_t tries = 1; tries <= 2; tries++) 
     {
-        if (i2c_c.request(req_bytes)){              // Request req_bytes number of bytes
+        if (i2c_c.request(req_bytes))
+        {
+                          // Request req_bytes number of bytes
             char answer[req_bytes]={};              // a buffer to store the reply
             answer[sizeof(answer)] = 0;             //null termination of array
             i2c_c.capture(&answer[0], req_bytes);    // Get the reply  
@@ -60,8 +63,10 @@ uint16_t I2C_TempControl::request_hotend_temp()
             //SERIAL_ECHOLN("----------");
             //SERIAL_ECHOLNPAIR("int received temp:",temp);// print integer value of the received string just to check 
         }
+        delay(50);
         return temp;
     //SERIAL_ECHOLNPAIR("request failed tries left:",tries);
     }
+    delay(50);
     return temp;
 }
