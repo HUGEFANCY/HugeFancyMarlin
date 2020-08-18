@@ -1040,7 +1040,7 @@ void Temperature::manage_heater() {
   #if ENABLED(I2C_TEMPCONTROL)
     if ((next_i2c_temp_send_ms == 0 )or(ms >= next_i2c_temp_send_ms)){    //check if its time to request next temperature
       //SERIAL_ECHOLN("requesting temp");
-      temp_hotend[0].celsius = i2c_temp_ctrl.request_hotend_temp(0);      //update hotend temperature
+      temp_hotend[0].celsius = i2c_temp_ctrl.request_hotend_temp();      //update hotend temperature
       // Reset the watchdog on good temperature measurement
       watchdog_refresh();
     } 
@@ -1061,7 +1061,8 @@ void Temperature::manage_heater() {
 
   #if HOTENDS
 
-    HOTEND_LOOP() {
+    HOTEND_LOOP() 
+    {
       #if ENABLED(THERMAL_PROTECTION_HOTENDS)
         if (degHotend(e) > temp_range[e].maxtemp)
           _temp_error((heater_ind_t)e, str_t_thermal_runaway, GET_TEXT(MSG_THERMAL_RUNAWAY));
@@ -1078,8 +1079,9 @@ void Temperature::manage_heater() {
 
       //ROBIN-- Send temperatures for hotend[0]
       #if ENABLED(I2C_TEMPCONTROL)  //check if i2c tempcontrol is activated 
-        if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms)){    // check if its time to send current target temperature
-          i2c_temp_ctrl.send_target_temp(0,temp_hotend[0].target);
+        if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms))
+        {    // check if its time to send current target temperature
+          i2c_temp_ctrl.send_target_temp(temp_hotend[0].target);
         } 
       #else
         temp_hotend[e].soft_pwm_amount = (temp_hotend[e].celsius > temp_range[e].mintemp || is_preheating(e)) && temp_hotend[e].celsius < temp_range[e].maxtemp ? (int)get_pid_output_hotend(e) >> 1 : 0;
@@ -1107,7 +1109,8 @@ void Temperature::manage_heater() {
 
   //ROBIN-- this checks if its time to reset the i2c send intervall timer
   //ROBINTODO: could be better done with a flag so that it is not done multiple times 
-  if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms)){    // check if its time to update the send interval 
+  if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms))
+  {    // check if its time to update the send interval 
     //SERIAL_ECHOLNPAIR("advance Send intervall", ms);
     next_i2c_temp_send_ms = ms + I2C_SEND_INTERVALL;    // set the next time to request 
   }  
@@ -1605,7 +1608,8 @@ void Temperature::manage_heater() {
  * and this function is called from normal context
  * as it would block the stepper routine.
  */
-void Temperature::updateTemperaturesFromRawValues() {
+void Temperature::updateTemperaturesFromRawValues() 
+{
   #if ENABLED(HEATER_0_USES_MAX6675)
     temp_hotend[0].raw = READ_MAX6675(0);
   #endif

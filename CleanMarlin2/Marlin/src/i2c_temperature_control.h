@@ -21,7 +21,7 @@ class I2C_TempControl {
      * @param target_temperature target temperature to send 
      * @return 0 or 1 
      */
-    uint8_t send_target_temp(uint8_t target_hotend, uint16_t target_temperature);
+    boolean send_target_temp(uint16_t target_temperature);
 
   /**
      * @brief Request current Hotend temperature from i2c-slave 
@@ -30,7 +30,7 @@ class I2C_TempControl {
      * @param target_hotend index of the target hotend 
      * @return hotend temperature 
      */
-    uint8_t request_hotend_temp(uint8_t target_hotend);
+    uint16_t request_hotend_temp();
 
 
 };

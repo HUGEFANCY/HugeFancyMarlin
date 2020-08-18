@@ -7,11 +7,12 @@
 
 
 
-uint8_t I2C_TempControl::send_target_temp(uint8_t target_hotend,uint16_t target_temperature) {
+boolean I2C_TempControl::send_target_temp(uint16_t target_temperature) 
+{
   
     const uint8_t bufferSize = 2;
-    byte buffer[bufferSize]={};
-    int target_temp = target_temperature;
+    uint8_t buffer[bufferSize]={};
+    uint16_t target_temp = target_temperature;
     //SERIAL_ECHOLNPAIR("target_temp: ", target_temp);      // print 
     if (target_temp <= 255)
     {
@@ -23,10 +24,6 @@ uint8_t I2C_TempControl::send_target_temp(uint8_t target_hotend,uint16_t target_
         buffer[0] = 255;
         buffer[1] = target_temp - 255; // Wert von 256-510°C
     } 
-    else{
-        buffer[0]=255;
-        buffer[1]=255;
-    }
     //SERIAL_ECHOLN("sending target temp via i2c!");      // print 
     i2c_c.address(I2C_REMOTE_ADDRESS);
     uint16_t sum = 0;
@@ -39,13 +36,13 @@ uint8_t I2C_TempControl::send_target_temp(uint8_t target_hotend,uint16_t target_
     return 1;
 }
 
-uint8_t I2C_TempControl::request_hotend_temp(uint8_t target_hotend) 
+uint16_t I2C_TempControl::request_hotend_temp() 
 {
     //SERIAL_ECHOLNPAIR("request on hotend:",target_hotend);
     i2c_c.address(I2C_REMOTE_ADDRESS);
     int req_bytes = 2;    //number of bytes to request
     uint16_t temp = 0; 
-    for (uint8_t tries = 5; tries >= 1; tries--) 
+    for (uint8_t tries = 1; tries <= 2; tries++) 
     {
         if (i2c_c.request(req_bytes)){              // Request req_bytes number of bytes
             char answer[req_bytes]={};              // a buffer to store the reply
@@ -54,19 +51,16 @@ uint8_t I2C_TempControl::request_hotend_temp(uint8_t target_hotend)
             
             //SERIAL_ECHOLNPAIR("answer:", answer);
             //SERIAL_ECHOLNPAIR("size-of-answer:",sizeof(answer));
-            uint16_t sum = 0;
 
             for (uint8_t i = 0; i < (sizeof(answer)); i++) 
             {
                 //SERIAL_ECHOLNPAIR("sum addition: ", answer[i] & 0xFF);
-                sum += answer[i] & 0xFF;    //needed to make a valid int 
+                temp += answer[i] & 0xFF;    //needed to make a valid int 
             }
-            temp = sum;  
             //SERIAL_ECHOLN("----------");
             //SERIAL_ECHOLNPAIR("int received temp:",temp);// print integer value of the received string just to check 
-            return temp;
         }
+        return temp;
     //SERIAL_ECHOLNPAIR("request failed tries left:",tries);
     }
-    return temp;
 }
