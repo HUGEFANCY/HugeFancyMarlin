@@ -1040,7 +1040,7 @@ void Temperature::manage_heater() {
   #if ENABLED(I2C_TEMPCONTROL)
     millis_t ms = millis();
     if ((next_i2c_temp_send_ms == 0 )or(ms >= next_i2c_temp_send_ms)){    //check if its time to request next temperature
-      SERIAL_ECHOLN("requesting temperature (l_1043)");
+      //SERIAL_ECHOLN("requesting temp");
       temp_hotend[0].celsius = i2c_temp_ctrl.request_hotend_temp();      //update hotend temperature
       // Reset the watchdog on good temperature measurement
       watchdog_refresh();
@@ -1082,7 +1082,6 @@ void Temperature::manage_heater() {
       #if ENABLED(I2C_TEMPCONTROL)  //check if i2c tempcontrol is activated 
         if ((next_i2c_temp_send_ms == 0 )||(ms >= next_i2c_temp_send_ms))
         {    // check if its time to send current target temperature
-          SERIAL_ECHOLN("sending next arget temperature via i2c");
           i2c_temp_ctrl.send_target_temp(temp_hotend[0].target);
         } 
       #else

@@ -29,7 +29,6 @@
 
 inline void watchdog_refresh() {
   #if ENABLED(USE_WATCHDOG)
-    SERIAL_ECHOLN("refreshing the watchdog");
     HAL_watchdog_refresh();
   #endif
 }
