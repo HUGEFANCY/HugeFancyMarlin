@@ -19,6 +19,10 @@ int PwmValuePartCoolingFanMarlin = 0;
 int RealTemperatureZone_1 = 0; // max 8 Bit = 255°C // TEST ### ToDo
 int RealTemperatureZone_2 = 0; // max 8 Bit = 255°C
 
+int wheelcount_A = 0;
+int wheelcount_B = 0;
+
+
 #include <Arduino.h>
 #include <Metro.h> //Include Metro library
 
@@ -26,7 +30,7 @@ int RealTemperatureZone_2 = 0; // max 8 Bit = 255°C
 void setup()
 {
   Serial.begin(9600);
-  delay(100);
+  delay(500);
 
   setup_JoystickInputs();
   setup_Funk();

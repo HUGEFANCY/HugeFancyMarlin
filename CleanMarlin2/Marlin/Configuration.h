@@ -741,9 +741,9 @@
  */
 #define DEFAULT_MAX_FEEDRATE          { 200, 200, 15, 16 } // max 6500 mm/min = 108 mm/s bei Esteps500 //150
 
-//#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
+#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
-  #define MAX_FEEDRATE_EDIT_VALUES    { 600, 600, 10, 50 } // ...or, set your own edit limits
+  #define MAX_FEEDRATE_EDIT_VALUES    { 300, 300, 20, 20 } // ...or, set your own edit limits
 #endif
 
 /**
@@ -755,7 +755,7 @@
 
 
 //////////////// GOCDE M201 //////////////////
-#define DEFAULT_MAX_ACCELERATION      { 80, 80, 20, 30 } //30accel 1000?
+#define DEFAULT_MAX_ACCELERATION      { 50, 50, 20, 10 } //30accel 1000?
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -772,9 +772,9 @@
  */
 
 
-#define DEFAULT_ACCELERATION          150    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  30    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   150    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_ACCELERATION          50    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_RETRACT_ACCELERATION  10    // E acceleration for retracts
+#define DEFAULT_TRAVEL_ACCELERATION   50    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk limits (mm/s)
@@ -785,7 +785,7 @@
  * value set here, it may happen instantaneously.
  */
 
-// M
+// M205
 #define CLASSIC_JERK 
 #if ENABLED(CLASSIC_JERK)
   #define DEFAULT_XJERK 20.0
@@ -800,7 +800,7 @@
   #endif
 #endif
 
-#define DEFAULT_EJERK    2.0  // May be used by Linear Advance // 10 ???
+#define DEFAULT_EJERK    1.0  // May be used by Linear Advance // 10 ???
 
 /**
  * Junction Deviation Factor
@@ -1482,14 +1482,14 @@
 // @section temperature
 
 // Preheat Constants
-#define PREHEAT_1_LABEL       "PLA"
-#define PREHEAT_1_TEMP_HOTEND 180
-#define PREHEAT_1_TEMP_BED     70
+#define PREHEAT_1_LABEL       "HDPE"
+#define PREHEAT_1_TEMP_HOTEND 210
+#define PREHEAT_1_TEMP_BED     0
 #define PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define PREHEAT_2_LABEL       "ABS"
 #define PREHEAT_2_TEMP_HOTEND 240
-#define PREHEAT_2_TEMP_BED    110
+#define PREHEAT_2_TEMP_BED    0
 #define PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
 /**

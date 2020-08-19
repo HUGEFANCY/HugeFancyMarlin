@@ -2604,7 +2604,7 @@
   #define I2C_SLAVE_ADDRESS  0  // Set a value from 8 to 127 to act as a slave
   #define I2C_REMOTE_ADDRESS 9 //ROBIN-- this is the address of the i2c slave (a teensy in our case)
   #define I2C_TEMPCONTROL       //Robin -- send temperature measurements via I2C 
-  #define I2C_SEND_INTERVALL 50 //###
+  #define I2C_SEND_INTERVALL 5000 //###
 #endif
 
 // @section extras

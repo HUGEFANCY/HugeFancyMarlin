@@ -1,4 +1,4 @@
- 
+
 #include <U8g2lib.h>
 #include <Wire.h>
 #include <stdlib.h>
@@ -16,6 +16,8 @@ void setup_Oled()
   u8x8.setFlipMode(1);
 }
 
+String OledModus = "none";
+
 
 void loop_Oled()
 {
@@ -23,10 +25,16 @@ void loop_Oled()
   char buf[10];
   int decimal = 10;
 
-  if (Joystick.tSwitch1 == true) // TEMPMODUS
+  if ((Joystick.tSwitch1 == true) and (Joystick.tSwitch2 == false)) // Modus Temperatur
   {
     if (Metro_OledRefresh.check() == true)
     {
+      if (OledModus != "temp")
+      {
+        u8x8.clear();
+        u8x8.setFlipMode(1);
+        OledModus = "temp";
+      }
       u8x8.drawString(0, 0, "NEW  TARGET REAL");
 
       u8x8.drawString(7, 3, "   ");
@@ -43,14 +51,38 @@ void loop_Oled()
     PotiNewTargetTemp();
     ApplyNewTargetTemp();
   }
-  else if (Joystick.tSwitch1 == false)
+  else if ((Joystick.tSwitch1 == false) and (Joystick.tSwitch2 == false)) // Modus Lüfter
   {
     if (Metro_OledRefresh.check() == true)
     {
+      if (OledModus != "fan")
+      {
+        u8x8.clear();
+        u8x8.setFlipMode(1);
+        OledModus = "fan";
+      }
       u8x8.drawString(0, 0, "PART COOLING");
     }
     PotiNewPWMCoolingValue();
   }
+
+  if (Joystick.tSwitch2 == true)
+  {
+    if (Metro_OledRefresh.check() == true)
+    {
+      if (OledModus != "color")
+      {
+        u8x8.clear();
+        u8x8.setFlipMode(1);
+        OledModus = "color";
+      }
+      u8x8.drawString(0, 0, "COLOR MODE");
+    }
+    ColorWheel();
+  }
+
+
+
 }
 
 void Oled(int zahl, int zeile, int zeilenstart)
@@ -119,5 +151,22 @@ void PotiNewPWMCoolingValue()
     Oled(Joystick.pot1, 3, 0);
     LastimeData.pot1 = Joystick.pot1;
     PwmValuePartCoolingFanMarlin = Joystick.pot1;
+  }
+}
+
+
+void ColorWheel()
+{
+  if ((LastimeData.button1 != Joystick.button1) and (Joystick.button1 == true))
+  {
+    LastimeData.button1 = Joystick.button1;
+    Oled(Joystick.pot1, 3, 0);
+    LastimeData.pot1 = Joystick.pot1;
+    PwmValuePartCoolingFanMarlin = Joystick.pot1;
+
+    u8x8.drawString(7, 3, "   ");
+
+    u8x8.drawString(13, 3, "   ");
+
   }
 }

@@ -69,6 +69,18 @@ void setup_Funk()
 }
 
 
+void FunkData_Color(byte A, byte B)
+{
+  // Send data:
+  RF24NetworkHeader header(FunkMasterSchaltschrank);   // Address where the data is going
+  dataOutgoing.header = 2; // Farbrad
+  dataOutgoing.val1 = A;
+  dataOutgoing.val2 = B;
+  dataOutgoing.val3 = 0; // NA
+  bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
+  Serial.println("Funk DATA Color!");
+}
+
 void FunkData_Temp()
 {
   // Send data:
@@ -94,7 +106,7 @@ void loop_FunkCheck()
 
     if ((header.from_node == FunkMasterSchaltschrank) and (dataIncoming.header == 1))
     {
-      Serial.println("Funk kam an");
+      Serial.println("Schaltschrank hat was gefunkt");
 
       if ((dataIncoming.val1 != TargetTemperatureZone_1) and (NewTargetTempAvalible_Zone1 == false))
       {
@@ -114,9 +126,20 @@ void loop_FunkCheck()
       }
     }
   }
-  if ((Joystick.button4 == 0) and (Joystick.tSwitch1 == false)) // Funk PWM Cooling
+  if ((Joystick.button4 == 0) and (Joystick.tSwitch1 == false) and (Joystick.tSwitch2 == false)) // Funk PWM Cooling
   {
     FunkData_Temp();
+  }
+  else if (Joystick.tSwitch2 == true)
+  {
+    if (Joystick.button3 == false)
+    {
+      FunkData_Color(1, 0);
+    }
+    else if (Joystick.button4 == false)
+    {
+      FunkData_Color(0, 1);
+    }
   }
 
 }
