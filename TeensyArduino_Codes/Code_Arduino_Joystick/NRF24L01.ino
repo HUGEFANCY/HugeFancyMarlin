@@ -90,7 +90,7 @@ void FunkData_Temp()
   dataOutgoing.val2 = NewTargetTemp_Zone2;
   dataOutgoing.val3 = PwmValuePartCoolingFanMarlin;
   bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
-  Serial.println("Funk DATA Temp!");
+  //Serial.println("Funk DATA Temp!");
 }
 
 
@@ -130,15 +130,17 @@ void loop_FunkCheck()
   {
     FunkData_Temp();
   }
-  else if (Joystick.tSwitch2 == true)
+  if (Joystick.tSwitch2 == true)
   {
-    if (Joystick.button3 == false)
+    if (Joystick.button3 == true)
     {
       FunkData_Color(1, 0);
+      //Serial.println("1");
     }
-    else if (Joystick.button4 == false)
+    else if (Joystick.button4 == true)
     {
       FunkData_Color(0, 1);
+      //Serial.println("2");
     }
   }
 
