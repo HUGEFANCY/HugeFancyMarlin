@@ -87,6 +87,14 @@ void TM1637_update()
   }
 }
 
+
+void TM1637_showFarbe(int A, int B)
+{
+  TM1637_TempWatercoolingWarm.showNumberDec(A, false);
+  TM1637_TempWatercoolingCold.showNumberDec(B, false);
+}
+
+
 void Blink_TempZone_12()
 {
   if (DisplayBlink.check() == 1)  // check if the metro has passed its interval

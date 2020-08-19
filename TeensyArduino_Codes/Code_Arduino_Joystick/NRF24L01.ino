@@ -19,7 +19,7 @@ const int FunkChannel = 90;
 const uint16_t FunkMasterSchaltschrank = 00; // Address of the other node in Octal format // Schaltschrank, Master
 const uint16_t FunkSlaveJoystick = 01; // Joystick, Slave
 
-Metro Metro_FunkCheck = Metro(50);
+Metro Metro_FunkCheck = Metro(500);
 
 
 struct DataPackageIncomming // Max size of this struct is 32 bytes - NRF24L01 buffer limit
@@ -69,16 +69,46 @@ void setup_Funk()
 }
 
 
-void FunkData_Color(byte A, byte B)
+boolean FunkData_Color_A()
 {
   // Send data:
   RF24NetworkHeader header(FunkMasterSchaltschrank);   // Address where the data is going
   dataOutgoing.header = 2; // Farbrad
-  dataOutgoing.val1 = A;
-  dataOutgoing.val2 = B;
+  dataOutgoing.val1 = 1; // RAD A
+  dataOutgoing.val2 = 0; // RAD B
   dataOutgoing.val3 = 0; // NA
   bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
-  Serial.println("Funk DATA Color!");
+
+  if (ok == true)
+  {
+    Serial.println("Funk DATA Color A!");
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+boolean FunkData_Color_B()
+{
+  // Send data:
+  RF24NetworkHeader header(FunkMasterSchaltschrank);   // Address where the data is going
+  dataOutgoing.header = 2; // Farbrad
+  dataOutgoing.val1 = 0; // RAD A
+  dataOutgoing.val2 = 1; // RAD B
+  dataOutgoing.val3 = 0; // NA
+  bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
+
+  if (ok == true)
+  {
+    Serial.println("Funk DATA Color B!");
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 void FunkData_Temp()
@@ -106,7 +136,7 @@ void loop_FunkCheck()
 
     if ((header.from_node == FunkMasterSchaltschrank) and (dataIncoming.header == 1))
     {
-      Serial.println("Schaltschrank hat was gefunkt");
+      //Serial.println("Schaltschrank hat was gefunkt");
 
       if ((dataIncoming.val1 != TargetTemperatureZone_1) and (NewTargetTempAvalible_Zone1 == false))
       {
@@ -126,22 +156,4 @@ void loop_FunkCheck()
       }
     }
   }
-  if ((Joystick.button4 == 0) and (Joystick.tSwitch1 == false) and (Joystick.tSwitch2 == false)) // Funk PWM Cooling
-  {
-    FunkData_Temp();
-  }
-  if (Joystick.tSwitch2 == true)
-  {
-    if (Joystick.button3 == true)
-    {
-      FunkData_Color(1, 0);
-      //Serial.println("1");
-    }
-    else if (Joystick.button4 == true)
-    {
-      FunkData_Color(0, 1);
-      //Serial.println("2");
-    }
-  }
-
 }

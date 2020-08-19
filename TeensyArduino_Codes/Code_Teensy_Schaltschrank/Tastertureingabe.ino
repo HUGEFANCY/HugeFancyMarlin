@@ -7,9 +7,16 @@ boolean SerialTastatur_CheckKeys()
     if (ch == '1') // Tastaturanschlag "1"
     {
       Serial.println("--- Tastaturanschlag 1 ---"); Serial.println();
-      RelayKompressor(true);
+      RS485_Schaltschrank_Send_FarbmischerAktion(1, 0);
       return true;
     }
+        if (ch == '2') // Tastaturanschlag "1"
+    {
+      Serial.println("--- Tastaturanschlag 2 ---"); Serial.println();
+      RS485_Schaltschrank_Send_FarbmischerAktion(0, 1);
+      return true;
+    }
+
 
 
 

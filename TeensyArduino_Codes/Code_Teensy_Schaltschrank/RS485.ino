@@ -80,10 +80,10 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
           uint8_t checksumValue = bufferRS485[4]; // get checksum value from buffer's last value, according to defined protocol
           if (verifyChecksum(checksumValue)) // perform checksum validation, it's optional but really suggested
           {
-            Serial.println("Header Update Tempertur found");
+            //Serial.println("Header Update Tempertur found");
             if (bufferRS485[0] == header_AbsenderExtruder_Statusupdate)
             {
-              Serial.println("Empfange Statusupdate Schaltschrank");
+              //Serial.println("Empfange Statusupdate Schaltschrank");
               // Byte 0 Header
               // Byte 1 CombinedRealTempExtruder Byte 01
               // Byte 2 CombinedRealTempExtruder Byte 02
@@ -91,7 +91,7 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
               // Byte 4 Checksum
 
               CombinedRealTempExtruder = bufferRS485[1] + bufferRS485[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
-              Serial.print("CombinedRealTempExtruder = "); Serial.println(CombinedRealTempExtruder);
+              //Serial.print("CombinedRealTempExtruder = "); Serial.println(CombinedRealTempExtruder);
             }
           }
           // restart header flag
@@ -102,18 +102,18 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
 
     }
     BreakCounter++;
-    delay(5);
+    delay(1);
   }
-  Serial.println("Break Loop");
+  //Serial.println("Break Loop");
 }
 
 
 void loop_RS485_Schaltschrank_Send_Statusupdate()
 {
-  Serial.println("checking if its time to send");
+  //Serial.println("checking if its time to send");
   if (sendeIntervall.check() == 1)  // check if the metro has passed its interval
   {
-    Serial.println("Sende Statusupdate Schaltschrank");
+    //Serial.println("Sende Statusupdate Schaltschrank");
 
     // Byte 0 Header
     // Byte 1 TargetTempExtruderMarlin Byte 01

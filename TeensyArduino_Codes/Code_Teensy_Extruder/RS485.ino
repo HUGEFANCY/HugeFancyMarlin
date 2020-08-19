@@ -62,7 +62,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
           firstTimeHeader = true;
         }
       }
-      bufferRS485[readCounter] = c; // store received byte, increase readCounter 
+      bufferRS485[readCounter] = c; // store received byte, increase readCounter
       //Serial.print("counter = "); Serial.print(readCounter); Serial.print(" // "); Serial.println(bufferRS485[readCounter]);
       readCounter++;
 
@@ -96,20 +96,34 @@ void RS485_Extruder_CheckIfUpdateAvalible()
               // Antwort und sende das eigene Statusupdate
               RS485_Extruder_Send_Statusupdate();
             }
-            
-              if (bufferRS485[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
-              {
+
+            if (bufferRS485[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
+            {
               // Byte 0 Header
               // Byte 1 Schaufeln Links
               // Byte 2 Schaufeln Rechts
-              // Byte 3 frei
+              // Byte 3 N/A
               // Byte 4 Checksum
 
               byte Schaufeln_L = bufferRS485[1];
               byte Schaufeln_R = bufferRS485[2];
-              Farbmischer_GibFarbe(Schaufeln_L, Schaufeln_R); // Motoren Farbmischer starten
+
+              // Anzeigen was passiert ist
+              TM1637_showFarbe(Schaufeln_L, Schaufeln_R);
+
+
+              if (Schaufeln_L != 0)
+              {
+                Farbmischer_GibFarbe(1, 0);
               }
-            
+              if (Schaufeln_R != 0)
+              {
+                Farbmischer_GibFarbe(0, 1);
+              }
+              
+              //Farbmischer_GibFarbe(Schaufeln_L, Schaufeln_R); // Motoren Farbmischer starten
+            }
+
           }
           // restart header flag
           isHeader = 0;
@@ -180,7 +194,7 @@ uint8_t verifyChecksum(uint8_t originalResult)
   {
     sum += bufferRS485[i];
   }
-    sum = sum + 10;
+  sum = sum + 10;
   result = sum & 0xFF;
 
   if (originalResult == result)

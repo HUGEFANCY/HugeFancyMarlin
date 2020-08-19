@@ -53,7 +53,7 @@ void receiveEvent()
 */
 void requestEvent()
 {
-  Serial.print("+ + + CombinedRealTempExtruder = ");Serial.println(CombinedRealTempExtruder);
+  //Serial.print("+ + + CombinedRealTempExtruder = ");Serial.println(CombinedRealTempExtruder);
   RGB_Rot();
   byte response[ANSWERSIZE];
   int real_temp = CombinedRealTempExtruder;
@@ -61,7 +61,7 @@ void requestEvent()
   //Serial.print("Request event! sending: ");
   //Serial.println(target_temp);
 
-  Serial.print("- - - Sende zu Marlin: real_temp = ");Serial.println(real_temp);
+  Serial.print("+ + + Sende zu Marlin: real_temp = ");Serial.println(real_temp);
   if (real_temp <= 255) {
     response[0] = real_temp; // Wert von 0-255°C
     response[1] = 0;

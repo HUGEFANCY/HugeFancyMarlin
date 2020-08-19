@@ -6,7 +6,7 @@
 
 U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(/* reset=*/ U8X8_PIN_NONE);
 
-Metro Metro_OledRefresh = Metro(500);
+Metro Metro_OledRefresh = Metro(250);
 
 void setup_Oled()
 {
@@ -77,12 +77,10 @@ void loop_Oled()
         OledModus = "color";
       }
       u8x8.drawString(0, 0, "COLOR MODE");
+      u8x8.drawString(0, 4, "Farbrad A: ");
+      u8x8.drawString(0, 6, "Farbrad B: ");
     }
-    ColorWheel();
   }
-
-
-
 }
 
 void Oled(int zahl, int zeile, int zeilenstart)
@@ -155,18 +153,39 @@ void PotiNewPWMCoolingValue()
 }
 
 
-void ColorWheel()
+void loop_ColorWheelButtons()
 {
-  if ((LastimeData.button1 != Joystick.button1) and (Joystick.button1 == true))
+  if (Joystick.tSwitch2 == true)
   {
-    LastimeData.button1 = Joystick.button1;
-    Oled(Joystick.pot1, 3, 0);
-    LastimeData.pot1 = Joystick.pot1;
-    PwmValuePartCoolingFanMarlin = Joystick.pot1;
+    if ((LastimeData.button1 != Joystick.button1) and (Joystick.button1 == true))
+    {
+      LastimeData.button1 = Joystick.button1;
 
-    u8x8.drawString(7, 3, "   ");
-
-    u8x8.drawString(13, 3, "   ");
+      if (FunkData_Color_A() == true)
+      {
+        wheelcount_A++;
+        Oled(wheelcount_A, 4, 12);
+      }
+      Serial.println("Farbrad A");
+    }
+    if ((LastimeData.button2 != Joystick.button2) and (Joystick.button2 == true))
+    {
+      LastimeData.button2 = Joystick.button2;
+      if (FunkData_Color_B() == true)
+      {
+        wheelcount_B++;
+        Oled(wheelcount_B, 6, 12);
+      }
+      Serial.println("Farbrad B");
+    }
+  }
+  if ((Joystick.tSwitch2 == false) and (Joystick.tSwitch1 == false))
+  {
+    if ((LastimeData.button4 != Joystick.button4) and (Joystick.button4 == true))
+    {
+      LastimeData.button4 = Joystick.button4;
+      FunkData_Temp();
+    }
 
   }
 }

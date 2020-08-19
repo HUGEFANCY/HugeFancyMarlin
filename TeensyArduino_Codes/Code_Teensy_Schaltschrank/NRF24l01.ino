@@ -62,7 +62,7 @@ void setup_Funk()
   radio.setPALevel(RF24_PA_MAX);
   radio.setDataRate(RF24_2MBPS);
   radio.setAutoAck(1); // Ensure autoACK is enabled
-  radio.setRetries(15, 15);
+  radio.setRetries(1, 1);
   // delay How long to wait between each retry, in multiples of 250us, max is 15. 0 means 250us, 15 means 4000us.
   //count How many retries before giving up, max 15
 }
@@ -88,22 +88,13 @@ void loop_FunkCheck()
       Serial.println(TargetTemperatureZone_2);
       Serial.print("PWM Cooling = "); Serial.println(PwmValuePartCoolingFanMarlin);
     }
-
-
-
     if ((header.from_node == FunkSlaveJoystick) and (dataIncoming.header == 2)) // header 2 = Farbauswurf
     {
-      int FarbauswurfRad1 = dataIncoming.val1;  // (1 Farbauswurf = 1/3 Umdrehung)
-      int FarbauswurfRad2 = dataIncoming.val2;  // (1 Farbauswurf = 1/3 Umdrehung)
-      Serial.print("Farbauswurf Rad 01 = ");Serial.println(FarbauswurfRad1);
-      Serial.print("Farbauswurf Rad 02 = ");Serial.println(FarbauswurfRad2);
+      Serial.print("Farbauswurf Rad A = ");Serial.println(dataIncoming.val1);
+      Serial.print("Farbauswurf Rad B = ");Serial.println(dataIncoming.val2);
 
-      RS485_Schaltschrank_Send_FarbmischerAktion(1, FarbauswurfRad1); // Rad 1, = (1 Farbauswurf = 1/3 Umdrehung)
-      RS485_Schaltschrank_Send_FarbmischerAktion(2, FarbauswurfRad2); // Rad 2, eine Umdrehung
+      RS485_Schaltschrank_Send_FarbmischerAktion(dataIncoming.val1, dataIncoming.val2); // Rad 1, = (1 Farbauswurf = 1/3 Umdrehung)
     }
-
-
-    
   }
   FunkData_Temp(); // Anschließend senden wir mal was
 }

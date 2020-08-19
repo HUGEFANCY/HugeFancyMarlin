@@ -60,13 +60,13 @@ boolean SerialTastatur_CheckKeys()
     {
       Farbmischer_GibFarbe(1, 1);
     }
-        if (ch == 'g') // Tastaturanschlag "f"
+    if (ch == 'g') // Tastaturanschlag "f"
     {
       Farbmischer_GibFarbe(0, 1);
     }
-            if (ch == 'h') // Tastaturanschlag "f"
+    if (ch == 'h') // Tastaturanschlag "f"
     {
-      Farbmischer_GibFarbe(1, 3);
+      Farbmischer_GibFarbe(1, 0);
     }
 
 

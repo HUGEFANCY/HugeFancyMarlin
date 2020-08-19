@@ -45,6 +45,5 @@ void loop()
   loop_FunkCheck();
   loop_SerialDataOutput();
   loop_Oled();
-
-
+  loop_ColorWheelButtons();
 }
