@@ -15,7 +15,7 @@ int RealTemperatureZone_1 = 22; // max 8 Bit = 255°C // TEST ### ToDo
 int RealTemperatureZone_2 = 33; // max 8 Bit = 255°C
 
 
-byte PwmValuePartCoolingFanMarlin = 0;  // not yet verbundewn mit Marlin 
+byte PwmValuePartCoolingFanMarlin = 0;  // not yet connected with Marlin //TODO Robin
 
 void setup()
 {
@@ -28,7 +28,7 @@ void setup()
   Relays_setup();
   I2C_Marlin_setup();
 
-  Serial.println("Setup End");
+  Serial.println("Setup Done, starting loop");
 }
 
 void loop()
