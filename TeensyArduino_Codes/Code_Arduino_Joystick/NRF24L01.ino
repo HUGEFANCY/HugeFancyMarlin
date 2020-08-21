@@ -111,6 +111,28 @@ boolean FunkData_Color_B()
   }
 }
 
+
+boolean FunkData_Color_Periodically()
+{
+  // Send data:
+  RF24NetworkHeader header(FunkMasterSchaltschrank);   // Address where the data is going
+  dataOutgoing.header = 3; // Farbrad periodisch
+  dataOutgoing.val1 = ColorTime255_A; // RAD A
+  dataOutgoing.val2 = ColorTime255_B; // RAD B
+  dataOutgoing.val3 = 0; // NA
+  bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
+
+  if (ok == true)
+  {
+    Serial.println("Funk DATA Color Periodisch!");
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 void FunkData_Temp()
 {
   // Send data:

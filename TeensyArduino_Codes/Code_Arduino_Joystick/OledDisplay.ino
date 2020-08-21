@@ -66,20 +66,41 @@ void loop_Oled()
     PotiNewPWMCoolingValue();
   }
 
-  if (Joystick.tSwitch2 == true)
+
+  // INDIVIDUALLY COLOR MODE
+  if ((Joystick.tSwitch2 == true) and (Joystick.tSwitch2 == true))
   {
     if (Metro_OledRefresh.check() == true)
     {
-      if (OledModus != "color")
+      if (OledModus != "color_i")
       {
         u8x8.clear();
         u8x8.setFlipMode(1);
-        OledModus = "color";
+        OledModus = "color_i";
       }
-      u8x8.drawString(0, 0, "COLOR MODE");
+      u8x8.drawString(0, 0, "INDIVIDUALLY COLOR");
       u8x8.drawString(0, 4, "Farbrad A: ");
       u8x8.drawString(0, 6, "Farbrad B: ");
     }
+  }
+
+  // PERIODICALLY COLOR MODE
+  if ((Joystick.tSwitch2 == true) and (Joystick.tSwitch2 == false))
+  {
+    if (Metro_OledRefresh.check() == true)
+    {
+      if (OledModus != "color_p")
+      {
+        u8x8.clear();
+        u8x8.setFlipMode(1);
+        OledModus = "color_p";
+      }
+      u8x8.drawString(0, 0, "PERIODICALLY COLOR");
+      u8x8.drawString(0, 4, "Farbrad A: ");
+      u8x8.drawString(0, 6, "Farbrad B: ");
+    }
+    PotiNewColorTimeValue_A();
+    PotiNewColorTimeValue_B();
   }
 }
 
@@ -155,7 +176,9 @@ void PotiNewPWMCoolingValue()
 
 void loop_ColorWheelButtons()
 {
-  if (Joystick.tSwitch2 == true)
+
+  // INDIVIDUALLY COLOR MODE
+  if ((Joystick.tSwitch2 == true) and (Joystick.tSwitch2 == true))// color mode 1
   {
     if ((LastimeData.button1 != Joystick.button1) and (Joystick.button1 == true))
     {
@@ -179,6 +202,44 @@ void loop_ColorWheelButtons()
       Serial.println("Farbrad B");
     }
   }
+
+  // PERIODICALLY COLOR MODE
+  if ((Joystick.tSwitch2 == true) and (Joystick.tSwitch2 == false))
+  {
+    if ((LastimeData.button4 != Joystick.button4) and (Joystick.button1 == true))
+    {
+      LastimeData.button4 = Joystick.button4;
+      if (FunkData_Color_Periodically() == true)
+      {
+        u8x8.drawString(0, 0, "GESENDET !");
+        (OledModus != "gesendet");
+      }
+    }
+  }
+}
+
+
+void PotiNewColorTimeValue_A()
+{
+  if (LastimeData.pot1 != Joystick.pot1)
+  {
+    Oled(Joystick.pot1, 4, 12);
+    LastimeData.pot1 = Joystick.pot1;
+    ColorTime255_A = Joystick.pot1;
+  }
+}
+void PotiNewColorTimeValue_B()
+{
+  if (LastimeData.pot2 != Joystick.pot2)
+  {
+    Oled(Joystick.pot2, 4, 12);
+    LastimeData.pot2 = Joystick.pot2;
+    ColorTime255_B = Joystick.pot2;
+  }
+}
+
+void loop_PWM()
+{
   if ((Joystick.tSwitch2 == false) and (Joystick.tSwitch1 == false))
   {
     if ((LastimeData.button4 != Joystick.button4) and (Joystick.button4 == true))
@@ -186,6 +247,5 @@ void loop_ColorWheelButtons()
       LastimeData.button4 = Joystick.button4;
       FunkData_Temp();
     }
-
   }
 }

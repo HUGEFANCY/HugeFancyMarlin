@@ -21,6 +21,11 @@ int RealTemperatureZone_2 = 0; // max 8 Bit = 255°C
 
 int wheelcount_A = 0;
 int wheelcount_B = 0;
+int ColorTime255_A = 0;
+int ColorTime255_B = 0;
+int ColorTimeInSeconds_A = 0;
+int ColorTimeInSeconds_B = 0;
+
 
 
 #include <Arduino.h>
@@ -46,4 +51,5 @@ void loop()
   loop_SerialDataOutput();
   loop_Oled();
   loop_ColorWheelButtons();
+  loop_PWM();
 }
