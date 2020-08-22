@@ -78,22 +78,27 @@ void loop_FunkCheck()
     RF24NetworkHeader header(FunkSlaveJoystick);
     network.read(header, &dataIncoming, sizeof(dataIncoming)); // Read the incoming data
 
-    if ((header.from_node == FunkSlaveJoystick) and (dataIncoming.header == 1)) // header 1 = temp
+    if ((header.from_node == FunkSlaveJoystick) and (dataIncoming.header == 1)) // header 1 = temp, PWM Part Cooling
     {
-      TargetTemperatureZone_1 = dataIncoming.val1;
-      TargetTemperatureZone_2 = dataIncoming.val2;
+      //TargetTemperatureZone_1 = dataIncoming.val1; DEAKTIVIERT!
+      //TargetTemperatureZone_2 = dataIncoming.val2; DEAKTIVIERT!
       PwmValuePartCoolingFanMarlin = dataIncoming.val3;
-      Serial.println("Funk funktet new target Temps");
-      Serial.println(TargetTemperatureZone_1);
-      Serial.println(TargetTemperatureZone_2);
+      //Serial.println(TargetTemperatureZone_1);
+      //Serial.println(TargetTemperatureZone_2);
       Serial.print("PWM Cooling = "); Serial.println(PwmValuePartCoolingFanMarlin);
     }
-    if ((header.from_node == FunkSlaveJoystick) and (dataIncoming.header == 2)) // header 2 = Farbauswurf
+    if ((header.from_node == FunkSlaveJoystick) and (dataIncoming.header == 2)) // header 2 = Farbauswurf Click Color MODE
     {
-      Serial.print("Farbauswurf Rad A = ");Serial.println(dataIncoming.val1);
-      Serial.print("Farbauswurf Rad B = ");Serial.println(dataIncoming.val2);
-
-      RS485_Schaltschrank_Send_FarbmischerAktion(dataIncoming.val1, dataIncoming.val2); // Rad 1, = (1 Farbauswurf = 1/3 Umdrehung)
+      Serial.print("Farbauswurf Rad A = "); Serial.println(dataIncoming.val1);
+      Serial.print("Farbauswurf Rad B = "); Serial.println(dataIncoming.val2);
+      RS485_Schaltschrank_Send_clickColor(dataIncoming.val1, dataIncoming.val2); // Rad 1, = (1 Farbauswurf = 1/3 Umdrehung)
+    }
+    if ((header.from_node == FunkSlaveJoystick) and (dataIncoming.header == 3)) // header 3 = MetronomeColor
+    {
+      Serial.print("ColorTime255_L = "); Serial.println(dataIncoming.val1);
+      Serial.print("ColorTime255_R = "); Serial.println(dataIncoming.val2);
+      Serial.print("ColorTime255_shift = "); Serial.println(dataIncoming.val3);
+      RS485_Schaltschrank_Send_metronomeColor(dataIncoming.val1, dataIncoming.val2, dataIncoming.val3); // Rad 1, = (1 Farbauswurf = 1/3 Umdrehung)
     }
   }
   FunkData_Temp(); // Anschließend senden wir mal was

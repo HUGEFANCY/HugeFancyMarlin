@@ -56,10 +56,10 @@ void setup_JoystickInputs()
   Joystick.pot2 = 1;
   Joystick.tSwitch1 = 1;
   Joystick.tSwitch2 = 1;
-  Joystick.button1 = 1;
-  Joystick.button2 = 1;
-  Joystick.button3 = 1;
-  Joystick.button4 = 1;
+  Joystick.button1 = 0;
+  Joystick.button2 = 0;
+  Joystick.button3 = 0;
+  Joystick.button4 = 0;
 
   // Set initial last time default values
   LastimeData.j1PotX = 127; // Values from 0 to 255. When Joystick is in resting position, the value is in the middle, or 127. We actually map the pot value from 0 to 1023 to 0 to 255 because that's one BYTE value
@@ -73,10 +73,10 @@ void setup_JoystickInputs()
   LastimeData.pot2 = 1;
   LastimeData.tSwitch1 = 1;
   LastimeData.tSwitch2 = 1;
-  LastimeData.button1 = 1;
-  LastimeData.button2 = 1;
-  LastimeData.button3 = 1;
-  LastimeData.button4 = 1;
+  LastimeData.button1 = 0;
+  LastimeData.button2 = 0;
+  LastimeData.button3 = 0;
+  LastimeData.button4 = 0;
 }
 
 void loop_Inputs()

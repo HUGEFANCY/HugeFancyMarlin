@@ -68,14 +68,37 @@ void setup_Funk()
   //count How many retries before giving up, max 15
 }
 
+// PWM
+boolean FunkData_Temp_PWM()
+{
+  // Send data:
+  RF24NetworkHeader header(FunkMasterSchaltschrank);   // Address where the data is going
+  dataOutgoing.header = 1;
+  //dataOutgoing.val1 = NewTargetTemp_Zone1;
+  //dataOutgoing.val2 = NewTargetTemp_Zone2;
+  dataOutgoing.val3 = PwmValuePartCoolingFanMarlin;
+  boolean ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
+  //Serial.println("Funk DATA Temp!");
+  if (ok == true)
+  {
+    Serial.println("FunkData_Temp_PWM");
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
 
-boolean FunkData_Color_A()
+
+// Click Color MODE
+boolean FunkData_clickColor(int RadA, int RadB)
 {
   // Send data:
   RF24NetworkHeader header(FunkMasterSchaltschrank);   // Address where the data is going
   dataOutgoing.header = 2; // Farbrad
-  dataOutgoing.val1 = 1; // RAD A
-  dataOutgoing.val2 = 0; // RAD B
+  dataOutgoing.val1 = RadA; // RAD A
+  dataOutgoing.val2 = RadB; // RAD B
   dataOutgoing.val3 = 0; // NA
   bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
 
@@ -90,38 +113,17 @@ boolean FunkData_Color_A()
   }
 }
 
-boolean FunkData_Color_B()
+
+
+boolean FunkData_colorMetronome()
 {
   // Send data:
   RF24NetworkHeader header(FunkMasterSchaltschrank);   // Address where the data is going
-  dataOutgoing.header = 2; // Farbrad
-  dataOutgoing.val1 = 0; // RAD A
-  dataOutgoing.val2 = 1; // RAD B
-  dataOutgoing.val3 = 0; // NA
+  dataOutgoing.header = 3; // Farbrad colorMetronome
+  dataOutgoing.val1 = ColorTime255_L; // RAD L
+  dataOutgoing.val2 = ColorTime255_R; // RAD R
+  dataOutgoing.val3 = ColorTime255_shift; // shift LR
   bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
-
-  if (ok == true)
-  {
-    Serial.println("Funk DATA Color B!");
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-
-boolean FunkData_Color_Periodically()
-{
-  // Send data:
-  RF24NetworkHeader header(FunkMasterSchaltschrank);   // Address where the data is going
-  dataOutgoing.header = 3; // Farbrad periodisch
-  dataOutgoing.val1 = ColorTime255_A; // RAD A
-  dataOutgoing.val2 = ColorTime255_B; // RAD B
-  dataOutgoing.val3 = 0; // NA
-  bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
-
   if (ok == true)
   {
     Serial.println("Funk DATA Color Periodisch!");
@@ -133,17 +135,7 @@ boolean FunkData_Color_Periodically()
   }
 }
 
-void FunkData_Temp()
-{
-  // Send data:
-  RF24NetworkHeader header(FunkMasterSchaltschrank);   // Address where the data is going
-  dataOutgoing.header = 1;
-  dataOutgoing.val1 = NewTargetTemp_Zone1;
-  dataOutgoing.val2 = NewTargetTemp_Zone2;
-  dataOutgoing.val3 = PwmValuePartCoolingFanMarlin;
-  bool ok = network.write(header, &dataOutgoing, sizeof(dataOutgoing)); // Send the data
-  //Serial.println("Funk DATA Temp!");
-}
+
 
 
 void loop_FunkCheck()
