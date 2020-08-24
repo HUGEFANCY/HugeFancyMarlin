@@ -27,11 +27,9 @@ uint8_t firstTimeHeader = 0; // Flag that helps us restart counter when we first
 // headers
 const uint8_t header_AbsenderExtruder_Statusupdate = 13;
 const uint8_t header_AbsenderSchaltschrank_Statusupdate = 14;
-const uint8_t header_AbsenderSchaltschrank_FarbmischerAktion = 15;
+const uint8_t header_AbsenderSchaltschrank_clickColor = 15;
+const uint8_t header_AbsenderSchaltschrank_metronomeColor = 16;
 
-//const uint8_t header_updateVariables = 0x7E; // Bufferheader: Verkündung Teensy Schaltschrank
-//const uint8_t header_AnswerUpdateVariables = 0x7C; // Bufferheader: Aktion Farbmischer
-//const uint8_t header_Farbmischer = 0x7D; // Bufferheader: Aktion Farbmischer
 
 void RS485_setup()
 {
@@ -41,133 +39,6 @@ void RS485_setup()
   delay(10);
 }
 
-void RS485_Extruder_CheckIfUpdateAvalible()
-{
-  int BreakCounter = 0;
-  while (BreakCounter <= 20)
-  {
-    if (Serial1.available() > 0) // Check if there is any data available to read
-    {
-      uint8_t c = Serial1.read(); // read only one byte at a time
-
-      if ((c == header_AbsenderSchaltschrank_Statusupdate) or (c == header_AbsenderSchaltschrank_FarbmischerAktion)) // Check if header is found
-      {
-        // We must consider that we may sometimes receive unformatted data, and given the case we must ignore it and restart our reading code.
-        // If it's the first time we find the header, we restart readCounter indicating that data is coming.
-        // It's possible the header appears again as a data byte. That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
-        if (!firstTimeHeader)
-        {
-          isHeader = true;
-          readCounter = 0;
-          firstTimeHeader = true;
-        }
-      }
-      bufferRS485[readCounter] = c; // store received byte, increase readCounter
-      //Serial.print("counter = "); Serial.print(readCounter); Serial.print(" // "); Serial.println(bufferRS485[readCounter]);
-      readCounter++;
-
-
-
-      if (readCounter >= bufferSizeRS485) // prior overflow, we have to restart readCounter
-      {
-        readCounter = 0;
-
-        if (isHeader == 1) // if header was found
-        {
-          uint8_t checksumValue = bufferRS485[4]; // get checksum value from buffer's last value, according to defined protocol
-          if (verifyChecksum(checksumValue) == true) // perform checksum validation, it's optional but really suggested
-          {
-            if (bufferRS485[0] == header_AbsenderSchaltschrank_Statusupdate)
-            {
-              // Byte 0 Header
-              // Byte 1 TargetTempExtruderMarlin Byte 01
-              // Byte 2 TargetTempExtruderMarlin Byte 02
-              // Byte 3 pwmValuePartCoolingFanMarlin
-              // Byte 4 Checksum
-
-              TargetTempExtruderMarlin = bufferRS485[1] + bufferRS485[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
-              Serial.print("Empfange Statusupdate vom Schaltschrank: TargetTempExtruderMarlin = "); Serial.println(TargetTempExtruderMarlin);
-              PwmValuePartCoolingFanMarlin = bufferRS485[3];
-              KuehlungPWM(); // Kühlung aktuallisieren
-
-              // Timeout Verbindung Schaltschrank – Extruder weggebrochen
-              RS485_updateVariables_LastUpdatePreviousMillis = currentMillis; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben
-
-              // Antwort und sende das eigene Statusupdate
-              RS485_Extruder_Send_Statusupdate();
-            }
-
-            if (bufferRS485[0] == header_AbsenderSchaltschrank_FarbmischerAktion)
-            {
-              // Byte 0 Header
-              // Byte 1 Schaufeln Links
-              // Byte 2 Schaufeln Rechts
-              // Byte 3 N/A
-              // Byte 4 Checksum
-
-              byte Schaufeln_L = bufferRS485[1];
-              byte Schaufeln_R = bufferRS485[2];
-
-              // Anzeigen was passiert ist
-              TM1637_showFarbe(Schaufeln_L, Schaufeln_R);
-
-
-              if (Schaufeln_L != 0)
-              {
-                Farbmischer_GibFarbe(1, 0);
-              }
-              if (Schaufeln_R != 0)
-              {
-                Farbmischer_GibFarbe(0, 1);
-              }
-              
-              //Farbmischer_GibFarbe(Schaufeln_L, Schaufeln_R); // Motoren Farbmischer starten
-            }
-
-          }
-          // restart header flag
-          isHeader = 0;
-          firstTimeHeader = 0;
-        }
-      }
-      BreakCounter++;
-      //delay(5);
-    }
-  }
-  Serial.println("Break Loop");
-}
-
-void RS485_Extruder_Send_Statusupdate()
-{
-  RGB_Lila();
-  Serial.println("Sende Statusupdate an Schaltschrank");
-
-  // Byte 0 Header
-  // Byte 1 CombinedRealTempExtruder Byte 01
-  // Byte 2 CombinedRealTempExtruder Byte 02
-  // Byte 3 leer
-  // Byte 4 Checksum
-
-  //Serial.print("CombinedRealTempExtruder = ");Serial.println(CombinedRealTempExtruder);
-
-  bufferRS485[0] = header_AbsenderExtruder_Statusupdate; // Bufferheader
-  if (CombinedRealTempExtruder <= 255)
-  {
-    bufferRS485[1] = CombinedRealTempExtruder; // Wert von 0-255°C
-    bufferRS485[2] = 0;
-  }
-  else if ((CombinedRealTempExtruder > 255) and (CombinedRealTempExtruder <= 510))
-  {
-    bufferRS485[1] = 255;
-    bufferRS485[2] = CombinedRealTempExtruder - 255; // Wert von 256-510°C
-  }
-  bufferRS485[3] = 0;
-  bufferRS485[4] = checksum();
-
-  // Senden
-  Serial1.write(bufferRS485, bufferSizeRS485);
-  RGB_Aus();
-}
 
 //We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
 uint8_t checksum() {
@@ -204,4 +75,151 @@ uint8_t verifyChecksum(uint8_t originalResult)
   {
     return 0;
   }
+}
+
+
+void RS485_Extruder_CheckIfUpdateAvalible()
+{
+  int BreakCounter = 0;
+  while (BreakCounter <= 20)
+  {
+    if (Serial1.available() > 0) // Check if there is any data available to read
+    {
+      uint8_t c = Serial1.read(); // read only one byte at a time
+
+      if ((c == header_AbsenderSchaltschrank_Statusupdate) or (c == header_AbsenderSchaltschrank_clickColor) or (c == header_AbsenderSchaltschrank_metronomeColor)) // Check if header is found
+      {
+        // We must consider that we may sometimes receive unformatted data, and given the case we must ignore it and restart our reading code.
+        // If it's the first time we find the header, we restart readCounter indicating that data is coming.
+        // It's possible the header appears again as a data byte. That's why this conditional is implemented, so that we don't restart readCounter and corrupt the data.
+        if (!firstTimeHeader)
+        {
+          isHeader = true;
+          readCounter = 0;
+          firstTimeHeader = true;
+        }
+      }
+      bufferRS485[readCounter] = c; // store received byte, increase readCounter
+      //Serial.print("counter = "); Serial.print(readCounter); Serial.print(" // "); Serial.println(bufferRS485[readCounter]);
+      readCounter++;
+
+      if (readCounter >= bufferSizeRS485) // prior overflow, we have to restart readCounter
+      {
+        readCounter = 0;
+
+        if (isHeader == 1) // if header was found
+        {
+          uint8_t checksumValue = bufferRS485[4]; // get checksum value from buffer's last value, according to defined protocol
+          if (verifyChecksum(checksumValue) == true) // perform checksum validation, it's optional but really suggested
+          {
+            if (bufferRS485[0] == header_AbsenderSchaltschrank_Statusupdate)
+            {
+              // Byte 0 Header
+              // Byte 1 TargetTempExtruderMarlin Byte 01
+              // Byte 2 TargetTempExtruderMarlin Byte 02
+              // Byte 3 pwmValuePartCoolingFanMarlin
+              // Byte 4 Checksum
+
+              TargetTempExtruderMarlin = bufferRS485[1] + bufferRS485[2]; // gesendete 8 Bit Werte wiedeer auf die ursprünglichen 9 Bit zurückführen
+              Serial.print("Empfange Statusupdate vom Schaltschrank: TargetTempExtruderMarlin = "); Serial.println(TargetTempExtruderMarlin);
+              PwmValuePartCoolingFanMarlin = bufferRS485[3];
+              KuehlungPWM(); // Kühlung aktuallisieren
+
+              // Timeout Verbindung Schaltschrank – Extruder weggebrochen
+              RS485_updateVariables_LastUpdatePreviousMillis = currentMillis; // für Timeout falls wir lange nichts mehr vom Teensy Schaltschrank gehört haben
+
+              // Antwort und sende das eigene Statusupdate
+              RS485_Extruder_Send_Statusupdate();
+            }
+
+            else if (bufferRS485[0] == header_AbsenderSchaltschrank_clickColor)
+            {
+              // Byte 0 Header
+              // Byte 1 Schaufeln Links
+              // Byte 2 Schaufeln Rechts
+              // Byte 3 N/A
+              // Byte 4 Checksum
+              byte Schaufeln_L = bufferRS485[1];
+              byte Schaufeln_R = bufferRS485[2];
+              TM1637_actionHappend(); // Anzeigen was passiert ist
+              if (Schaufeln_L != 0)
+              {
+                Farbmischer_GibFarbe(1, 0);
+              }
+              if (Schaufeln_R != 0)
+              {
+                Farbmischer_GibFarbe(0, 1);
+              }
+            }
+
+            else if (bufferRS485[0] == header_AbsenderSchaltschrank_metronomeColor)
+            {
+              // Byte 0 Header
+              // Byte 1 ColorTime255_L
+              // Byte 2 ColorTime255_R
+              // Byte 3 ColorTime255_shift
+              // Byte 4 Checksum
+              ColorTimeSeconds_L = map(bufferRS485[1], 0, 255, 0, 600);
+              ColorTimeSeconds_R = map(bufferRS485[1], 0, 255, 0, 600);
+              ColorTimeSeconds_shift = map(bufferRS485[1], 0, 255, 0, 600);
+              if ((ColorTimeSeconds_L != 0) or (ColorTimeSeconds_R != 0))
+              {
+                FarbmischerMetronomeColor = true;
+                Chrono_MetronomeColorRestart();
+                if (ColorTimeSeconds_shift != 0)
+                {
+                  ColorShiftDone == false;
+                }
+              }
+              else
+              {
+                FarbmischerMetronomeColor = false;
+                Chrono_MetronomeColorStop();
+              }
+              TM1637_actionHappend(); // Anzeigen was passiert ist
+            }
+          }
+          // restart header flag
+          isHeader = 0;
+          firstTimeHeader = 0;
+        }
+      }
+      BreakCounter++;
+      //delay(5);
+    }
+  }
+  //Serial.println("Break Loop");
+}
+
+void RS485_Extruder_Send_Statusupdate()
+{
+
+
+  // Byte 0 Header
+  // Byte 1 CombinedRealTempExtruder Byte 01
+  // Byte 2 CombinedRealTempExtruder Byte 02
+  // Byte 3 leer
+  // Byte 4 Checksum
+
+  //Serial.print("CombinedRealTempExtruder = ");Serial.println(CombinedRealTempExtruder);
+
+  bufferRS485[0] = header_AbsenderExtruder_Statusupdate; // Bufferheader
+  if (CombinedRealTempExtruder <= 255)
+  {
+    bufferRS485[1] = CombinedRealTempExtruder; // Wert von 0-255°C
+    bufferRS485[2] = 0;
+  }
+  else if ((CombinedRealTempExtruder > 255) and (CombinedRealTempExtruder <= 510))
+  {
+    bufferRS485[1] = 255;
+    bufferRS485[2] = CombinedRealTempExtruder - 255; // Wert von 256-510°C
+  }
+  bufferRS485[3] = 0;
+  bufferRS485[4] = checksum();
+
+  // Senden
+  Serial1.write(bufferRS485, bufferSizeRS485);
+  RGB_Lila();
+  Serial.println("gesende Statusupdate an Schaltschrank");
+  RGB_Aus();
 }

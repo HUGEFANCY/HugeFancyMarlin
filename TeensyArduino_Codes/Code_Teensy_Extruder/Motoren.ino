@@ -15,7 +15,6 @@ Stepper M_L(27, 28); // Step, Dir // 16,17
 
 StepControl StepController; // Controller, Stepping Mode
 
-
 /*
   // Motor Zusatz
   const int M_Zusatz_EN = 26; // Enable Pin
@@ -42,10 +41,20 @@ int MotorSpeed = 200; // Umdrehungen, speed steps/s,
 int MotorAcceleration = 150; // acceleration mm/s^2
 
 
+
+boolean FarbmischerMetronomeColor = false;
+int ColorTimeSeconds_L = 0;
+int ColorTimeSeconds_R = 0;
+int ColorTimeSeconds_shift = 0;
+boolean ColorShiftDone = false;
+
 const int Anzahl_Schaufeln = 3;
 
+// Metronome Color Intervals
+Chrono Chrono_ColorTimeSeconds_L(Chrono::SECONDS);
+Chrono Chrono_ColorTimeSeconds_R(Chrono::SECONDS);
 
-Metro StepperTurnOffIntervall = Metro(1000);
+Chrono Chrono_StepperWatchdog(Chrono::SECONDS);
 
 
 void Motoren_setup()
@@ -70,6 +79,8 @@ void Motoren_setup()
   // M_nanotec.setMaxSpeed(Nanotec_MaxSpeed);
   // M_nanotec.setAcceleration(Nanotec_Acceleration);
 
+  Chrono_ColorTimeSeconds_L.stop();
+  Chrono_ColorTimeSeconds_R.stop();
 }
 
 void Schrittmotor_L_aktiv(bool statusSetzen)
@@ -143,10 +154,59 @@ void Farbmischer_GibFarbe(int GibSchaufeln_L, int GibSchaufeln_R)
   StepController.moveAsync(M_L, M_R);
 }
 
-void Stepper_loop()
+void Stepper_loopMetronomeColor()
 {
-  if (StepperTurnOffIntervall.check() == 1)
+  if (FarbmischerMetronomeColor == true)
   {
+    if ( Chrono_ColorTimeSeconds_L.hasPassed(ColorTimeSeconds_L) )
+    {
+      Chrono_ColorTimeSeconds_L.restart();
+      TM1637_actionHappend(); // Anzeigen was passiert ist
+      // Motor L
+      Farbmischer_GibFarbe(1, 0);
+    }
+    if (ColorShiftDone == false)
+    {
+      if ( Chrono_ColorTimeSeconds_R.hasPassed(ColorTimeSeconds_R + ColorTimeSeconds_shift) )
+      {
+        ColorShiftDone == true;
+        Chrono_ColorTimeSeconds_R.restart();
+        TM1637_actionHappend(); // Anzeigen was passiert ist
+        // Motor R
+        Farbmischer_GibFarbe(0, 1);
+      }
+    }
+    else if (ColorShiftDone == true)
+    {
+      if ( Chrono_ColorTimeSeconds_R.hasPassed(ColorTimeSeconds_R) )
+      {
+        Chrono_ColorTimeSeconds_R.restart();
+        TM1637_actionHappend(); // Anzeigen was passiert ist
+        // Motor R
+        Farbmischer_GibFarbe(0, 1);
+      }
+    }
+  }
+}
+
+void Chrono_MetronomeColorRestart()
+{
+  Chrono_ColorTimeSeconds_L.restart();
+  Chrono_ColorTimeSeconds_R.restart();
+}
+
+void Chrono_MetronomeColorStop()
+{
+  Chrono_ColorTimeSeconds_L.stop();
+  Chrono_ColorTimeSeconds_R.stop();
+}
+
+void Stepper_loopWatchdog()
+{
+  if ( Chrono_StepperWatchdog.hasPassed(2) )
+  {
+    Chrono_StepperWatchdog.restart();
+    // Turn Steppers off
     if (StepController.isRunning() == false)
     {
       Schrittmotor_L_aktiv(false);

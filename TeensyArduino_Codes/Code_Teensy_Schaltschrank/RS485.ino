@@ -14,7 +14,7 @@
 // B -> Kabelterminal 18
 // GND -> Teensy GND
 
-Metro sendeIntervall = Metro(100);
+Metro sendeIntervall = Metro(1000);
 
 const byte RS485_enablePin = 13;
 
@@ -29,10 +29,8 @@ uint8_t firstTimeHeader = 0; // Flag that helps us restart counter when we first
 // headers
 const uint8_t header_AbsenderExtruder_Statusupdate = 13;
 const uint8_t header_AbsenderSchaltschrank_Statusupdate = 14;
-const uint8_t header_AbsenderSchaltschrank_FarbmischerAktion = 15;
-
-//const uint8_t header_AbsenderExtruder_Statusupdate = 0x7A; // Header
-//const uint8_t header_AnswerUpdateVariables = 0x7C; // Bufferheader: Aktion Farbmischer
+const uint8_t header_AbsenderSchaltschrank_clickColor = 15;
+const uint8_t header_AbsenderSchaltschrank_metronomeColor = 16;
 
 void RS485_setup()
 {
@@ -41,6 +39,48 @@ void RS485_setup()
   Serial2.transmitterEnable(RS485_enablePin);
   delay(10);
 }
+
+//We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
+uint8_t checksum()
+{
+  uint8_t result = 0;
+  uint16_t sum = 0;
+
+  for (uint8_t i = 0; i < (bufferSizeRS485 - 1); i++)
+  {
+    sum += bufferRS485[i];
+  }
+    sum = sum + 10;
+  result = sum & 0xFF;
+
+  return result;
+}
+
+// This a common checksum validation method.
+// We perform a sum of all bytes, except the one that corresponds to the original checksum value.
+// After summing we need to AND the result to a byte value.
+
+uint8_t verifyChecksum(uint8_t originalResult)
+{
+  uint8_t result = 0;
+  uint16_t sum = 0;
+
+  for (uint8_t i = 0; i < (bufferSizeRS485 - 1); i++)
+  {
+    sum += bufferRS485[i];
+  }
+    sum = sum + 10;
+  result = sum & 0xFF;
+
+  if (originalResult == result)
+  {
+    return 1;
+  } else
+  {
+    return 0;
+  }
+}
+
 
 
 void RS485_Schaltschrank_CheckIfUpdateAvalible()
@@ -99,10 +139,9 @@ void RS485_Schaltschrank_CheckIfUpdateAvalible()
           firstTimeHeader = 0;
         }
       }
-
     }
     BreakCounter++;
-    delay(1);
+    //delay(1); ###
   }
   //Serial.println("Break Loop");
 }
@@ -141,7 +180,7 @@ void loop_RS485_Schaltschrank_Send_Statusupdate()
 
 
 
-void RS485_Schaltschrank_Send_FarbmischerAktion(byte SchaufelnMotor_L, byte SchaufelnMotor_R)
+void RS485_Schaltschrank_Send_clickColor(byte SchaufelnMotor_L, byte SchaufelnMotor_R)
 {
   // Byte 0 Header (0x7D)
   // Byte 1 Schaufeln Links
@@ -149,7 +188,7 @@ void RS485_Schaltschrank_Send_FarbmischerAktion(byte SchaufelnMotor_L, byte Scha
   // Byte 3 frei
   // Byte 4 Checksum
 
-  bufferRS485[0] = header_AbsenderSchaltschrank_FarbmischerAktion;
+  bufferRS485[0] = header_AbsenderSchaltschrank_clickColor;
   bufferRS485[1] = SchaufelnMotor_L;
   bufferRS485[2] = SchaufelnMotor_R;
   bufferRS485[3] = 0; // frei
@@ -158,43 +197,19 @@ void RS485_Schaltschrank_Send_FarbmischerAktion(byte SchaufelnMotor_L, byte Scha
   Serial2.write(bufferRS485, bufferSizeRS485); // We send all bytes stored in the buffer
 }
 
-//We perform a sum of all bytes, except the one that corresponds to the original checksum value. After summing we need to AND the result to a byte value.
-uint8_t checksum()
+void RS485_Schaltschrank_Send_metronomeColor(byte ColorTime255_L, byte ColorTime255_R, byte ColorTime255_shift)
 {
-  uint8_t result = 0;
-  uint16_t sum = 0;
+  // Byte 0 Header
+  // Byte 1 ColorTime255_L
+  // Byte 2 ColorTime255_R
+  // Byte 3 ColorTime255_shift
+  // Byte 4 Checksum
 
-  for (uint8_t i = 0; i < (bufferSizeRS485 - 1); i++)
-  {
-    sum += bufferRS485[i];
-  }
-    sum = sum + 10;
-  result = sum & 0xFF;
+  bufferRS485[0] = header_AbsenderSchaltschrank_metronomeColor;
+  bufferRS485[1] = ColorTime255_L;
+  bufferRS485[2] = ColorTime255_R;
+  bufferRS485[3] = ColorTime255_shift;
+  bufferRS485[4] = checksum();
 
-  return result;
-}
-
-// This a common checksum validation method.
-// We perform a sum of all bytes, except the one that corresponds to the original checksum value.
-// After summing we need to AND the result to a byte value.
-
-uint8_t verifyChecksum(uint8_t originalResult)
-{
-  uint8_t result = 0;
-  uint16_t sum = 0;
-
-  for (uint8_t i = 0; i < (bufferSizeRS485 - 1); i++)
-  {
-    sum += bufferRS485[i];
-  }
-    sum = sum + 10;
-  result = sum & 0xFF;
-
-  if (originalResult == result)
-  {
-    return 1;
-  } else
-  {
-    return 0;
-  }
+  Serial2.write(bufferRS485, bufferSizeRS485); // We send all bytes stored in the buffer
 }
