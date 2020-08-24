@@ -35,10 +35,10 @@ const int motorsteps = 200; // 200 Schrittmotor, 16 Servo
 const int gear_ratio = 1; // >0 entspricht Untersetzung
 
 const int M_LR_microstepping = 8; // TMC 2209 16 = Standard ohne Jumper
-const int M_LR_MaxSpeed = 400;
-const int M_LR_Acceleration = 500;
-int MotorSpeed = 200; // Umdrehungen, speed steps/s,
-int MotorAcceleration = 150; // acceleration mm/s^2
+const int M_LR_MaxSpeed = 300;
+const int M_LR_Acceleration = 400;
+int MotorSpeed = 150; // Umdrehungen, speed steps/s,
+int MotorAcceleration = 100; // acceleration mm/s^2
 
 
 
@@ -147,8 +147,8 @@ void Farbmischer_GibFarbe(int GibSchaufeln_L, int GibSchaufeln_R)
   M_R.setMaxSpeed(M_LR_MaxSpeed); // stp/s
   M_R.setAcceleration(M_LR_Acceleration); // stp/s^2
 
-  M_L.setTargetRel(GibSchaufeln_L * motorsteps * gear_ratio * M_LR_microstepping / Anzahl_Schaufeln);
-  M_R.setTargetRel(GibSchaufeln_R * motorsteps * gear_ratio * M_LR_microstepping / Anzahl_Schaufeln);
+  M_L.setTargetRel(2 * (-1) * GibSchaufeln_L * motorsteps * gear_ratio * M_LR_microstepping / Anzahl_Schaufeln);
+  M_R.setTargetRel(2 * (-1) * GibSchaufeln_R * motorsteps * gear_ratio * M_LR_microstepping / Anzahl_Schaufeln);
 
   StepController.moveAsync(M_L, M_R);
 }
