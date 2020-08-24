@@ -34,7 +34,7 @@ const uint8_t header_AbsenderSchaltschrank_metronomeColor = 16;
 void RS485_setup()
 {
   while (!Serial1);
-  Serial1.begin(115200); // Serial1 für RS485
+  Serial1.begin(250000); // Serial1 für RS485
   Serial1.transmitterEnable(RS485_enablePin);
   delay(10);
 }
@@ -81,7 +81,7 @@ uint8_t verifyChecksum(uint8_t originalResult)
 void RS485_Extruder_CheckIfUpdateAvalible()
 {
   int BreakCounter = 0;
-  while (BreakCounter <= 20)
+  while (BreakCounter <= 2)
   {
     if (Serial1.available() > 0) // Check if there is any data available to read
     {

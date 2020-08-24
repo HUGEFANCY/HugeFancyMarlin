@@ -86,7 +86,7 @@ void loop()
     //Serial.print("RealTemperatureZone_1 = ");Serial.println(TargetTemperatureZone_1);
     //Serial.print("RealTemperatureZone_2 = ");Serial.println(TargetTemperatureZone_2);
     //PrintCombTemps();
-    Serial.println("1000");
+    Serial.println("1000ms has passed");
     startMillis = currentMillis;
     }
 }

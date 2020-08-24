@@ -35,7 +35,7 @@ const uint8_t header_AbsenderSchaltschrank_metronomeColor = 16;
 void RS485_setup()
 {
   while (!Serial2); // Serial1 Teensy 3.2 defekt?
-  Serial2.begin(115200); // Serial1 für RS485
+  Serial2.begin(250000); // Serial1 für RS485
   Serial2.transmitterEnable(RS485_enablePin);
   delay(10);
 }
@@ -86,7 +86,7 @@ uint8_t verifyChecksum(uint8_t originalResult)
 void RS485_Schaltschrank_CheckIfUpdateAvalible()
 {
   int BreakCounter = 0;
-  while (BreakCounter <= 20)
+  while (BreakCounter <= 2)
   {
     //Serial.println("check serial availability");
     if (Serial2.available() > 0) // Check if there is any data available to read
