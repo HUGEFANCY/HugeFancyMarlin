@@ -35,7 +35,7 @@ const uint8_t header_AbsenderSchaltschrank_metronomeColor = 16;
 void RS485_setup()
 {
   while (!Serial2); // Serial1 Teensy 3.2 defekt?
-  Serial2.begin(115200); // Serial1 für RS485
+  Serial2.begin(250000); // Serial1 für RS485
   Serial2.transmitterEnable(RS485_enablePin);
   delay(10);
 }
