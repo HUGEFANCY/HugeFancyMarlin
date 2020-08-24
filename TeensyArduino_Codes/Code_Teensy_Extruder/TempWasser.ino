@@ -6,7 +6,7 @@
 int PinWasserIn = A21;    //Pin that is connected to the thermistor on the water inlet
 int PinWasserOut = A22;   //Pin that is connected to the thermistor on the water outlet
 
-Metro TempWasserIntervall = Metro(1000);
+Chrono chronoTempWasserIntervall;
 
 int Lesewassertemp(int Pin)
 {
@@ -35,8 +35,9 @@ int Lesewassertemp(int Pin)
 
 void TempWasser_loop()
 {
-  if (TempWasserIntervall.check() == 1)  // check if the metro has passed its interval
+  if ( chronoTempWasserIntervall.hasPassed(1000) )  // check if the metro has passed its interval
   {
+    chronoTempWasserIntervall.restart();
     TempWatercooling_In = Lesewassertemp(PinWasserIn);
     TempWatercooling_Out = Lesewassertemp(PinWasserOut);
   }
