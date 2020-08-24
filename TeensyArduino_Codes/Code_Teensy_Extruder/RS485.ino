@@ -141,7 +141,7 @@ void RS485_Extruder_CheckIfUpdateAvalible()
               // Byte 4 Checksum
               byte Schaufeln_L = bufferRS485[1];
               byte Schaufeln_R = bufferRS485[2];
-              TM1637_actionHappend_8888(); // Anzeigen was passiert ist
+              TM1637_actionHappend(); // Anzeigen was passiert ist
               if (Schaufeln_L != 0)
               {
                 Farbmischer_GibFarbe(1, 0);
@@ -162,38 +162,21 @@ void RS485_Extruder_CheckIfUpdateAvalible()
               ColorTimeSeconds_L = map(bufferRS485[1], 0, 255, 0, 600);
               ColorTimeSeconds_R = map(bufferRS485[1], 0, 255, 0, 600);
               ColorTimeSeconds_shift = map(bufferRS485[1], 0, 255, 0, 600);
-
-              // LINKS
-              if ((ColorTimeSeconds_L != 0))
+              if ((ColorTimeSeconds_L != 0) or (ColorTimeSeconds_R != 0))
               {
                 FarbmischerMetronomeColor = true;
-                Chrono_MetronomeColorRestart_L();
+                Chrono_MetronomeColorRestart();
+                if (ColorTimeSeconds_shift != 0)
+                {
+                  ColorShiftDone == false;
+                }
               }
               else
-              {
-                Chrono_MetronomeColorStop_L();
-              }
-
-              // RECHTS
-              if ((ColorTimeSeconds_R != 0))
-              {
-                FarbmischerMetronomeColor = true;
-                Chrono_MetronomeColorRestart_R();
-              }
-              else
-              {
-                Chrono_MetronomeColorStop_R();
-              }
-              
-              // alles stoppen
-              if ((ColorTimeSeconds_L == 0) and (ColorTimeSeconds_R == 0))
               {
                 FarbmischerMetronomeColor = false;
-                Chrono_MetronomeColorStop_L();
-                Chrono_MetronomeColorStop_R();
+                Chrono_MetronomeColorStop();
               }
-
-              TM1637_actionHappend_8888(); // Anzeigen was passiert ist
+              TM1637_actionHappend(); // Anzeigen was passiert ist
             }
           }
           // restart header flag

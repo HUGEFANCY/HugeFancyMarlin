@@ -3,10 +3,9 @@
 #include <TM1637Display.h>
 // https://github.com/avishorp/TM1637
 
+Metro DisplayIntervall = Metro(1000);
 
-Chrono Chrono_DisplayRefresh;
-Chrono Chrono_DisplayBlink;
-
+Metro DisplayBlink = Metro(500);
 boolean changeBlink_ActiveStatus = true;
 
 // PINOUT
@@ -63,15 +62,13 @@ void TM1637_setup()
 
 void TM1637_update()
 {
-  if ( Chrono_DisplayRefresh.hasPassed(200) )  // check if the metro has passed its interval
+  if (DisplayIntervall.check() == 1)  // check if the metro has passed its interval
   {
-    Chrono_DisplayRefresh.restart();
     TM1637_TempExtruderZone_1.showNumberDec(RealTemperatureZone_1, false);
     TM1637_TempExtruderZone_2.showNumberDec(RealTemperatureZone_2, false);
     TM1637_TempWatercoolingWarm.showNumberDec(TempWatercooling_In, false);
     TM1637_TempWatercoolingCold.showNumberDec(TempWatercooling_Out, false); // ### ToDo: hier später die momentane TempExtruderObenrum
-    int PwmValuePartCoolingFanMarlin_prozent = map(PwmValuePartCoolingFanMarlin, 0, 255, 0, 100);
-    TM1637_pwmValuePartCoolingFan.showNumberDec(PwmValuePartCoolingFanMarlin_prozent, false);
+    TM1637_pwmValuePartCoolingFan.showNumberDec(PwmValuePartCoolingFanMarlin, false);
     TM1637_prozentTankladung.showNumberDec(TargetTempExtruderMarlin, false);
   }
 
@@ -91,7 +88,7 @@ void TM1637_update()
 }
 
 
-void TM1637_actionHappend_8888()
+void TM1637_actionHappend()
 {
     TM1637_TempExtruderZone_1.showNumberDec(8888, false);
     TM1637_TempExtruderZone_2.showNumberDec(8888, false);
@@ -101,44 +98,11 @@ void TM1637_actionHappend_8888()
     TM1637_prozentTankladung.showNumberDec(8888, false);
 }
 
-void TM1637_actionHappend_1111()
-{
-    TM1637_TempExtruderZone_1.showNumberDec(1111, false);
-    TM1637_TempExtruderZone_2.showNumberDec(1111, false);
-    TM1637_TempWatercoolingWarm.showNumberDec(1111, false);
-    TM1637_TempWatercoolingCold.showNumberDec(1111, false); 
-    TM1637_pwmValuePartCoolingFan.showNumberDec(1111, false);
-    TM1637_prozentTankladung.showNumberDec(1111, false);
-}
-
-
-/*
-void TM1637_actionHappend_L()
-{
-    TM1637_TempExtruderZone_1.showNumberDec("LLLL", false);
-    TM1637_TempExtruderZone_2.showNumberDec("LLLL", false);
-    TM1637_TempWatercoolingWarm.showNumberDec("LLLL", false);
-    TM1637_TempWatercoolingCold.showNumberDec("LLLL", false); 
-    TM1637_pwmValuePartCoolingFan.showNumberDec("LLLL", false);
-    TM1637_prozentTankladung.showNumberDec("LLLL", false);
-}
-
-void TM1637_actionHappend_R()
-{
-    TM1637_TempExtruderZone_1.showNumberDec("RRRR", false);
-    TM1637_TempExtruderZone_2.showNumberDec("RRRR", false);
-    TM1637_TempWatercoolingWarm.showNumberDec("RRRR", false);
-    TM1637_TempWatercoolingCold.showNumberDec("RRRR", false); 
-    TM1637_pwmValuePartCoolingFan.showNumberDec("RRRR", false);
-    TM1637_prozentTankladung.showNumberDec("RRRR", false);
-}
-*/
 
 void Blink_TempZone_12()
 {
-  if ( Chrono_DisplayBlink.hasPassed(100) )  // check if the metro has passed its interval
+  if (DisplayBlink.check() == 1)  // check if the metro has passed its interval
   {
-    Chrono_DisplayBlink.restart();
     if (changeBlink_ActiveStatus == false)
     {
       TM1637_TempExtruderZone_1.showNumberDec(RealTemperatureZone_1, false);
@@ -156,9 +120,8 @@ void Blink_TempZone_12()
 
 void Blink_TempZone_1()
 {
-  if ( Chrono_DisplayBlink.hasPassed(100) )  // check if the metro has passed its interval
+  if (DisplayBlink.check() == 1)  // check if the metro has passed its interval
   {
-    Chrono_DisplayBlink.restart();
     if (changeBlink_ActiveStatus == false)
     {
       TM1637_TempExtruderZone_1.showNumberDec(RealTemperatureZone_1, false);
@@ -174,9 +137,8 @@ void Blink_TempZone_1()
 
 void Blink_TempZone_2()
 {
-  if ( Chrono_DisplayBlink.hasPassed(100) )  // check if the metro has passed its interval
+  if (DisplayBlink.check() == 1)  // check if the metro has passed its interval
   {
-    Chrono_DisplayBlink.restart();
     if (changeBlink_ActiveStatus == false)
     {
       TM1637_TempExtruderZone_2.showNumberDec(RealTemperatureZone_2, false);

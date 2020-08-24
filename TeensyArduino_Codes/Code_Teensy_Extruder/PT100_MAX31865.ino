@@ -21,7 +21,7 @@ Adafruit_MAX31865 thermo_zone_2 = Adafruit_MAX31865(CS_pin_zone_2, SDI_pin, SDO_
 #define RREF 430.0 // The value of the Rref resistor. Use 430.0 for PT100 and 4300.0 for PT1000
 #define RNOMINAL 100.0 // The 'nominal' 0-degrees-C resistance of the sensor // 100.0 for PT100, 1000.0 for PT1000
 
-Chrono chronoTemperaturIntervall;
+Metro temperaturIntervall = Metro(500);
 
 const int temp_cycle_number = 4;
 double LastTempsZ1[temp_cycle_number] = {0};  //array with the last recorded temps 
@@ -63,9 +63,8 @@ void PT100_MAX31865_setup()
 
 void PT100_MAX31865_loop()
 {
-  if ( chronoTemperaturIntervall.hasPassed(500) )  // check if the chrono has passed its interval
+  if (temperaturIntervall.check() == 1)  // check if the metro has passed its interval
   {
-    chronoTemperaturIntervall.restart();
     // Check and print any faults
     uint8_t fault = thermo_zone_1.readFault();
     if (fault)

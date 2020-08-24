@@ -100,7 +100,7 @@ void PID_loop()
   /************************************************
    * turn the output pin on/off based on pid output
    ************************************************/
-  if ( (abs(millis() - windowStartTime) > WindowSize) )
+  if (millis() - windowStartTime > WindowSize)
   { //time to shift the Relay Window
     windowStartTime = millis();
   }

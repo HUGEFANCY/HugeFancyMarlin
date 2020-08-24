@@ -46,14 +46,15 @@ boolean FarbmischerMetronomeColor = false;
 int ColorTimeSeconds_L = 0;
 int ColorTimeSeconds_R = 0;
 int ColorTimeSeconds_shift = 0;
+boolean ColorShiftDone = false;
 
 const int Anzahl_Schaufeln = 3;
 
 // Metronome Color Intervals
-Chrono Chrono_ColorTimeSeconds_L;
-Chrono Chrono_ColorTimeSeconds_R;
+Chrono Chrono_ColorTimeSeconds_L(Chrono::SECONDS);
+Chrono Chrono_ColorTimeSeconds_R(Chrono::SECONDS);
 
-Chrono Chrono_StepperWatchdog;
+Chrono Chrono_StepperWatchdog(Chrono::SECONDS);
 
 
 void Motoren_setup()
@@ -78,8 +79,8 @@ void Motoren_setup()
   // M_nanotec.setMaxSpeed(Nanotec_MaxSpeed);
   // M_nanotec.setAcceleration(Nanotec_Acceleration);
 
-  //Chrono_ColorTimeSeconds_L.stop();
-  //Chrono_ColorTimeSeconds_R.stop();
+  Chrono_ColorTimeSeconds_L.stop();
+  Chrono_ColorTimeSeconds_R.stop();
 }
 
 void Schrittmotor_L_aktiv(bool statusSetzen)
@@ -157,55 +158,52 @@ void Stepper_loopMetronomeColor()
 {
   if (FarbmischerMetronomeColor == true)
   {
-    // Einmalig Color shift
-    if ((ColorTimeSeconds_shift > 0) and (ColorTimeSeconds_R > 0))
-    {
-      Chrono_ColorTimeSeconds_R.add(ColorTimeSeconds_shift*1000);
-      ColorTimeSeconds_shift = 0;
-    }
-    
-    // Intervall passed Farbe L
-    if ( Chrono_ColorTimeSeconds_L.hasPassed(ColorTimeSeconds_L*1000) )
+    if ( Chrono_ColorTimeSeconds_L.hasPassed(ColorTimeSeconds_L) )
     {
       Chrono_ColorTimeSeconds_L.restart();
-      TM1637_actionHappend_1111(); // Anzeigen was passiert ist
+      TM1637_actionHappend(); // Anzeigen was passiert ist
       // Motor L
       Farbmischer_GibFarbe(1, 0);
     }
-    // Intervall passed Farbe R
-    if ( Chrono_ColorTimeSeconds_R.hasPassed(ColorTimeSeconds_R*1000) )
+    if (ColorShiftDone == false)
     {
-      Chrono_ColorTimeSeconds_R.restart();
-      TM1637_actionHappend_8888(); // Anzeigen was passiert ist
-      // Motor R
-      Farbmischer_GibFarbe(0, 1);
+      if ( Chrono_ColorTimeSeconds_R.hasPassed(ColorTimeSeconds_R + ColorTimeSeconds_shift) )
+      {
+        ColorShiftDone == true;
+        Chrono_ColorTimeSeconds_R.restart();
+        TM1637_actionHappend(); // Anzeigen was passiert ist
+        // Motor R
+        Farbmischer_GibFarbe(0, 1);
+      }
+    }
+    else if (ColorShiftDone == true)
+    {
+      if ( Chrono_ColorTimeSeconds_R.hasPassed(ColorTimeSeconds_R) )
+      {
+        Chrono_ColorTimeSeconds_R.restart();
+        TM1637_actionHappend(); // Anzeigen was passiert ist
+        // Motor R
+        Farbmischer_GibFarbe(0, 1);
+      }
     }
   }
 }
 
-void Chrono_MetronomeColorRestart_L()
+void Chrono_MetronomeColorRestart()
 {
   Chrono_ColorTimeSeconds_L.restart();
-}
-
-void Chrono_MetronomeColorRestart_R()
-{
   Chrono_ColorTimeSeconds_R.restart();
 }
 
-void Chrono_MetronomeColorStop_L()
+void Chrono_MetronomeColorStop()
 {
   Chrono_ColorTimeSeconds_L.stop();
-}
-
-void Chrono_MetronomeColorStop_R()
-{
   Chrono_ColorTimeSeconds_R.stop();
 }
 
-void Stepper_loopWatchdogDisableSteppers()
+void Stepper_loopWatchdog()
 {
-  if ( Chrono_StepperWatchdog.hasPassed(2000) )
+  if ( Chrono_StepperWatchdog.hasPassed(2) )
   {
     Chrono_StepperWatchdog.restart();
     // Turn Steppers off
