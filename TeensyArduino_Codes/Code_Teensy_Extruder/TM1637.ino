@@ -88,14 +88,10 @@ void TM1637_update()
 }
 
 
-void TM1637_actionHappend()
+void TM1637_showFarbe(int A, int B)
 {
-    TM1637_TempExtruderZone_1.showNumberDec(8888, false);
-    TM1637_TempExtruderZone_2.showNumberDec(8888, false);
-    TM1637_TempWatercoolingWarm.showNumberDec(8888, false);
-    TM1637_TempWatercoolingCold.showNumberDec(8888, false); 
-    TM1637_pwmValuePartCoolingFan.showNumberDec(8888, false);
-    TM1637_prozentTankladung.showNumberDec(8888, false);
+  TM1637_TempWatercoolingWarm.showNumberDec(A, false);
+  TM1637_TempWatercoolingCold.showNumberDec(B, false);
 }
 
 

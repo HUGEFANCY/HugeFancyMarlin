@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <math.h>
 #include <Metro.h> // Include the Metro library // https://www.pjrc.com/teensy/td_libs_Metro.html
-#include <Chrono.h>
 
 unsigned long currentMillis, startMillis = 0;
 int analog_resolution = 10; // sets resolution of analog writing as exponent of 2 (2^12=4096)
@@ -73,8 +72,7 @@ void loop()
   TempWasser_loop();
   PID_loop();
   CombineRealTemps();
-  Stepper_loopWatchdog();
-  Stepper_loopMetronomeColor();
+  Stepper_loop();
 
 
 
