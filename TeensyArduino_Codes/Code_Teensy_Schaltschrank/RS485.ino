@@ -86,7 +86,7 @@ uint8_t verifyChecksum(uint8_t originalResult)
 void RS485_Schaltschrank_CheckIfUpdateAvalible()
 {
   int BreakCounter = 0;
-  while (BreakCounter <= 20)
+  while (BreakCounter <= 2)
   {
     //Serial.println("check serial availability");
     if (Serial2.available() > 0) // Check if there is any data available to read
