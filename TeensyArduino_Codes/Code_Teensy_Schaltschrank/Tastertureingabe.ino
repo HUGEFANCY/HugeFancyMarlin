@@ -1,35 +1,55 @@
-boolean SerialTastatur_CheckKeys()
+String charmodus = "leer";
+
+void SerialTastatur_CheckKeys()
 {
   if (Serial.available())
   {
     char ch = Serial.read();
 
-    if (ch == '1') // Tastaturanschlag "1"
+    if (ch == 'i') // Tastaturanschlag "1"
     {
-      Serial.println("--- Tastaturanschlag 1 ---"); Serial.println();
+      Serial.println("--- Information ---");
+      Serial.println("--- f: fan");
+    }
+
+
+    ///////////// LÜFTER
+    if (ch == 'f') // Tastaturanschlag "1"
+    {
+      Serial.println("--- Modus Fan PWM ---"); Serial.println();
+      charmodus = "fan";
+    }
+    if ((charmodus == "fan") and (ch == '1'))
+    {
+      Serial.println("fan 100%");
+      PwmValuePartCoolingFanMarlin = 0;
+    }
+    if ((charmodus == "fan") and (ch == '2'))
+    {
+      Serial.println("fan 50%");
+      PwmValuePartCoolingFanMarlin = 122;
+    }
+    if ((charmodus == "fan") and (ch == '3'))
+    {
+      Serial.println("fan 50%");
+      PwmValuePartCoolingFanMarlin = 255;
+    }
+
+
+    if (ch == 'c') // Tastaturanschlag "1"
+    {
+      Serial.println("--- Modus Click Color ---"); Serial.println();
+      charmodus = "click_color";
+    }
+    if ((charmodus == "click_color") and (ch == '1'))
+    {
+      Serial.println("1 x Color L");
       RS485_Schaltschrank_Send_clickColor(1, 0);
-      return true;
     }
-        if (ch == '2') // Tastaturanschlag "1"
+    if ((charmodus == "click_color") and (ch == '2'))
     {
-      Serial.println("--- Tastaturanschlag 2 ---"); Serial.println();
+      Serial.println("1 x Color R");
       RS485_Schaltschrank_Send_clickColor(0, 1);
-      return true;
     }
-
-
-
-    if (ch == 'f') // Tastaturanschlag "2"
-    {
-      Serial.println("--- Farbe ---"); Serial.println();
-      RS485_Schaltschrank_Send_clickColor(1, 3);
-      return true;
-    }
-
-
-
   }
-
-
-  return false;
 }
