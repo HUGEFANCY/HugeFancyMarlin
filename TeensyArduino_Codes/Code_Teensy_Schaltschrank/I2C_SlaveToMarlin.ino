@@ -14,6 +14,9 @@
 #define ANSWERSIZE 2  // only this amount of bytes is exchanged between Marlin and this Teensy 
 
 int target_temp_buffer = 0;
+const uint8_t temp_header = 11;
+const uint8_t fan_header = 12;
+const uint8_t col_header = 13; 
 
 void I2C_Marlin_setup()
 {
@@ -31,11 +34,54 @@ void I2C_Marlin_setup()
    no params no return
 */
 void receiveEvent()
-{
+{ 
+  uint8_t counter = 0;
+  byte i2c_header;
+  byte col_click_value[2]={0};
   while (0 < Wire2.available())
-  {
-    byte x = Wire2.read();
-    target_temp_buffer += x & 0xFF;
+  { 
+    if (counter == 0)
+    {
+      i2c_header = Wire2.read();
+      counter++;
+      Serial.print("Header of receiveEvent:  "); 
+      Serial.println(i2c_header);
+      continue;
+    }
+    
+    if (i2c_header == temp_header)
+    {
+      byte x = Wire2.read();
+      target_temp_buffer += x & 0xFF;
+      counter++; 
+    }
+    else if (i2c_header == fan_header)
+    {
+      byte y = Wire2.read();
+      PwmValuePartCoolingFanMarlin = y & 0xFF;
+      Serial.print("PWM for fans set:  "); 
+      Serial.println(PwmValuePartCoolingFanMarlin);
+      counter++; 
+    }
+    else if (i2c_header == col_header)
+    {
+      byte y = Wire2.read();
+      col_click_value[counter-1] = y & 0xFF;
+      Serial.print("PWM for fans set:  "); 
+      Serial.println(PwmValuePartCoolingFanMarlin);
+      counter++;
+      if (counter == 2) 
+      {
+        RS485_Schaltschrank_Send_clickColor(col_click_value[0],col_click_value[1]);
+        Serial.print("color clicks set:  ");
+        Serial.println(col_click_value); 
+      }
+    }
+    else
+    {
+      Serial.println("Header not recognized")
+    }
+     
   }
   Serial.print("- - - Bekommen von Marlin: target_temp_buffer = ");Serial.println(target_temp_buffer);
   TargetTempExtruderMarlin = target_temp_buffer;
