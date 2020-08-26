@@ -9,20 +9,22 @@
 
 boolean I2C_TempControl::send_target_temp(uint16_t target_temperature) 
 {
-  
-    const uint8_t bufferSize = 2;
+    const uint8_t temp_header = 11;
+    const uint8_t bufferSize = 3;
     uint8_t buffer[bufferSize]={};
     uint16_t target_temp = target_temperature;
     //SERIAL_ECHOLNPAIR("target_temp: ", target_temp);      // print 
+    buffer[0] = temp_header; 
+
     if (target_temp <= 255)
     {
-        buffer[0] = target_temp; // Wert von 0-255°C
-        buffer[1] = 0;
+        buffer[1] = target_temp; // Wert von 0-255°C
+        buffer[2] = 0;
     }
     else if ((target_temp > 255) and (target_temp <= 510))
     {
-        buffer[0] = 255;
-        buffer[1] = target_temp - 255; // Wert von 256-510°C
+        buffer[1] = 255;
+        buffer[2] = target_temp - 255; // Wert von 256-510°C
     } 
     //SERIAL_ECHOLN("sending target temp via i2c!");      // print 
     i2c_c.address(I2C_REMOTE_ADDRESS);
@@ -30,7 +32,7 @@ boolean I2C_TempControl::send_target_temp(uint16_t target_temperature)
     //sum = buffer[0] + buffer[1];
     //SERIAL_ECHOLNPAIR("target sum to send:    ", sum);      // print 
 
-    i2c_c.addbytes_as_bytes(&buffer[0],2);
+    i2c_c.addbytes_as_bytes(&buffer[0],3);
     i2c_c.send();
     //SERIAL_ECHOLN("i2c target temp sent ------- ");      // print 
     delay(100);
