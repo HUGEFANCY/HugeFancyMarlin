@@ -33,7 +33,7 @@ void setup()
 
 void loop()
 {
-  //SerialTastatur_CheckKeys();
+  SerialTastatur_CheckKeys();
   loop_RS485_Schaltschrank_Send_Statusupdate();
   RS485_Schaltschrank_CheckIfUpdateAvalible();
   loop_FunkCheck();

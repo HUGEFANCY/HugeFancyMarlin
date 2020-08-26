@@ -10,6 +10,7 @@ void SerialTastatur_CheckKeys()
     {
       Serial.println("--- Information ---");
       Serial.println("--- f: fan");
+      Serial.println("--- c: color");
     }
 
 
@@ -19,20 +20,25 @@ void SerialTastatur_CheckKeys()
       Serial.println("--- Modus Fan PWM ---"); Serial.println();
       charmodus = "fan";
     }
-    if ((charmodus == "fan") and (ch == '1'))
+    if ((charmodus == "fan") and (ch == '4'))
     {
       Serial.println("fan 100%");
-      PwmValuePartCoolingFanMarlin = 0;
+      PwmValuePartCoolingFanMarlin = 255;
+    }
+    if ((charmodus == "fan") and (ch == '3'))
+    {
+      Serial.println("fan 75%");
+      PwmValuePartCoolingFanMarlin = 200;
     }
     if ((charmodus == "fan") and (ch == '2'))
     {
       Serial.println("fan 50%");
-      PwmValuePartCoolingFanMarlin = 122;
+      PwmValuePartCoolingFanMarlin = 124;
     }
-    if ((charmodus == "fan") and (ch == '3'))
+    if ((charmodus == "fan") and ((ch == '1') or (ch == '0')))
     {
-      Serial.println("fan 50%");
-      PwmValuePartCoolingFanMarlin = 255;
+      Serial.println("fan 0%");
+      PwmValuePartCoolingFanMarlin = 0;
     }
 
 

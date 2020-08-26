@@ -147,8 +147,18 @@ void Farbmischer_GibFarbe(int GibSchaufeln_L, int GibSchaufeln_R)
   M_R.setMaxSpeed(M_LR_MaxSpeed); // stp/s
   M_R.setAcceleration(M_LR_Acceleration); // stp/s^2
 
-  M_L.setTargetRel(2 * (-1) * GibSchaufeln_L * motorsteps * gear_ratio * M_LR_microstepping / Anzahl_Schaufeln);
-  M_R.setTargetRel(2 * (-1) * GibSchaufeln_R * motorsteps * gear_ratio * M_LR_microstepping / Anzahl_Schaufeln);
+  int randomnumber = random(1,2);
+  if (randomnumber == 1)
+  {
+    randomnumber = -1;
+  }
+  else if (randomnumber == 2)
+  {
+    randomnumber = 1;
+  }
+  
+  M_L.setTargetRel(2 * randomnumber * GibSchaufeln_L * motorsteps * gear_ratio * M_LR_microstepping / Anzahl_Schaufeln);
+  M_R.setTargetRel(2 * randomnumber * GibSchaufeln_R * motorsteps * gear_ratio * M_LR_microstepping / Anzahl_Schaufeln);
 
   StepController.moveAsync(M_L, M_R);
 }
