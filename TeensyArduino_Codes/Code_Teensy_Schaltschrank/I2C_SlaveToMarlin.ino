@@ -67,19 +67,20 @@ void receiveEvent()
     {
       byte y = Wire2.read();
       col_click_value[counter-1] = y & 0xFF;
-      Serial.print("PWM for fans set:  "); 
-      Serial.println(PwmValuePartCoolingFanMarlin);
+      Serial.print("color: "); 
+      Serial.println(col_click_value[counter-1]);
       counter++;
       if (counter == 2) 
       {
         RS485_Schaltschrank_Send_clickColor(col_click_value[0],col_click_value[1]);
         Serial.print("color clicks set:  ");
-        Serial.println(col_click_value); 
+        Serial.println(col_click_value[0]+col_click_value[1]); 
       }
     }
     else
     {
-      Serial.println("Header not recognized")
+      Serial.print("Header not recognized");
+      Serial.println(i2c_header);
     }
      
   }
