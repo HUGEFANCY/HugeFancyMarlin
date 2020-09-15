@@ -84,7 +84,6 @@ void receiveEvent()
 
       col_metronome_value[counter - 1] = x & 0xFF;
       Serial.print("color: "); Serial.println(col_metronome_value[counter - 1]);
-      counter++;
 
       if (counter == 2)
       {
@@ -94,8 +93,7 @@ void receiveEvent()
     }
     else
     {
-      Serial.print("Header not recognized");
-      Serial.println(i2c_header);
+      Serial.print("Header not recognized");Serial.println(i2c_header);
     }
     counter++;
   }
