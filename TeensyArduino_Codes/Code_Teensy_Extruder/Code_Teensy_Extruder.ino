@@ -79,7 +79,7 @@ void loop()
 
   //watchdog_gameover();
 
-  //SerialTastatur_CheckKeys();
+  SerialTastatur_CheckKeys();
 
   if (currentMillis - startMillis > 1000)
     {

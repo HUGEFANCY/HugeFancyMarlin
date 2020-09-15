@@ -9,7 +9,7 @@
 // R0 -> Teensy Rx2
 // RE = DE -> Teensy PIN 13
 // DI -> Teensy Tx2
-// VCC -> 5V
+// VCC -> 5VRS485_Schaltschrank_Send_clickColor
 // A -> Kabelterminal 17
 // B -> Kabelterminal 18
 // GND -> Teensy GND

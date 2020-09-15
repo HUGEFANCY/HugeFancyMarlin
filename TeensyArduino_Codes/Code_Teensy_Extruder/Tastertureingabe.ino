@@ -7,14 +7,16 @@ boolean SerialTastatur_CheckKeys()
     if (ch == '1') // Tastaturanschlag "1"
     {
       Serial.println("Motor Links");
-      Schrittmotor_L(1, MotorSpeed, MotorAcceleration); // Umdrehungen, speed steps/s, acceleration mm/s^2
+      Farbmischer_GibFarbe(1,0);
+      //Schrittmotor_L(1, MotorSpeed, MotorAcceleration); // Umdrehungen, speed steps/s, acceleration mm/s^2
       return true;
     }
 
     if (ch == '2') // Tastaturanschlag "2"
     {
       Serial.println("Motor Rechts");
-      Schrittmotor_R(1, MotorSpeed, MotorAcceleration); // Umdrehungen, speed steps/s, acceleration mm/s^2
+      Farbmischer_GibFarbe(0,1);
+      //Schrittmotor_R(1, MotorSpeed, MotorAcceleration); // Umdrehungen, speed steps/s, acceleration mm/s^2
       // Schrittmotor_nanotec(1, 80 * 64, 50 * 64);
       return true;
     }

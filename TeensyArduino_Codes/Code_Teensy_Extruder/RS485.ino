@@ -141,13 +141,15 @@ void RS485_Extruder_CheckIfUpdateAvalible()
               // Byte 4 Checksum
               byte Schaufeln_L = bufferRS485[1];
               byte Schaufeln_R = bufferRS485[2];
-              TM1637_actionHappend_8888(); // Anzeigen was passiert ist
+              
               if (Schaufeln_L != 0)
               {
+                TM1637_actionHappend_8888(); // Anzeigen was passiert ist
                 Farbmischer_GibFarbe(1, 0);
               }
               if (Schaufeln_R != 0)
               {
+                TM1637_actionHappend_1111(); // Anzeigen was passiert ist
                 Farbmischer_GibFarbe(0, 1);
               }
             }

@@ -16,7 +16,8 @@
 int target_temp_buffer = 0;
 const uint8_t temp_header = 11;
 const uint8_t fan_header = 12;
-const uint8_t col_header = 13; 
+const uint8_t col_onetime_header = 13;
+const uint8_t col_periodisch_header = 14;
 
 void I2C_Marlin_setup()
 {
@@ -34,47 +35,61 @@ void I2C_Marlin_setup()
    no params no return
 */
 void receiveEvent()
-{ 
+{
   uint8_t counter = 0;
   byte i2c_header;
-  byte col_click_value[2]={0};
+
+  byte col_click_value[2] = {0}; // Array Länge [2] 0,1
+  byte col_metronome_value[3] = {0};
+  
   while (0 < Wire2.available())
-  { 
+  {
+    
+    
     if (counter == 0)
     {
       i2c_header = Wire2.read();
       counter++;
-      Serial.print("Header of receiveEvent:  "); 
+      Serial.print("Header of receiveEvent:  ");
       Serial.println(i2c_header);
       continue;
     }
-    
+
     if (i2c_header == temp_header)
     {
       byte x = Wire2.read();
       target_temp_buffer += x & 0xFF;
-      counter++; 
     }
     else if (i2c_header == fan_header)
     {
-      byte y = Wire2.read();
-      PwmValuePartCoolingFanMarlin = y & 0xFF;
-      Serial.print("PWM for fans set:  "); 
-      Serial.println(PwmValuePartCoolingFanMarlin);
-      counter++; 
+      byte x = Wire2.read();
+      PwmValuePartCoolingFanMarlin = x & 0xFF;
+      Serial.print("PWM for fans set:  "); Serial.println(PwmValuePartCoolingFanMarlin);
     }
-    else if (i2c_header == col_header)
+    else if (i2c_header == col_onetime_header)
     {
-      byte y = Wire2.read();
-      col_click_value[counter-1] = y & 0xFF;
-      Serial.print("color: "); 
-      Serial.println(col_click_value[counter-1]);
-      counter++;
-      if (counter == 2) 
+      byte x = Wire2.read();
+      
+      col_click_value[counter - 1] = x; // x & 0xFF;
+      Serial.print("Color: "); Serial.println(col_click_value[counter - 1]);
+      if (counter == 2)
       {
-        RS485_Schaltschrank_Send_clickColor(col_click_value[0],col_click_value[1]);
-        Serial.print("color clicks set:  ");
-        Serial.println(col_click_value[0]+col_click_value[1]); 
+        RS485_Schaltschrank_Send_clickColor(col_click_value[0], col_click_value[1]);
+        Serial.print("color clicks set:  "); Serial.println(col_click_value[0] + col_click_value[1]);
+      }
+    }
+    else if (i2c_header == col_periodisch_header)
+    {
+      byte x = Wire2.read();
+
+      col_metronome_value[counter - 1] = x & 0xFF;
+      Serial.print("color: "); Serial.println(col_metronome_value[counter - 1]);
+      counter++;
+
+      if (counter == 2)
+      {
+        RS485_Schaltschrank_Send_metronomeColor(col_metronome_value[0], col_metronome_value[1], col_metronome_value[2]);
+        Serial.print("color clicks set:  "); Serial.println(col_metronome_value[0] + col_metronome_value[1] + col_metronome_value[2]);
       }
     }
     else
@@ -82,9 +97,9 @@ void receiveEvent()
       Serial.print("Header not recognized");
       Serial.println(i2c_header);
     }
-     
+    counter++;
   }
-  Serial.print("- - - Bekommen von Marlin: target_temp_buffer = ");Serial.println(target_temp_buffer);
+  Serial.print("- - - Bekommen von Marlin: target_temp_buffer = "); Serial.println(target_temp_buffer);
   TargetTempExtruderMarlin = target_temp_buffer;
   target_temp_buffer = 0;
   RGB_Blau();
@@ -101,7 +116,7 @@ void receiveEvent()
 void requestEvent()
 {
   //Serial.print("+ + + CombinedRealTempExtruder = ");Serial.println(CombinedRealTempExtruder);
-  
+
   byte response[ANSWERSIZE];
   int real_temp = CombinedRealTempExtruder;
 
@@ -123,7 +138,7 @@ void requestEvent()
     }
   */
   Wire2.write(response, sizeof(response)); //send value to Marlin vial i2c
-  Serial.print("+ + + Gesendet zu Marlin: real_temp = ");Serial.println(real_temp);
+  Serial.print("+ + + Gesendet zu Marlin: real_temp = "); Serial.println(real_temp);
   RGB_Rot();
   RGB_Aus();
 }
