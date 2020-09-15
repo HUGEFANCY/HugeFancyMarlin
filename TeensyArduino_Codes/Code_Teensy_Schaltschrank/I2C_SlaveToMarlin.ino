@@ -13,7 +13,6 @@
 #define WIRE2_PINS   I2C_PINS_3_4  // defines SCL2 and SDA2 pins of teensy 3.5
 #define ANSWERSIZE 2  // only this amount of bytes is exchanged between Marlin and this Teensy 
 
-int target_temp_buffer = 0;
 const uint8_t temp_header = 11;
 const uint8_t fan_header = 12;
 const uint8_t col_onetime_header = 13;
@@ -41,11 +40,10 @@ void receiveEvent()
 
   byte col_click_value[2] = {0}; // Array Länge [2] 0,1
   byte col_metronome_value[3] = {0};
-  
+  int target_temp_buffer = 0;
+
   while (0 < Wire2.available())
   {
-    
-    
     if (counter == 0)
     {
       i2c_header = Wire2.read();
@@ -59,6 +57,11 @@ void receiveEvent()
     {
       byte x = Wire2.read();
       target_temp_buffer += x & 0xFF;
+      if (counter == 2)
+      {
+        TargetTempExtruderMarlin = target_temp_buffer;
+        
+      }
     }
     else if (i2c_header == fan_header)
     {
@@ -69,7 +72,7 @@ void receiveEvent()
     else if (i2c_header == col_onetime_header)
     {
       byte x = Wire2.read();
-      
+
       col_click_value[counter - 1] = x; // x & 0xFF;
       Serial.print("Color: "); Serial.println(col_click_value[counter - 1]);
       if (counter == 2)
@@ -93,13 +96,11 @@ void receiveEvent()
     }
     else
     {
-      Serial.print("Header not recognized");Serial.println(i2c_header);
+      Serial.print("Header not recognized"); Serial.println(i2c_header);
     }
     counter++;
   }
   Serial.print("- - - Bekommen von Marlin: target_temp_buffer = "); Serial.println(target_temp_buffer);
-  TargetTempExtruderMarlin = target_temp_buffer;
-  target_temp_buffer = 0;
   RGB_Blau();
   RGB_Aus();
 }
