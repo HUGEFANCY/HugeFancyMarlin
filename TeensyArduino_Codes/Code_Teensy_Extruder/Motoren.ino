@@ -34,7 +34,7 @@ StepControl StepController; // Controller, Stepping Mode
 const int motorsteps = 200; // 200 Schrittmotor, 16 Servo
 const int gear_ratio = 1; // >0 entspricht Untersetzung
 
-const int M_LR_microstepping = 8; // TMC 2209 16 = Standard ohne Jumper
+const int M_LR_microstepping = 1; // TMC 2209 16 = Standard ohne Jumper
 const int M_LR_MaxSpeed = 40;
 const int M_LR_Acceleration = 30;
 int MotorSpeed = M_LR_MaxSpeed; // Umdrehungen, speed steps/s,
