@@ -17,6 +17,7 @@ const uint8_t temp_header = 11;
 const uint8_t fan_header = 12;
 const uint8_t col_onetime_header = 13;
 const uint8_t col_periodisch_header = 14;
+const byte counter_max = 3;
 
 void I2C_Marlin_setup()
 {
@@ -57,7 +58,7 @@ void receiveEvent()
     {
       byte x = Wire2.read();
       target_temp_buffer += x & 0xFF;
-      if (counter == 2)
+      if (counter == counter_max)
       {
         TargetTempExtruderMarlin = target_temp_buffer;
         
@@ -75,7 +76,7 @@ void receiveEvent()
 
       col_click_value[counter - 1] = x; // x & 0xFF;
       Serial.print("Color: "); Serial.println(col_click_value[counter - 1]);
-      if (counter == 2)
+      if (counter == counter_max)
       {
         RS485_Schaltschrank_Send_clickColor(col_click_value[0], col_click_value[1]);
         Serial.print("color clicks set:  "); Serial.println(col_click_value[0] + col_click_value[1]);
@@ -88,10 +89,10 @@ void receiveEvent()
       col_metronome_value[counter - 1] = x & 0xFF;
       Serial.print("color: "); Serial.println(col_metronome_value[counter - 1]);
 
-      if (counter == 2)
+      if (counter == counter_max)
       {
-        RS485_Schaltschrank_Send_metronomeColor(col_metronome_value[0], col_metronome_value[1], col_metronome_value[2]);
-        Serial.print("color clicks set:  "); Serial.println(col_metronome_value[0] + col_metronome_value[1] + col_metronome_value[2]);
+        RS485_Schaltschrank_Send_metronomeColor(col_metronome_value[0], col_metronome_value[1], col_metronome_value[2]); // (byte ColorTime255_L, byte ColorTime255_R, byte ColorTime255_shift)
+        Serial.print("color clicks set:  "); Serial.println(col_metronome_value[0] + col_metronome_value[1] + col_metronome_value[2]); 
       }
     }
     else
