@@ -87,12 +87,14 @@ void receiveEvent()
       byte x = Wire2.read();
 
       col_metronome_value[counter - 1] = x ;// & 0xFF;
-      Serial.print("metronome value: "); Serial.println(col_metronome_value[counter - 1]);
+      Serial.print("metronome value [");
+      Serial.print(counter-1);
+      Serial.print("]:  ");
+      Serial.println(col_metronome_value[counter - 1]);
 
       if (counter == 3)
       {
         RS485_Schaltschrank_Send_metronomeColor(col_metronome_value[0], col_metronome_value[1], col_metronome_value[2]); // (byte ColorTime255_L, byte ColorTime255_R, byte ColorTime255_shift)
-        Serial.print("color clicks set:  "); Serial.println(col_metronome_value[0] + col_metronome_value[1] + col_metronome_value[2]); 
       }
     }
     else
