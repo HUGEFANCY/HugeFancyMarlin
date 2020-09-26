@@ -24,6 +24,25 @@
 #include <PID_v1.h>
 
 //see Relays.ino for pinout 
+const int Zone1_TargetOffset = 5 ;  // Heating Zone 1 will be different from Zone 2
+int TargetTemperatureZone_1 = 0; // max 9 Bit = 511°C
+int TargetTemperatureZone_2 = 0; // max 9 Bit = 511°C
+
+// ->
+int RealTemperatureZone_1 = 0; // max 9 Bit = 511°C
+int RealTemperatureZone_2 = 0; // max 9 Bit = 511°C
+double AveragedRealTempZone_1 = 0; //average temperature over the last 5 measurements
+double AveragedRealTempZone_2 = 0;
+double HeatPowerZone_1 = 0;
+double HeatPowerZone_2 = 0;
+
+/// Hotend Bools
+//these are status bools  that do not affect the actual prcess but simply indicate a status.
+//Changing them here will not activate the relays
+int LuefterZone_1 = 0;
+int LuefterZone_2 = 0;
+int HeaterZone_1 = 0;
+int HeaterZone_2 = 0;
 
 //Define Variables we'll be connecting to
 double Setpoint_Zone1, Input_Zone1, Output_Zone1; //Heating Zone 1

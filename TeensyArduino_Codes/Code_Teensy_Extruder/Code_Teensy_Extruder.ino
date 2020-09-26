@@ -8,29 +8,8 @@ int analog_resolution = 10; // sets resolution of analog writing as exponent of 
 
 // Extruder temperatures
 int TargetTempExtruderMarlin = 0; // max 9 Bit = 511° // Target Values from Marlin and Real Values from Hotend
-// ->
-const int Zone1_TargetOffset = 5 ;  // Heating Zone 1 will be different from Zone 2
-int TargetTemperatureZone_1 = 0; // max 9 Bit = 511°C
-int TargetTemperatureZone_2 = 0; // max 9 Bit = 511°C
-
-// ->
-int RealTemperatureZone_1 = 0; // max 9 Bit = 511°C
-int RealTemperatureZone_2 = 0; // max 9 Bit = 511°C
-double AveragedRealTempZone_1 = 0; //average temperature over the last 5 measurements
-double AveragedRealTempZone_2 = 0;
-double HeatPowerZone_1 = 0;
-double HeatPowerZone_2 = 0;
-// ->
 int CombinedRealTempExtruder = 0; // max 9 Bit = 511°C
-
 byte PwmValuePartCoolingFanMarlin = 0;
-// Hotend Bools
-//these are status bools  that do not affect the actual prcess but simply indicate a status.
-//Changing them here will not activate the relays
-int LuefterZone_1 = 0;
-int LuefterZone_2 = 0;
-int HeaterZone_1 = 0;
-int HeaterZone_2 = 0;
 
 // Water cooling temperatures
 int TempWatercooling_In = 0; // max 9 Bit = 511°C
