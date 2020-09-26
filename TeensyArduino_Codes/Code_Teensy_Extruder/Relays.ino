@@ -14,119 +14,46 @@ const byte RelayLicht_EN = 22;
 void Relays_setup()
 {
   pinMode (RelayHeaterZone_1_EN, OUTPUT);
-  RelayHeaterZone_1_SetStatus(false);
+  Relay_SetStatus(RelayHeaterZone_1_EN, false);
   pinMode (RelayHeaterZone_2_EN, OUTPUT);
-  RelayHeaterZone_2_SetStatus(false);
+  Relay_SetStatus(RelayHeaterZone_2_EN, false);
   pinMode (RelayCoolerZone_1_EN, OUTPUT);
-  RelayCoolerZone_1_SetStatus(false);
+  Relay_SetStatus(RelayCoolerZone_1_EN, false);
   pinMode (RelayCoolerZone_2_EN, OUTPUT);
   RelayCoolerZone_2_SetStatus(false);
+  Relay_SetStatus(RelayCoolerZone_2_EN, false);
 
   pinMode (RelayWatercooling_EN, OUTPUT);
-  RelayWatercooling_SetStatus(false);
+  Relay_SetStatus(RelayWatercooling_EN, true);
   pinMode (RelayLicht_EN, OUTPUT);
-  RelayLicht_SetStatus(false);
-  RelayWatercooling_SetStatus(true);
+  Relay_SetStatus(RelayLicht_EN, true);
+  Relay_SetStatus(RelayWatercooling_EN, false);
 }
 
-
-void RelayHeaterZone_1_SetStatus(bool statusSetzen)
+void Relay_SetStatus(int ZoneRelay, bool status)
 {
   if (statusSetzen == true)
   {
-    digitalWrite(RelayHeaterZone_1_EN, HIGH);
+    digitalWrite(ZoneRelay, HIGH);
     delay(10);
   }
   else if (statusSetzen == false)
   {
-    digitalWrite(RelayHeaterZone_1_EN, LOW);
+    digitalWrite(ZoneRelay, LOW);
     delay(10);
   }
 }
-
-void RelayHeaterZone_2_SetStatus(bool statusSetzen)
-{
-  if (statusSetzen == true)
-  {
-    digitalWrite(RelayHeaterZone_2_EN, HIGH);
-    delay(10);
-  }
-  else if (statusSetzen == false)
-  {
-    digitalWrite(RelayHeaterZone_2_EN, LOW);
-    delay(10);
-  }
-}
-
-void RelayCoolerZone_1_SetStatus(bool statusSetzen)
-{
-  if (statusSetzen == true)
-  {
-    digitalWrite(RelayCoolerZone_1_EN, HIGH);
-    delay(10);
-  }
-  else if (statusSetzen == false)
-  {
-    digitalWrite(RelayCoolerZone_1_EN, LOW);
-    delay(10);
-  }
-}
-
-void RelayCoolerZone_2_SetStatus(bool statusSetzen)
-{
-  if (statusSetzen == true)
-  {
-    digitalWrite(RelayCoolerZone_2_EN, HIGH);
-    delay(10);
-  }
-  else if (statusSetzen == false)
-  {
-    digitalWrite(RelayCoolerZone_2_EN, LOW);
-    delay(10);
-  }
-}
-
-
-
-void RelayWatercooling_SetStatus(bool statusSetzen)
-{
-  if (statusSetzen == true)
-  {
-    digitalWrite(RelayWatercooling_EN, LOW);
-    delay(10);
-  }
-  else if (statusSetzen == false)
-  {
-    digitalWrite(RelayWatercooling_EN, HIGH);
-    delay(10);
-  }
-}
-
-void RelayLicht_SetStatus(bool statusSetzen)
-{
-  if (statusSetzen == true)
-  {
-    digitalWrite(RelayLicht_EN, LOW);
-    delay(10);
-  }
-  else if (statusSetzen == false)
-  {
-    digitalWrite(RelayLicht_EN, HIGH);
-    delay(10);
-  }
-}
-
 
 void Relays_clickCluck()
 {
   
-  RelayCoolerZone_1_SetStatus(false);
+  Relay_SetStatus(RelayCoolerZone_1_EN, false);
   delay(3000);
-  RelayCoolerZone_2_SetStatus(false);
+  Relay_SetStatus(RelayCoolerZone_2_EN, false);
   delay(3000);
-  RelayCoolerZone_1_SetStatus(true);
+  Relay_Setstatus(RelayCoolerZone_1_EN, true);
   delay(300);
-  RelayCoolerZone_2_SetStatus(true);
+  Relay_SetStatus(RelayCoolerZone_2_EN, true);
   delay(300);
   
 
@@ -135,36 +62,36 @@ void Relays_clickCluck()
 void Relays_clickCluck2()
 {
   
-  RelayCoolerZone_1_SetStatus(true);
+  Relay_Setstatus(RelayCoolerZone_1_EN, true);
   delay(300);
-  RelayCoolerZone_2_SetStatus(true);
+  Relay_Setstatus(RelayCoolerZone_2_EN, true);
   delay(300);
 
-  RelayHeaterZone_1_SetStatus(true);
+  Relay_Setstatus(RelayHeaterZone_1_EN, true);
   delay(500);
-  RelayHeaterZone_2_SetStatus(true);
+  Relay_Setstatus(RelayHeaterZone_2_EN, true);
   delay(500);
   
 
-  RelayHeaterZone_1_SetStatus(false);
+  Relay_Setstatus(RelayHeaterZone_1_EN, false);
   delay(10);
-  RelayHeaterZone_2_SetStatus(false);
+  Relay_Setstatus(RelayHeaterZone_2_EN, false);
   delay(100);
-  RelayCoolerZone_1_SetStatus(false);
+  Relay_Setstatus(RelayCoolerZone_1_EN, false);
   delay(100);
-  RelayCoolerZone_2_SetStatus(false);
+  Relay_Setstatus(RelayCoolerZone_2_EN, false);
   delay(10);
 
   // Wasserkühlung
-  RelayWatercooling_SetStatus(true);
+  Relay_Setstatus(RelayWatercooling_EN, false);
   delay(100);
-  RelayWatercooling_SetStatus(false);
+  Relay_Setstatus(RelayWatercooling_EN, true);
   delay(100);
 
   // Licht
-  RelayLicht_SetStatus(true);
+  Relay_Setstatus(RelayLicht_EN, false);
   delay(200);
-  RelayLicht_SetStatus(false);
+  Relay_Setstatus(RelayLicht, true);
   //delay(500);
 
 }
